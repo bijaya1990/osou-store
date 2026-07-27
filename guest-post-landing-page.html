@@ -1,0 +1,150 @@
+<!--
+  GUEST POST LANDING PAGE
+  How to use in WordPress (Classic Editor):
+  1. Create a new Page (Pages > Add New).
+  2. Switch the editor to "Text" / "Code" mode (top-right tab next to "Visual").
+     If you don't see this tab, install/activate the "Classic Editor" plugin
+     and make sure your Page uses the Classic Editor, not Gutenberg blocks.
+  3. Paste this ENTIRE file's content into the Text editor.
+  4. Publish. Set this Page as your "Write for Us" / "Guest Post" page.
+  5. Optional: In Appearance > Menus, add this page to your main menu.
+  Note: Some themes strip inline <style> blocks for non-admin users. If styles
+  don't show up, move the CSS to Appearance > Customize > Additional CSS.
+-->
+
+<style>
+.gp-wrap{max-width:900px;margin:0 auto;padding:0 20px;font-family:'Segoe UI',Arial,Helvetica,sans-serif;color:#222;line-height:1.7}
+.gp-hero{background:linear-gradient(135deg,#4b3bff 0%,#8e2de2 100%);border-radius:16px;padding:60px 40px;text-align:center;color:#fff;margin:30px 0;box-shadow:0 10px 30px rgba(75,59,255,.25)}
+.gp-hero h1{font-size:38px;margin:0 0 15px;font-weight:800;letter-spacing:.5px}
+.gp-hero p{font-size:18px;max-width:650px;margin:0 auto 25px;opacity:.95}
+.gp-btn{display:inline-block;background:#fff;color:#4b3bff;font-weight:700;padding:14px 32px;border-radius:50px;text-decoration:none;font-size:16px;box-shadow:0 6px 16px rgba(0,0,0,.15);transition:transform .2s ease}
+.gp-btn:hover{transform:translateY(-3px);color:#4b3bff}
+.gp-btn-outline{display:inline-block;border:2px solid #fff;color:#fff;font-weight:700;padding:12px 30px;border-radius:50px;text-decoration:none;font-size:16px;margin-left:12px}
+.gp-btn-outline:hover{background:#fff;color:#4b3bff}
+.gp-section{margin:50px 0}
+.gp-section h2{font-size:28px;text-align:center;margin-bottom:10px;color:#2b2140}
+.gp-section .gp-sub{text-align:center;color:#666;margin-bottom:35px;font-size:16px}
+.gp-grid{display:flex;flex-wrap:wrap;gap:20px;justify-content:center}
+.gp-card{flex:1 1 250px;max-width:270px;background:#f8f7ff;border:1px solid #ece9ff;border-radius:14px;padding:28px 22px;text-align:center;transition:box-shadow .2s ease,transform .2s ease}
+.gp-card:hover{box-shadow:0 10px 24px rgba(75,59,255,.12);transform:translateY(-4px)}
+.gp-card .gp-icon{font-size:34px;margin-bottom:12px;display:block}
+.gp-card h3{font-size:18px;margin:0 0 8px;color:#2b2140}
+.gp-card p{font-size:14.5px;color:#555;margin:0}
+.gp-steps{counter-reset:step;list-style:none;padding:0;max-width:700px;margin:0 auto}
+.gp-steps li{position:relative;padding:14px 0 14px 55px;border-bottom:1px dashed #ddd;font-size:16px}
+.gp-steps li:last-child{border-bottom:none}
+.gp-steps li:before{counter-increment:step;content:counter(step);position:absolute;left:0;top:10px;width:34px;height:34px;background:#4b3bff;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+.gp-pricing{background:#fff;border:2px solid #4b3bff;border-radius:16px;padding:40px;text-align:center;max-width:600px;margin:0 auto;box-shadow:0 10px 30px rgba(75,59,255,.1)}
+.gp-pricing h3{font-size:24px;margin:0 0 6px;color:#2b2140}
+.gp-pricing .gp-price{font-size:42px;font-weight:800;color:#4b3bff;margin:10px 0}
+.gp-pricing .gp-price span{font-size:16px;color:#777;font-weight:400}
+.gp-pricing ul{text-align:left;max-width:340px;margin:20px auto;padding:0;list-style:none}
+.gp-pricing ul li{padding:8px 0;font-size:15px}
+.gp-pricing ul li:before{content:"\2713";color:#22c55e;font-weight:800;margin-right:10px}
+.gp-guidelines{background:#fffaf0;border-left:4px solid #f59e0b;border-radius:8px;padding:25px 30px}
+.gp-guidelines ul{margin:0;padding-left:20px}
+.gp-guidelines li{margin-bottom:8px;font-size:15.5px}
+.gp-cta{background:#2b2140;border-radius:16px;padding:50px 30px;text-align:center;color:#fff}
+.gp-cta h2{color:#fff;font-size:26px;margin-bottom:12px}
+.gp-cta p{color:#d8d4e8;margin-bottom:22px;font-size:16px}
+.gp-email{display:inline-block;background:#4b3bff;color:#fff;font-weight:700;padding:14px 30px;border-radius:50px;text-decoration:none;font-size:17px}
+.gp-email:hover{background:#3b2ee0;color:#fff}
+.gp-badge{display:inline-block;background:#eef;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;color:#4b3bff;letter-spacing:.5px;margin-bottom:14px;text-transform:uppercase}
+@media(max-width:600px){
+  .gp-hero h1{font-size:28px}
+  .gp-hero{padding:40px 20px}
+  .gp-btn-outline{margin-left:0;margin-top:10px}
+}
+</style>
+
+<div class="gp-wrap">
+
+  <!-- HERO -->
+  <div class="gp-hero">
+    <span class="gp-badge">Write for Us</span>
+    <h1>Publish Your Guest Post &amp; Reach Thousands of Readers</h1>
+    <p>Share your expertise with our engaged audience. We also offer affordable banner advertisement placements — all ad types accepted, at minimal pricing.</p>
+    <a href="mailto:info@naukripatra.in?subject=Guest%20Post%20Submission" class="gp-btn">Submit Your Guest Post</a>
+    <a href="mailto:info@naukripatra.in?subject=Banner%20Advertisement%20Enquiry" class="gp-btn-outline">Advertise With Us</a>
+  </div>
+
+  <!-- WHY WRITE FOR US -->
+  <div class="gp-section">
+    <h2>Why Write For Us?</h2>
+    <p class="gp-sub">Get real visibility, backlinks, and exposure to a genuinely interested audience.</p>
+    <div class="gp-grid">
+      <div class="gp-card">
+        <span class="gp-icon">🚀</span>
+        <h3>Wide Reach</h3>
+        <p>Your content gets seen by thousands of active monthly readers.</p>
+      </div>
+      <div class="gp-card">
+        <span class="gp-icon">🔗</span>
+        <h3>Quality Backlink</h3>
+        <p>Get a do-follow / no-follow author link back to your website.</p>
+      </div>
+      <div class="gp-card">
+        <span class="gp-icon">⚡</span>
+        <h3>Fast Approval</h3>
+        <p>Quick review process — most posts are reviewed within 24-48 hours.</p>
+      </div>
+      <div class="gp-card">
+        <span class="gp-icon">💰</span>
+        <h3>Affordable Ads</h3>
+        <p>All types of banner advertisements accepted at minimal, budget-friendly pricing.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="gp-section">
+    <h2>How It Works</h2>
+    <p class="gp-sub">Just 4 simple steps to get your content or ad published.</p>
+    <ol class="gp-steps">
+      <li>Email your article (or banner ad requirement) to <strong>info@naukripatra.in</strong></li>
+      <li>Our editorial team reviews it for quality and relevance</li>
+      <li>We suggest edits if needed and confirm publishing / ad placement details</li>
+      <li>Your guest post or banner ad goes live on our website</li>
+    </ol>
+  </div>
+
+  <!-- ADVERTISING PRICING -->
+  <div class="gp-section">
+    <h2>Banner Advertisement</h2>
+    <p class="gp-sub">All banner sizes and ad formats accepted — header, sidebar, in-content &amp; footer.</p>
+    <div class="gp-pricing">
+      <h3>Banner Ad Placement</h3>
+      <div class="gp-price">Minimal Pricing <span>/ contact for quote</span></div>
+      <ul>
+        <li>All banner sizes accepted</li>
+        <li>Header, sidebar, in-content &amp; footer placements</li>
+        <li>Flexible monthly &amp; yearly plans</li>
+        <li>Fast turnaround, easy payment options</li>
+      </ul>
+      <a href="mailto:info@naukripatra.in?subject=Banner%20Advertisement%20Enquiry" class="gp-btn" style="background:#4b3bff;color:#fff;box-shadow:none">Get Advertising Rates</a>
+    </div>
+  </div>
+
+  <!-- GUIDELINES -->
+  <div class="gp-section">
+    <h2>Guest Post Guidelines</h2>
+    <div class="gp-guidelines">
+      <ul>
+        <li>Content must be 100% original and unpublished elsewhere.</li>
+        <li>Minimum word count: 800+ words, well-researched and informative.</li>
+        <li>Relevant topics: careers, jobs, education, business, technology &amp; lifestyle.</li>
+        <li>Include 1-2 relevant, non-spammy backlinks (author bio link allowed).</li>
+        <li>Use clear formatting: headings, short paragraphs, and images (royalty-free only).</li>
+        <li>No adult, gambling, illegal, or plagiarized content.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="gp-section gp-cta">
+    <h2>Ready to Get Started?</h2>
+    <p>Send your article or advertisement enquiry directly to our team.</p>
+    <a href="mailto:info@naukripatra.in" class="gp-email">📩 info@naukripatra.in</a>
+  </div>
+
+</div>
