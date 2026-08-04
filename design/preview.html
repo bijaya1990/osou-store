@@ -224,7 +224,7 @@ tbody th { font-weight: 600; }
   <ul class="facts">
     <li><b>1</b><span>stylesheet</span></li>
     <li><b>~1KB</b><span>of JavaScript</span></li>
-    <li><b>6</b><span>ad slots, all height-reserved</span></li>
+    <li><b>7</b><span>ad slots, hooked not hard-coded</span></li>
     <li><b>4</b><span>breakpoints, mobile first</span></li>
   </ul>
 </header>
@@ -291,8 +291,9 @@ tbody th { font-weight: 600; }
   <p class="spec__note">
     No network code is ever written into a template. Each slot fires a named action
     and resolves its markup in <code>inc/ads.php</code>, so Adsterra can be replaced
-    from the Customizer without touching a template file. Every slot reserves its
+    from the Customizer without touching a template file. Every in-page slot reserves its
     height <em>before</em> anything loads — the reserved column below is the CLS budget.
+    Slot 07 is an overlay: it floats, so it reserves nothing.
   </p>
   <div class="tablewrap">
     <table>
@@ -304,7 +305,8 @@ tbody th { font-weight: 600; }
 <tr><td class="slotnum">03</td><th scope="row">Mid Article</th><td>300×250 or native</td><td class="num">280px / 250px</td><td><code>hauntedreal_mid_content_ad</code></td><td class="dim">~45% through the body</td></tr>
 <tr><td class="slotnum">04</td><th scope="row">Article Bottom</th><td>Responsive</td><td class="num">250px</td><td><code>hauntedreal_after_content_ad</code></td><td class="dim">Before related stories</td></tr>
 <tr><td class="slotnum">05</td><th scope="row">Desktop Sidebar</th><td>300×250</td><td class="num">250px</td><td><code>hauntedreal_sidebar_ad</code></td><td class="dim">1024px and up only</td></tr>
-<tr><td class="slotnum">06</td><th scope="row">Homepage Feed</th><td>Native</td><td class="num">250px</td><td><code>hauntedreal_home_feed_ad</code></td><td class="dim">Between article groups</td></tr></tbody>
+<tr><td class="slotnum">06</td><th scope="row">Homepage Feed</th><td>Native</td><td class="num">250px</td><td><code>hauntedreal_home_feed_ad</code></td><td class="dim">Between article groups</td></tr>
+<tr><td class="slotnum">07</td><th scope="row">Social Bar</th><td>Overlay</td><td class="num">none — floats</td><td><code>hauntedreal_social_bar_ad</code></td><td class="dim">Site-wide, printed in the footer</td></tr></tbody>
     </table>
   </div>
 </section>

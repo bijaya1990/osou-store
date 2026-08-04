@@ -59,9 +59,9 @@ theme falls back to a sensible starting structure.
 
 ## The advertising system
 
-Six slots, each with its height reserved in CSS **before** anything loads. This is
-the single biggest CLS lever on the site — an ad arriving 400ms late never shoves
-the article downward.
+Seven slots, each with its height reserved in CSS **before** anything loads. This
+is the single biggest CLS lever on the site — an ad arriving 400ms late never
+shoves the article downward.
 
 | Slot | Position | Format | Reserved | Action hook |
 |---|---|---|---|---|
@@ -71,21 +71,104 @@ the article downward.
 | 04 | Article bottom | responsive | 250px | `hauntedreal_after_content_ad` |
 | 05 | Desktop sidebar | 300×250 | 250px | `hauntedreal_sidebar_ad` |
 | 06 | Homepage feed | native | 250px | `hauntedreal_home_feed_ad` |
+| 07 | Site-wide overlay | Social Bar | none — it floats | `hauntedreal_social_bar_ad` |
 
 **No network code is ever written into a template.** Templates only ever call
 `do_action( 'hauntedreal_…_ad' )`; the markup and the snippet resolve in
-`inc/ads.php`. Adsterra can be swapped for anything else from the Customizer
-without a template edit.
+`inc/ads.php`. Networks can be swapped from the Customizer without a template
+edit.
 
 Slots 02 and 03 are injected between paragraphs automatically — editors write
-plain articles and never paste ad markup into post content.
-
-While you are reviewing the design, leave **"Show labelled placeholders instead of
-live ads"** switched on. Turn it off to serve real code.
+plain articles and never paste ad markup into post content. Slot 02's position is
+configurable: set it to 0 to open the article with an ad, or leave it at 2 to
+keep the opening paragraphs clear.
 
 Slot 05 is desktop-only in two senses: CSS hides it below 1024px, *and* the
 markup is skipped entirely on views that have no sidebar. It is never forced onto
 a phone.
+
+An **empty slot renders nothing at all** — no reserved gap, no placeholder box.
+The reservation exists to stop a *loading* ad from shifting content, not to hold
+space open for one that is never coming.
+
+**Preview mode** (*Customize → HauntedReal → Advertising Slots*) draws a labelled
+box in every slot instead of running live code. Use it to review layout. It is
+off by default.
+
+---
+
+## Adsterra
+
+The account's units ship pre-wired in **`inc/adsterra.php`** — the only file in
+the theme that contains ad network code. Everything runs on activation; nothing
+needs pasting.
+
+| Slot | Adsterra unit | Key |
+|---|---|---|
+| 01 desktop | Banner 728×90 | `0c1fe4b6…` |
+| 01 mobile | Banner 320×50 | `7540bd4e…` |
+| 02 article start | Banner 300×250 | `b2b45c03…` |
+| 03 mid article | **Native Banner** | `6b5b67b3…` |
+| 04 article end | Banner 300×250 | `b2b45c03…` |
+| 05 desktop sidebar | Banner 300×250 | `b2b45c03…` |
+| 06 homepage feed | **Native Banner** | `6b5b67b3…` |
+| 07 site-wide | **Social Bar** | `76816092…` |
+
+Anything typed into the Customizer overrides these defaults, so changing a unit
+never means editing PHP. To drop Adsterra entirely, empty the arrays in
+`inc/adsterra.php` or remove its `require_once` from `functions.php`.
+
+### The leaderboard carries two creatives
+
+An Adsterra banner is a fixed-size iframe, so 728×90 physically cannot fit a
+320px phone. Rendering both and hiding one with a media query would still load
+both — and a hidden ad burns an impression no reader can ever see.
+
+So slot 01 hands both creatives to the browser as data attributes and inserts
+**exactly one**, chosen at load, switching at 768px. Any slot can do this: fill
+in its *mobile creative* field. Leave it blank and the slot stays plain inline
+HTML with no JavaScript involved.
+
+### Do not let an optimiser defer these scripts
+
+Adsterra's banner snippet sets a single global, `atOptions`, then loads
+`invoke.js`, which reads it. That only works if the pairs execute in document
+order. Any plugin feature that **defers, delays, combines or lazy-loads
+JavaScript** will break the banners — usually by making every unit render the
+last size that was set.
+
+In WP Rocket, Perfmatters, LiteSpeed or Autoptimize, exclude:
+
+```
+windowthrilling.com
+atOptions
+/invoke.js
+```
+
+The theme never defers ad code. The one script it adds — the creative switcher —
+is inline, runs after the parser-inserted units, and inserts units **serially**,
+waiting for each `invoke.js` to load before the next one touches `atOptions`.
+
+### Worth knowing
+
+- **Ad density.** A desktop article now carries six units: leaderboard, three
+  in-article, sidebar, and the overlay. That is a lot. Every slot has its own
+  on/off checkbox in the Customizer if you want to thin it out.
+- **Core Web Vitals.** The theme's own payload is one stylesheet and ~1KB of
+  JavaScript, but third-party ad scripts are third-party ad scripts: they will
+  cost you LCP and INP. Reserved heights protect CLS, which is the part a theme
+  can control.
+- **One key in three places.** Slots 02, 04 and 05 all use the same 300×250
+  unit. It works, but Adsterra reports per unit, so you cannot tell which
+  position earns. Creating a separate 300×250 unit per position and pasting each
+  into the matching Customizer field costs nothing and makes reporting usable.
+- **Native height.** Native units size themselves, so the 250px reservation is
+  an estimate rather than an exact match. Expect a little movement there and
+  nowhere else.
+- **Multisite.** Pasted ad code is stored raw only for users with
+  `unfiltered_html`. On multisite, administrators lack that capability by
+  default and `<script>` tags typed into the Customizer will be stripped. The
+  `inc/adsterra.php` defaults are unaffected.
 
 ### Hooking an ad plugin in instead
 

@@ -86,19 +86,41 @@ function hauntedreal_customize_register( $wp_customize ) {
 
 	$wp_customize->add_section( 'hauntedreal_ads', array(
 		'title'       => __( 'Advertising Slots', 'hauntedreal' ),
-		'description' => __( 'Paste the network snippet for each position. Ad code lives here, never in a template, so networks can be swapped without touching the theme. Every slot reserves its height in advance — layout will not shift when an ad loads.', 'hauntedreal' ),
+		'description' => __(
+			'Paste each network snippet into its slot below. Ad code lives here, never in a template, so networks can be swapped without touching the theme. Every in-page slot reserves its height in advance, so layout does not shift when an ad loads. An empty slot renders nothing at all.',
+			'hauntedreal'
+		) . '<br><br><strong>' . esc_html__( 'Adsterra:', 'hauntedreal' ) . '</strong> ' . __(
+			'put a Banner in slots 01, 02 and 04, a Native Banner in slot 03, and the Social Bar in slot 07. Paste the whole snippet including every &lt;script&gt; tag and any &lt;div id="container-…"&gt; that comes with it.',
+			'hauntedreal'
+		),
 		'panel'       => 'hauntedreal_panel',
 	) );
 
 	$wp_customize->add_setting( 'hauntedreal_ads_show_placeholders', array(
-		'default'           => true,
+		'default'           => false,
 		'sanitize_callback' => 'hauntedreal_sanitize_checkbox',
 	) );
 	$wp_customize->add_control( 'hauntedreal_ads_show_placeholders', array(
-		'label'       => __( 'Show labelled placeholders instead of live ads', 'hauntedreal' ),
-		'description' => __( 'Keep this on while designing or reviewing. Turn it off to serve real ad code.', 'hauntedreal' ),
+		'label'       => __( 'Preview mode — show labelled placeholders', 'hauntedreal' ),
+		'description' => __( 'Draws a marked box in every slot instead of running live ad code. Use it to review layout. Leave it off on a live site.', 'hauntedreal' ),
 		'section'     => 'hauntedreal_ads',
 		'type'        => 'checkbox',
+	) );
+
+	$wp_customize->add_setting( 'hauntedreal_intro_ad_paragraph', array(
+		'default'           => 2,
+		'sanitize_callback' => 'absint',
+	) );
+	$wp_customize->add_control( 'hauntedreal_intro_ad_paragraph', array(
+		'label'       => __( 'Slot 02 position: after how many paragraphs?', 'hauntedreal' ),
+		'description' => __( 'Set to 0 to place it above the first paragraph, at the very top of the article. 2 keeps the opening of the story clear.', 'hauntedreal' ),
+		'section'     => 'hauntedreal_ads',
+		'type'        => 'number',
+		'input_attrs' => array(
+			'min'  => 0,
+			'max'  => 20,
+			'step' => 1,
+		),
 	) );
 
 	foreach ( hauntedreal_ad_slots() as $slot => $config ) {
@@ -117,7 +139,7 @@ function hauntedreal_customize_register( $wp_customize ) {
 		) );
 
 		$wp_customize->add_setting( 'hauntedreal_ad_' . $slot . '_code', array(
-			'default'           => '',
+			'default'           => hauntedreal_default_ad_code( $slot ),
 			'sanitize_callback' => 'hauntedreal_sanitize_ad_code',
 		) );
 		$wp_customize->add_control( 'hauntedreal_ad_' . $slot . '_code', array(
@@ -128,6 +150,31 @@ function hauntedreal_customize_register( $wp_customize ) {
 			'input_attrs' => array(
 				'rows'        => 4,
 				'placeholder' => '<script>…</script>',
+			),
+		) );
+
+		// Overlay formats have no dimensions to outgrow, so they need no
+		// second creative.
+		if ( isset( $config['chrome'] ) && false === $config['chrome'] ) {
+			continue;
+		}
+
+		$wp_customize->add_setting( 'hauntedreal_ad_' . $slot . '_code_mobile', array(
+			'default'           => hauntedreal_default_ad_code( $slot, 'mobile' ),
+			'sanitize_callback' => 'hauntedreal_sanitize_ad_code',
+		) );
+		$wp_customize->add_control( 'hauntedreal_ad_' . $slot . '_code_mobile', array(
+			'label'       => sprintf(
+				/* translators: %s: slot name. */
+				__( '%s — mobile creative', 'hauntedreal' ),
+				$config['name']
+			),
+			'description' => __( 'Optional. Only needed when the desktop creative is a fixed size that cannot fit a phone — a 728×90 leaderboard, for instance. Leave blank to serve the same creative everywhere. Exactly one of the two is ever inserted, so a hidden unit never burns an impression.', 'hauntedreal' ),
+			'section'     => 'hauntedreal_ads',
+			'type'        => 'textarea',
+			'input_attrs' => array(
+				'rows'        => 4,
+				'placeholder' => __( 'Blank = same as above', 'hauntedreal' ),
 			),
 		) );
 	}

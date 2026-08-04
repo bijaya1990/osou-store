@@ -183,6 +183,8 @@ AD_SLOTS = [
      "hauntedreal_sidebar_ad", "1024px and up only"),
     ("06", "Homepage Feed", "Native", "250px",
      "hauntedreal_home_feed_ad", "Between article groups"),
+    ("07", "Social Bar", "Overlay", "none — floats",
+     "hauntedreal_social_bar_ad", "Site-wide, printed in the footer"),
 ]
 
 BREAKPOINTS = [
@@ -255,7 +257,7 @@ def build_body() -> str:
   <ul class="facts">
     <li><b>1</b><span>stylesheet</span></li>
     <li><b>~1KB</b><span>of JavaScript</span></li>
-    <li><b>6</b><span>ad slots, all height-reserved</span></li>
+    <li><b>7</b><span>ad slots, hooked not hard-coded</span></li>
     <li><b>4</b><span>breakpoints, mobile first</span></li>
   </ul>
 </header>
@@ -298,8 +300,9 @@ def build_body() -> str:
   <p class="spec__note">
     No network code is ever written into a template. Each slot fires a named action
     and resolves its markup in <code>inc/ads.php</code>, so Adsterra can be replaced
-    from the Customizer without touching a template file. Every slot reserves its
+    from the Customizer without touching a template file. Every in-page slot reserves its
     height <em>before</em> anything loads — the reserved column below is the CLS budget.
+    Slot 07 is an overlay: it floats, so it reserves nothing.
   </p>
   <div class="tablewrap">
     <table>

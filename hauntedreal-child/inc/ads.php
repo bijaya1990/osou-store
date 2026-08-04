@@ -73,6 +73,20 @@ function hauntedreal_ad_slots() {
 			'formats'  => __( 'Native · reserves 250px', 'hauntedreal' ),
 			'position' => __( 'Between article groups on the homepage.', 'hauntedreal' ),
 		),
+		'social_bar'    => array(
+			'hook'     => 'hauntedreal_social_bar_ad',
+			'modifier' => 'social',
+			'name'     => __( 'Slot 07 — Social Bar (site-wide overlay)', 'hauntedreal' ),
+			'formats'  => __( 'Overlay · reserves no space', 'hauntedreal' ),
+			'position' => __( 'Printed in the footer on every page. Positions itself.', 'hauntedreal' ),
+			/*
+			 * Overlay formats float above the page and never occupy layout, so
+			 * they get no wrapper, no label and no reserved height. Chrome that
+			 * reserves space for something which does not take any would just
+			 * punch a hole in the design.
+			 */
+			'chrome'   => false,
+		),
 	);
 
 	/**
@@ -124,26 +138,34 @@ function hauntedreal_ad_slot_is_enabled( $slot ) {
  * @param string $slot Slot key.
  * @return string
  */
-function hauntedreal_get_ad_code( $slot ) {
-	$code = (string) get_theme_mod( 'hauntedreal_ad_' . $slot . '_code', '' );
+function hauntedreal_get_ad_code( $slot, $variant = 'desktop' ) {
+	$key = 'mobile' === $variant
+		? 'hauntedreal_ad_' . $slot . '_code_mobile'
+		: 'hauntedreal_ad_' . $slot . '_code';
+
+	$code = (string) get_theme_mod( $key, hauntedreal_default_ad_code( $slot, $variant ) );
 
 	/**
 	 * Filters the ad code for a slot. Ad-management plugins can hook here
 	 * instead of touching the Customizer.
 	 *
-	 * @param string $code Raw ad markup.
-	 * @param string $slot Slot key.
+	 * @param string $code    Raw ad markup.
+	 * @param string $slot    Slot key.
+	 * @param string $variant `desktop` or `mobile`.
 	 */
-	return trim( (string) apply_filters( 'hauntedreal_ad_code', $code, $slot ) );
+	return trim( (string) apply_filters( 'hauntedreal_ad_code', $code, $slot, $variant ) );
 }
 
 /**
- * Whether to draw the labelled placeholder instead of live code.
+ * Preview mode: draw labelled placeholders instead of running live ad code.
+ *
+ * Defaults to off. A live site should serve whatever has been pasted into a
+ * slot without anyone having to remember to untick a box first.
  *
  * @return bool
  */
 function hauntedreal_ads_show_placeholders() {
-	return (bool) get_theme_mod( 'hauntedreal_ads_show_placeholders', true );
+	return (bool) get_theme_mod( 'hauntedreal_ads_show_placeholders', false );
 }
 
 /**
@@ -160,9 +182,35 @@ function hauntedreal_get_ad_slot( $slot, $args = array() ) {
 		return '';
 	}
 
-	$config = $slots[ $slot ];
-	$code   = hauntedreal_get_ad_code( $slot );
-	$live   = ( '' !== $code ) && ! hauntedreal_ads_show_placeholders();
+	$config  = $slots[ $slot ];
+	$code    = hauntedreal_get_ad_code( $slot );
+	$preview = hauntedreal_ads_show_placeholders();
+	$chrome  = ! isset( $config['chrome'] ) || $config['chrome'];
+
+	/*
+	 * Overlay formats — Adsterra's Social Bar and anything like it. The
+	 * network's own script positions the unit; all we do is print it.
+	 */
+	if ( ! $chrome ) {
+		return $preview ? '' : $code;
+	}
+
+	/*
+	 * An unsold slot on a live site renders nothing at all. Reserving 250px
+	 * for an ad that is never coming is just a hole in the page — the
+	 * reservation exists to stop *loading* ads from shifting content, not to
+	 * hold space open permanently.
+	 */
+	if ( '' === $code && ! $preview ) {
+		return '';
+	}
+
+	$live   = ( '' !== $code ) && ! $preview;
+	$mobile = $live ? hauntedreal_get_ad_code( $slot, 'mobile' ) : '';
+
+	// A slot with two creatives picks one at runtime; see the note on
+	// hauntedreal_print_ad_switcher() for why this cannot be done in CSS.
+	$responsive = ( '' !== $mobile ) && ( $mobile !== $code );
 
 	$classes = array( 'hr-ad', 'hr-ad--' . $config['modifier'] );
 
@@ -178,15 +226,156 @@ function hauntedreal_get_ad_slot( $slot, $args = array() ) {
 		? $code
 		: '<span>' . esc_html( $config['formats'] ) . '</span>';
 
+	$inner_attr = '';
+
+	if ( $responsive ) {
+		/*
+		 * Hand both creatives to the client and let it insert exactly one.
+		 * The element starts empty so neither creative loads twice.
+		 */
+		hauntedreal_needs_ad_switcher( true );
+
+		$inner_attr = sprintf(
+			' data-hr-ad-desktop="%s" data-hr-ad-mobile="%s" data-hr-ad-breakpoint="768"',
+			esc_attr( $code ),
+			esc_attr( $mobile )
+		);
+		$inner = '';
+	}
+
 	return sprintf(
-		'<aside class="%1$s" aria-label="%2$s" data-hr-ad-slot="%3$s"><span class="hr-ad__label">%4$s</span><div class="hr-ad__inner">%5$s</div></aside>',
+		'<aside class="%1$s" aria-label="%2$s" data-hr-ad-slot="%3$s"><span class="hr-ad__label">%4$s</span><div class="hr-ad__inner"%5$s>%6$s</div></aside>',
 		esc_attr( implode( ' ', $classes ) ),
 		esc_attr__( 'Advertisement', 'hauntedreal' ),
 		esc_attr( $slot ),
 		esc_html__( 'Advertisement', 'hauntedreal' ),
+		$inner_attr, // Escaped above.
 		$inner // phpcs:ignore WordPress.Security.EscapeOutput -- ad markup is intentionally raw.
 	);
 }
+
+/**
+ * Track whether any slot on this page needs the runtime creative switcher.
+ *
+ * @param bool|null $set Pass true to flag it.
+ * @return bool
+ */
+function hauntedreal_needs_ad_switcher( $set = null ) {
+	static $needed = false;
+
+	if ( true === $set ) {
+		$needed = true;
+	}
+
+	return $needed;
+}
+
+/**
+ * Print the creative switcher, only on pages that contain a dual-creative slot.
+ *
+ * Why this cannot be CSS: an Adsterra banner is a fixed-size iframe, so a
+ * leaderboard needs a 728×90 creative on desktop and a 320×50 on a phone.
+ * Rendering both and hiding one with a media query still loads both — the
+ * hidden one burns an impression no reader can ever see. So exactly one is
+ * inserted, chosen once, at load.
+ *
+ * Insertion is serial: Adsterra's banner snippet sets a single global
+ * (`atOptions`) that its invoke.js reads when it executes, so two units
+ * inserted concurrently would race and could swap each other's dimensions.
+ * Each unit therefore waits for the previous script to finish loading.
+ */
+function hauntedreal_print_ad_switcher() {
+	if ( ! hauntedreal_needs_ad_switcher() ) {
+		return;
+	}
+	?>
+	<script id="hauntedreal-ad-switcher">
+	(function () {
+		var slots = document.querySelectorAll( '.hr-ad__inner[data-hr-ad-desktop]' );
+
+		if ( ! slots.length ) {
+			return;
+		}
+
+		var queue = [];
+
+		Array.prototype.forEach.call( slots, function ( slot ) {
+			var wide = window.matchMedia(
+				'(min-width: ' + ( slot.getAttribute( 'data-hr-ad-breakpoint' ) || 768 ) + 'px)'
+			).matches;
+			var markup = slot.getAttribute( wide ? 'data-hr-ad-desktop' : 'data-hr-ad-mobile' );
+
+			if ( markup ) {
+				queue.push( { el: slot, html: markup } );
+			}
+		} );
+
+		function run( index ) {
+			if ( index >= queue.length ) {
+				return;
+			}
+
+			var item = queue[ index ];
+			var holder = document.createElement( 'template' );
+			holder.innerHTML = item.html;
+
+			var nodes = Array.prototype.slice.call( holder.content.childNodes );
+			var pending = 0;
+			var advanced = false;
+
+			function next() {
+				if ( ! advanced ) {
+					advanced = true;
+					run( index + 1 );
+				}
+			}
+
+			nodes.forEach( function ( node ) {
+				if ( node.nodeName !== 'SCRIPT' ) {
+					item.el.appendChild( node.cloneNode( true ) );
+					return;
+				}
+
+				var script = document.createElement( 'script' );
+
+				Array.prototype.forEach.call( node.attributes, function ( attr ) {
+					script.setAttribute( attr.name, attr.value );
+				} );
+
+				if ( node.src ) {
+					// External: the next unit must not set atOptions until
+					// this one has read it.
+					pending++;
+					script.addEventListener( 'load', function () {
+						if ( --pending === 0 ) { next(); }
+					} );
+					script.addEventListener( 'error', function () {
+						if ( --pending === 0 ) { next(); }
+					} );
+				} else {
+					// Inline: runs synchronously the moment it is appended.
+					script.text = node.textContent;
+				}
+
+				item.el.appendChild( script );
+			} );
+
+			if ( pending === 0 ) {
+				next();
+			}
+		}
+
+		if ( document.readyState === 'loading' ) {
+			// Wait for the parser-inserted ad scripts to finish first.
+			document.addEventListener( 'DOMContentLoaded', function () { run( 0 ); } );
+		} else {
+			run( 0 );
+		}
+	}());
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'hauntedreal_print_ad_switcher', 5 );
 
 /**
  * Echo one slot.
@@ -217,6 +406,17 @@ function hauntedreal_register_ad_hooks() {
 add_action( 'init', 'hauntedreal_register_ad_hooks' );
 
 /**
+ * Print the site-wide overlay slot.
+ *
+ * In the footer rather than the head, so a third-party overlay script never
+ * competes with the article for the critical path.
+ */
+function hauntedreal_print_social_bar() {
+	do_action( 'hauntedreal_social_bar_ad' );
+}
+add_action( 'wp_footer', 'hauntedreal_print_social_bar', 20 );
+
+/**
  * Inject the two in-article slots into post content.
  *
  * Editors write plain articles; placement is the theme's job. We split on
@@ -243,12 +443,19 @@ function hauntedreal_inject_in_content_ads( $content ) {
 	}
 
 	/**
-	 * Filters the paragraph index the introduction ad follows.
+	 * Filters the paragraph the introduction ad follows.
+	 *
+	 * Zero places it above the first paragraph, at the very top of the article.
 	 *
 	 * @param int $after Paragraph number.
 	 */
-	$intro_after = (int) apply_filters( 'hauntedreal_intro_ad_paragraph', 2 );
-	$mid_after   = (int) round( $total * 0.45 );
+	$intro_after = (int) apply_filters(
+		'hauntedreal_intro_ad_paragraph',
+		(int) get_theme_mod( 'hauntedreal_intro_ad_paragraph', 2 )
+	);
+	$intro_after = max( 0, $intro_after );
+
+	$mid_after = (int) round( $total * 0.45 );
 
 	// Keep at least two paragraphs of reading between the two units.
 	if ( $mid_after <= $intro_after + 1 ) {
@@ -258,7 +465,9 @@ function hauntedreal_inject_in_content_ads( $content ) {
 	$intro_ad = hauntedreal_get_ad_slot( 'after_intro' );
 	$mid_ad   = hauntedreal_get_ad_slot( 'mid_content' );
 
-	$output = '';
+	// Position 0 means the unit opens the article rather than following a
+	// paragraph, so it is prepended before the loop runs.
+	$output = ( 0 === $intro_after ) ? $intro_ad : '';
 
 	foreach ( $chunks as $index => $chunk ) {
 		$output .= $chunk;
@@ -269,7 +478,7 @@ function hauntedreal_inject_in_content_ads( $content ) {
 
 		$paragraph = $index + 1;
 
-		if ( $paragraph === $intro_after ) {
+		if ( $intro_after > 0 && $paragraph === $intro_after ) {
 			$output .= $intro_ad;
 		}
 

@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'HAUNTEDREAL_VERSION', '1.0.2' );
+define( 'HAUNTEDREAL_VERSION', '1.1.0' );
 define( 'HAUNTEDREAL_DIR', get_stylesheet_directory() );
 define( 'HAUNTEDREAL_URI', get_stylesheet_directory_uri() );
 
@@ -36,6 +36,7 @@ function hauntedreal_asset_version( $relative_path ) {
 require_once HAUNTEDREAL_DIR . '/inc/compat.php';
 require_once HAUNTEDREAL_DIR . '/inc/performance.php';
 require_once HAUNTEDREAL_DIR . '/inc/template-tags.php';
+require_once HAUNTEDREAL_DIR . '/inc/adsterra.php';
 require_once HAUNTEDREAL_DIR . '/inc/ads.php';
 require_once HAUNTEDREAL_DIR . '/inc/content-types.php';
 require_once HAUNTEDREAL_DIR . '/inc/meta-boxes.php';
