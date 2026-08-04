@@ -1,0 +1,8 @@
+# Node tooling for the design preview and tests (not part of the theme).
+node_modules/
+package-lock.json
+package.json
+
+# Local build noise
+*.log
+.DS_Store

@@ -423,9 +423,25 @@ th { font-size: var(--hr-t-sm); text-transform: uppercase; letter-spacing: .08em
 .hr-nav.is-open, .hr-searchpanel.is-open { display: block; }
 
 .hr-nav {
+	/*
+	 * The drawer is a child of .hr-header__bar, which is a three-column grid
+	 * (toggle · logo · search). Left in flow it gets auto-placed into the 48px
+	 * icon column and every menu label wraps inside a sliver. Taking it out of
+	 * flow fixes that, spans it edge to edge, and lets it overlay the page
+	 * rather than inflating the sticky header to full-screen height.
+	 *
+	 * .hr-header is sticky, so it is the containing block for this.
+	 */
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	z-index: 90;
 	border-top: 1px solid var(--hr-line);
 	background: var(--hr-surface);
+	box-shadow: var(--hr-shadow-lift);
 	max-height: calc(100vh - 56px);
+	max-height: calc(100dvh - 56px); /* excludes mobile browser chrome */
 	overflow-y: auto;
 	overscroll-behavior: contain;
 }
@@ -1318,9 +1334,11 @@ th { font-size: var(--hr-t-sm); text-transform: uppercase; letter-spacing: .08em
 
 	.hr-nav {
 		display: block;   /* a permanent bar; the drawer state is irrelevant */
+		position: static; /* back into the header grid */
 		grid-column: 2;
 		grid-row: 1;
-		border: 0; background: none; max-height: none; overflow: visible;
+		border: 0; background: none; box-shadow: none;
+		max-height: none; overflow: visible;
 	}
 	.hr-nav ul { display: flex; justify-content: flex-end; gap: var(--hr-s-1); }
 	.hr-nav li { border: 0; position: relative; }

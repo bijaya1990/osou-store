@@ -195,6 +195,11 @@ BREAKPOINTS = [
 
 def build_body() -> str:
     css = read(THEME / "assets/css/main.css") + "\n" + read(SCREENS / "_photos.css")
+    # The theme's real navigation script runs inside every frame, so the menu
+    # and search disclosures behave here exactly as they do on the site. A
+    # preview where the drawer cannot open is a preview that cannot catch a
+    # bug in the drawer.
+    theme_js = read(THEME / "assets/js/navigation.js")
     header = read(SCREENS / "_header.html")
     footer = read(SCREENS / "_footer.html")
 
@@ -336,6 +341,7 @@ def build_body() -> str:
 
 <script>
 const THEME_CSS = {js(css)};
+const THEME_JS = {js(theme_js)};
 const FRAGMENTS = {js(frags)};
 const SCREENS = {js(screens)};
 {GALLERY_JS}
@@ -607,6 +613,7 @@ GALLERY_JS = """
         '<meta name="viewport" content="width=device-width,initial-scale=1">' +
         '<style>' + THEME_CSS + '</style></head><body class="hr-body">' +
         FRAGMENTS[screen.id] +
+        '<script>' + THEME_JS + '<\\/script>' +
         '</body></html>'
       );
       doc.close();
