@@ -32,7 +32,18 @@ function hauntedreal_should_dequeue_parent_assets() {
 /**
  * Remove parent-theme styles and scripts we do not render markup for.
  *
- * Runs late (priority 50) so it fires after GeneratePress has enqueued.
+ * Dequeue only — never deregister.
+ *
+ * GeneratePress enqueues the child theme's own style.css under the handle
+ * `generate-child`, declaring `generate-style` as a dependency. Deregistering
+ * `generate-style` therefore leaves that dependency dangling, which WordPress
+ * 6.9.1 and later report as a _doing_it_wrong notice. Dequeuing leaves the
+ * registration intact so every dependency still resolves; the handles simply
+ * never reach the queue.
+ *
+ * Runs at priority 999 so it fires after everything else has enqueued,
+ * whichever priority the parent theme or a plugin used. Styles are printed
+ * later still (wp_head priority 8), so nothing has gone out by then.
  */
 function hauntedreal_dequeue_parent_assets() {
 	if ( ! hauntedreal_should_dequeue_parent_assets() ) {
@@ -46,11 +57,25 @@ function hauntedreal_dequeue_parent_assets() {
 		'generate-font-icons',
 		'generate-widget-areas',
 		'generate-blog',
+		// The parent's copy of our own style.css. We enqueue that ourselves as
+		// `hauntedreal-style`, so letting this one through would fetch the same
+		// file twice.
+		'generate-child',
 	);
 
 	foreach ( $styles as $handle ) {
 		wp_dequeue_style( $handle );
-		wp_deregister_style( $handle );
+	}
+
+	/*
+	 * A dequeued style is still pulled back in if something enqueued depends on
+	 * it. Severing generate-child's dependency means that even if a plugin
+	 * re-enqueues it, GeneratePress' stylesheet does not ride along.
+	 */
+	$registered = wp_styles()->query( 'generate-child', 'registered' );
+
+	if ( $registered ) {
+		$registered->deps = array();
 	}
 
 	$scripts = array(
@@ -65,10 +90,9 @@ function hauntedreal_dequeue_parent_assets() {
 
 	foreach ( $scripts as $handle ) {
 		wp_dequeue_script( $handle );
-		wp_deregister_script( $handle );
 	}
 }
-add_action( 'wp_enqueue_scripts', 'hauntedreal_dequeue_parent_assets', 50 );
+add_action( 'wp_enqueue_scripts', 'hauntedreal_dequeue_parent_assets', 999 );
 
 /**
  * GeneratePress prints a block of dynamic CSS in the head on some setups.
