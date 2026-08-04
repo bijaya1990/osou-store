@@ -1,0 +1,32 @@
+/*
+Theme Name:   HauntedReal
+Theme URI:    https://hauntedreal.com/
+Description:  A dark, cinematic child theme for GeneratePress built for HauntedReal.com — a serious American paranormal publication. Includes a Ghost Story content type, a Haunted America US-states section, and a zero-layout-shift advertising slot system. No page builder required.
+Author:       HauntedReal
+Author URI:   https://hauntedreal.com/
+Template:     generatepress
+Version:      1.0.0
+Requires at least: 6.0
+Requires PHP: 7.4
+License:      GNU General Public License v2 or later
+License URI:  http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain:  hauntedreal
+Tags:         news, blog, dark, two-columns, custom-menu, featured-images, full-width-template, translation-ready
+*/
+
+/**
+ * This file exists to satisfy the WordPress theme header and to hold small
+ * environment-specific overrides only.
+ *
+ * The design system lives in assets/css/main.css, which is enqueued
+ * separately in functions.php. Keep it that way — one cacheable stylesheet
+ * with a filemtime version string beats an ever-growing style.css.
+ */
+
+/* Admin bar is 46px tall on small screens and 32px above 783px. The sticky
+   header must sit below it, not under it. */
+.admin-bar .hr-header { top: 46px; }
+
+@media (min-width: 783px) {
+	.admin-bar .hr-header { top: 32px; }
+}

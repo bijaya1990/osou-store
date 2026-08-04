@@ -1,0 +1,103 @@
+/**
+ * Mockup-only photography placeholders.
+ *
+ * NOT part of the theme. In production these boxes hold real responsive
+ * images (WebP/AVIF, srcset, fixed dimensions). Here they are layered CSS
+ * gradients so the preview stays self-contained and weightless while still
+ * carrying the right atmosphere.
+ */
+
+.ph {
+	position: absolute;
+	inset: 0;
+	background-color: #10131a;
+}
+
+/* A faint film grain over everything, the way the real photography is graded. */
+.ph::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0 1px, transparent 1px 3px);
+	mix-blend-mode: overlay;
+}
+
+/* Battlefield fog at dawn */
+.ph--fog {
+	background-image:
+		radial-gradient(70% 50% at 30% 25%, rgba(180,196,210,.30), transparent 65%),
+		linear-gradient(180deg, #1a222b 0%, #0d1116 55%, #07090c 100%);
+}
+
+/* Lamplight in a corridor */
+.ph--lamp {
+	background-image:
+		radial-gradient(45% 55% at 68% 34%, rgba(229,144,58,.42), transparent 68%),
+		linear-gradient(160deg, #1d1710 0%, #100c09 60%, #07090c 100%);
+}
+
+/* Antebellum facade under moonlight */
+.ph--moon {
+	background-image:
+		radial-gradient(38% 30% at 76% 16%, rgba(220,232,244,.35), transparent 70%),
+		linear-gradient(200deg, #141c26 0%, #0b1017 65%, #07090c 100%);
+}
+
+/* Pine treeline at night */
+.ph--pines {
+	background-image:
+		linear-gradient(180deg, rgba(143,185,212,.16) 0%, transparent 45%),
+		repeating-linear-gradient(105deg, rgba(6,10,8,.55) 0 12px, transparent 12px 30px),
+		linear-gradient(180deg, #101812 0%, #080c0a 70%, #07090c 100%);
+}
+
+/* Hotel window, interior warm */
+.ph--window {
+	background-image:
+		linear-gradient(90deg, transparent 46%, rgba(229,144,58,.22) 50%, transparent 54%),
+		radial-gradient(60% 70% at 50% 45%, rgba(240,178,115,.18), transparent 70%),
+		linear-gradient(180deg, #191519 0%, #0c0a0d 60%, #07090c 100%);
+}
+
+/* Asylum stairwell, cold */
+.ph--stair {
+	background-image:
+		repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 14px, transparent 14px 34px),
+		linear-gradient(200deg, #1a1d24 0%, #0d0f14 60%, #07090c 100%);
+}
+
+/* Cemetery, spanish moss */
+.ph--moss {
+	background-image:
+		radial-gradient(55% 40% at 22% 18%, rgba(160,180,150,.22), transparent 70%),
+		repeating-linear-gradient(88deg, rgba(0,0,0,.35) 0 6px, transparent 6px 22px),
+		linear-gradient(180deg, #131711 0%, #0a0c0a 65%, #07090c 100%);
+}
+
+/* Desert highway, taillights */
+.ph--road {
+	background-image:
+		radial-gradient(30% 22% at 52% 62%, rgba(229,90,58,.30), transparent 70%),
+		linear-gradient(180deg, #1b1620 0%, #0e0b12 55%, #07090c 100%);
+}
+
+/* Empty theatre */
+.ph--velvet {
+	background-image:
+		radial-gradient(60% 45% at 50% 20%, rgba(150,60,70,.26), transparent 70%),
+		linear-gradient(180deg, #1c1418 0%, #0d090c 60%, #07090c 100%);
+}
+
+/* Lighthouse / coastal */
+.ph--coast {
+	background-image:
+		radial-gradient(26% 40% at 80% 22%, rgba(200,220,235,.30), transparent 72%),
+		linear-gradient(180deg, #101a22 0%, #080e14 60%, #07090c 100%);
+}
+
+/* Portrait crop for author / witness */
+.ph--portrait {
+	background-image:
+		radial-gradient(50% 45% at 50% 34%, rgba(229,144,58,.24), transparent 70%),
+		linear-gradient(180deg, #1c1a18 0%, #0d0c0b 70%);
+}

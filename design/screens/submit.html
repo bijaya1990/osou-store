@@ -1,0 +1,148 @@
+<div class="hr-container hr-container--narrow">
+
+	<header class="hr-page__header">
+		<nav aria-label="Breadcrumb"><ol class="hr-breadcrumb">
+			<li><a href="#">Home</a></li>
+			<li><a href="#">Ghost Stories</a></li>
+			<li><span aria-current="page">Share Your Experience</span></li>
+		</ol></nav>
+
+		<span class="hr-kicker hr-kicker--spectral">Community Experience</span>
+		<h1 class="hr-page__title">Share Your Experience</h1>
+		<p class="hr-article__standfirst" style="margin:var(--hr-s-4) 0 0">
+			HauntedReal publishes first-hand accounts from readers in every state. Tell us what happened,
+			in your own words.
+		</p>
+	</header>
+
+	<div class="hr-entry" style="margin-bottom:var(--hr-s-6)">
+		<p>
+			Every submission is read by a person. Nothing is published automatically, and nothing is
+			published without your name appearing the way you asked for it to appear. If an editor wants
+			to follow up on your account, they will email you first.
+		</p>
+	</div>
+
+	<form class="hr-form" method="post" action="#">
+
+		<fieldset style="border:0;padding:0;margin:0 0 var(--hr-s-6)">
+			<legend style="font-size:var(--hr-t-h4);font-family:var(--hr-font-display);margin-bottom:var(--hr-s-4)">What happened</legend>
+
+			<div class="hr-field">
+				<label for="d-title">Give your experience a title <span class="hr-req" aria-hidden="true">*</span></label>
+				<input class="hr-input" type="text" id="d-title" placeholder="The woman on the third-floor landing">
+				<span class="hr-field__hint">Short and specific reads better than dramatic.</span>
+			</div>
+
+			<div class="hr-field">
+				<label for="d-story">Tell us what happened <span class="hr-req" aria-hidden="true">*</span></label>
+				<textarea class="hr-textarea" id="d-story" placeholder="Start with where you were and what you were doing. Include the small details — times, sounds, temperatures, who else was there."></textarea>
+				<span class="hr-field__hint">At least 200 characters. Write it as you would tell it.</span>
+			</div>
+
+			<div class="hr-field">
+				<label for="d-type">What kind of experience was it?</label>
+				<select class="hr-select" id="d-type">
+					<option>I am not sure</option>
+					<option>Apparition</option>
+					<option>Shadow Figure</option>
+					<option>Poltergeist</option>
+					<option>Residual Haunting</option>
+					<option>EVP Recording</option>
+					<option>Haunted Object</option>
+					<option>Roadside Encounter</option>
+					<option>Unexplained Sound</option>
+				</select>
+			</div>
+		</fieldset>
+
+		<fieldset style="border:0;padding:0;margin:0 0 var(--hr-s-6)">
+			<legend style="font-size:var(--hr-t-h4);font-family:var(--hr-font-display);margin-bottom:var(--hr-s-4)">Where and when</legend>
+
+			<div class="hr-field">
+				<label for="d-place">Place name</label>
+				<input class="hr-input" type="text" id="d-place" placeholder="A house, a hotel, a stretch of road">
+				<span class="hr-field__hint">Leave blank if it was a private home you would rather not name.</span>
+			</div>
+
+			<div class="hr-fieldrow">
+				<div class="hr-field">
+					<label for="d-city">City or town <span class="hr-req" aria-hidden="true">*</span></label>
+					<input class="hr-input" type="text" id="d-city" placeholder="Savannah">
+				</div>
+				<div class="hr-field">
+					<label for="d-state">State <span class="hr-req" aria-hidden="true">*</span></label>
+					<select class="hr-select" id="d-state">
+						<option>Select a state</option>
+						<option>Georgia</option>
+						<option>Louisiana</option>
+						<option>Pennsylvania</option>
+						<option>Texas</option>
+						<option>Massachusetts</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="hr-field">
+				<label for="d-when">When did it happen?</label>
+				<input class="hr-input" type="text" id="d-when" placeholder="October 2023, or &quot;the summer I was fourteen&quot;">
+			</div>
+		</fieldset>
+
+		<fieldset style="border:0;padding:0;margin:0 0 var(--hr-s-6)">
+			<legend style="font-size:var(--hr-t-h4);font-family:var(--hr-font-display);margin-bottom:var(--hr-s-4)">About you</legend>
+
+			<div class="hr-fieldrow">
+				<div class="hr-field">
+					<label for="d-name">Your name</label>
+					<input class="hr-input" type="text" id="d-name">
+				</div>
+				<div class="hr-field">
+					<label for="d-email">Your email <span class="hr-req" aria-hidden="true">*</span></label>
+					<input class="hr-input" type="email" id="d-email">
+					<span class="hr-field__hint">Never published. Used only if an editor needs to reach you.</span>
+				</div>
+			</div>
+
+			<div class="hr-field">
+				<label for="d-credit">How should we credit you?</label>
+				<select class="hr-select" id="d-credit">
+					<option>First name and last initial — Dana R.</option>
+					<option>My full name</option>
+					<option>Keep me anonymous</option>
+				</select>
+			</div>
+
+			<div class="hr-field hr-checkbox">
+				<input type="checkbox" id="d-consent">
+				<label for="d-consent">
+					This happened to me or to someone who asked me to share it, and I am happy for HauntedReal
+					to publish and edit it for length and clarity. <span class="hr-req" aria-hidden="true">*</span>
+				</label>
+			</div>
+		</fieldset>
+
+		<div class="hr-form__actions">
+			<button type="submit" class="hr-btn hr-btn--primary">Send my story</button>
+			<p class="hr-form__note">Nothing is published automatically. An editor reads every submission first.</p>
+		</div>
+
+	</form>
+
+	<div class="hr-notice hr-notice--success" role="status" style="margin-top:var(--hr-s-7)">
+		<p><strong>Success state</strong> — shown after a submission is accepted:</p>
+		<p style="margin-bottom:0">
+			Your story is with our editors. Thank you for trusting us with it. Every account is read by a
+			person before it is published, which usually takes a few days.
+		</p>
+	</div>
+
+	<div class="hr-notice hr-notice--error" role="alert" style="margin-top:var(--hr-s-4)">
+		<p style="margin-bottom:0"><strong>Error state</strong> — validation runs server-side and returns the visitor's typing intact:</p>
+		<ul>
+			<li>Please tell us what happened in at least 200 characters.</li>
+			<li>Please choose a US state.</li>
+		</ul>
+	</div>
+
+</div>
