@@ -1,0 +1,785 @@
+<title>Waverly Hills Sanatorium: The Hospital That Hid Its Dead</title>
+<style id="pagecss">
+  :root {
+    --ground: #E8EAE6;
+    --surface: #F4F5F2;
+    --sunk: #DDE0DA;
+    --ink: #16232A;
+    --ink-soft: #3A4B52;
+    --muted: #5F7076;
+    --faint: #8A9AA0;
+    --accent: #7A2E2A;
+    --accent-soft: #A8524A;
+    --amber: #9A6B2B;
+    --shadow: 22 35 42;
+
+    --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --font-body: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+    --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+    --measure: 66ch;
+    --step--1: clamp(0.83rem, 0.81rem + 0.1vw, 0.89rem);
+    --step-0: clamp(1.06rem, 1.02rem + 0.2vw, 1.19rem);
+    --step-1: clamp(1.3rem, 1.22rem + 0.4vw, 1.55rem);
+    --step-2: clamp(1.6rem, 1.44rem + 0.8vw, 2.1rem);
+    --step-3: clamp(2.1rem, 1.75rem + 1.7vw, 3.3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #10171A;
+      --surface: #182126;
+      --sunk: #0A1013;
+      --ink: #DFE6E4;
+      --ink-soft: #BAC7C8;
+      --muted: #8FA1A6;
+      --faint: #6B7C82;
+      --accent: #C4655C;
+      --accent-soft: #D98A7F;
+      --amber: #C89A55;
+      --shadow: 0 0 0;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #10171A;
+    --surface: #182126;
+    --sunk: #0A1013;
+    --ink: #DFE6E4;
+    --ink-soft: #BAC7C8;
+    --muted: #8FA1A6;
+    --faint: #6B7C82;
+    --accent: #C4655C;
+    --accent-soft: #D98A7F;
+    --amber: #C89A55;
+    --shadow: 0 0 0;
+  }
+
+  :root[data-theme="light"] {
+    --ground: #E8EAE6;
+    --surface: #F4F5F2;
+    --sunk: #DDE0DA;
+    --ink: #16232A;
+    --ink-soft: #3A4B52;
+    --muted: #5F7076;
+    --faint: #8A9AA0;
+    --accent: #7A2E2A;
+    --accent-soft: #A8524A;
+    --amber: #9A6B2B;
+    --shadow: 22 35 42;
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .wrap {
+    max-width: var(--measure);
+    margin-inline: auto;
+    padding-inline: clamp(1.15rem, 5vw, 2rem);
+  }
+
+  /* ---- toolbar ---- */
+  .bar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--ground) 88%, transparent);
+    backdrop-filter: blur(12px) saturate(1.3);
+    -webkit-backdrop-filter: blur(12px) saturate(1.3);
+  }
+  .bar-in {
+    max-width: var(--measure);
+    margin-inline: auto;
+    padding: 0.75rem clamp(1.15rem, 5vw, 2rem);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .stamp {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-right: auto;
+  }
+  button {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 0.55rem 0.95rem;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 140ms ease, color 140ms ease, opacity 140ms ease;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--ground);
+    font-weight: 600;
+  }
+  .btn-primary:hover { background: var(--accent-soft); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border-color: color-mix(in srgb, var(--muted) 38%, transparent);
+  }
+  .btn-ghost:hover { color: var(--ink); background: var(--surface); }
+  button:focus-visible {
+    outline: 2px solid var(--accent-soft);
+    outline-offset: 2px;
+  }
+  .btn-done { background: var(--amber) !important; color: var(--ground) !important; }
+
+  /* ---- hero ---- */
+  .hero {
+    padding-block: clamp(3rem, 9vw, 6.5rem) clamp(2rem, 5vw, 3.5rem);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: -40% -20% auto -20%;
+    height: 130%;
+    background: radial-gradient(ellipse 55% 45% at 22% 8%, color-mix(in srgb, var(--amber) 15%, transparent), transparent 68%);
+    pointer-events: none;
+  }
+  .hero > * { position: relative; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 1.4rem;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    line-height: 1.03;
+    font-weight: 600;
+    letter-spacing: -0.018em;
+    text-wrap: balance;
+    margin-bottom: 1.5rem;
+  }
+  .deck {
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    font-style: italic;
+    text-wrap: pretty;
+    margin-bottom: 1.8rem;
+  }
+  .byline {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    display: flex;
+    gap: 1.1rem;
+    flex-wrap: wrap;
+  }
+
+  /* ---- article ---- */
+  article { padding-bottom: 4rem; }
+  section { padding-block: clamp(1.6rem, 4vw, 2.6rem); }
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1.14;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+    margin-bottom: 1.1rem;
+  }
+  h2 .kicker {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 400;
+    margin-bottom: 0.85rem;
+  }
+  h3 {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    line-height: 1.25;
+    font-weight: 600;
+    margin: 2rem 0 0.7rem;
+    text-wrap: balance;
+  }
+  p { margin-bottom: 1.2rem; text-wrap: pretty; }
+  p:last-child { margin-bottom: 0; }
+  strong { font-weight: 700; color: var(--ink); }
+  em { font-style: italic; }
+  a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  a:hover { color: var(--accent-soft); }
+
+  ul { margin: 0 0 1.3rem 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+  ul li { padding-left: 1.5rem; position: relative; }
+  ul li::before {
+    content: "";
+    position: absolute;
+    left: 0.15rem;
+    top: 0.72em;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    opacity: 0.75;
+  }
+
+  .lede::first-letter {
+    font-family: var(--font-display);
+    float: left;
+    font-size: 3.6em;
+    line-height: 0.82;
+    padding: 0.06em 0.1em 0 0;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  blockquote {
+    margin: 2.2rem 0;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1.28;
+    color: var(--accent);
+    font-style: italic;
+    text-wrap: balance;
+  }
+
+  .card {
+    background: var(--surface);
+    padding: clamp(1.3rem, 3.5vw, 1.9rem);
+    border-radius: 3px;
+    margin: 2rem 0;
+    box-shadow: 0 1px 3px rgb(var(--shadow) / 0.07);
+  }
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.9rem;
+  }
+  .card p { font-size: var(--step--1); line-height: 1.65; margin-bottom: 0.85rem; }
+  .card p:last-child { margin-bottom: 0; }
+
+  .ledger {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1.4rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-variant-numeric: tabular-nums;
+    margin: 1.9rem 0;
+  }
+  .ledger dt { color: var(--accent); white-space: nowrap; }
+  .ledger dd { color: var(--ink-soft); }
+
+  .faq-q {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 1.8rem 0 0.5rem;
+  }
+
+  .endnote {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.65;
+    color: var(--faint);
+    letter-spacing: 0.01em;
+    padding-top: 1rem;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 1.6rem;
+    left: 50%;
+    transform: translate(-50%, 1.5rem);
+    background: var(--ink);
+    color: var(--ground);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 0.7rem 1.3rem;
+    border-radius: 2px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease, transform 220ms ease;
+    z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="bar">
+  <div class="bar-in">
+    <span class="stamp">Ready to publish</span>
+    <button class="btn-ghost" id="copySeo" type="button">SEO pack</button>
+    <button class="btn-ghost" id="copyArticle" type="button">Copy text only</button>
+    <button class="btn-primary" id="copyStyled" type="button">Copy with design</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Kentucky &middot; True Haunting</span>
+    <h1>Waverly Hills Sanatorium: The Hospital That Hid Its Dead</h1>
+    <p class="deck">They built a 500-foot tunnel under the hill so the living wouldn't have to watch the dead leave. Sixty years later, people are still hearing footsteps in it.</p>
+    <div class="byline">
+      <span>Louisville, Kentucky</span>
+      <span>Est. 12 min read</span>
+    </div>
+  </header>
+
+  <article id="article">
+
+    <section>
+      <p class="lede">There is a hill on the southwest edge of Louisville where the air goes wrong. Locals will tell you that. They'll say it casually, the way you'd mention a pothole on a road you drive every day — <em>oh, you don't go up there at night</em> — and then change the subject.</p>
+
+      <p>At the top of that hill sits a five-story Gothic Revival building with more than four hundred rooms, most of them empty for over forty years. Rain has come through the roof. Vines have come through the windows. Somewhere in the basement, a tunnel runs five hundred feet straight down the hillside toward a set of railroad tracks that aren't there anymore.</p>
+
+      <p>They called it the Body Chute.</p>
+
+      <p>That's the part everyone knows. What most people never hear is the rest of it — the children who lived on the roof, the parents kept in a separate wing from their own kids, and the fact that almost every horrifying thing that happened at Waverly Hills Sanatorium was done by people who were genuinely, desperately trying to help.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">How it started</span>The White Plague came for Louisville</h2>
+
+      <p>In the early 1900s, tuberculosis was the thing Americans were most afraid of. Not cancer. Not war. TB — the "White Plague," so named for the ghostly pallor it left on the people it was killing.</p>
+
+      <p>It was a bad disease anywhere. In Louisville it was a catastrophe. The city sits in the low, wet bottomland along the Ohio River, and the swampy ground made Jefferson County one of the deadliest places in the country for the bacterium. People coughed until they brought up blood. They lost weight until relatives stopped recognizing them. And because nobody had a cure, the only medicine anyone could offer was the one thing the sanatorium movement believed in: sunlight, fresh air, and total isolation from everyone you loved.</p>
+
+      <p>The land had been bought back in 1883 by a man named Major Thomas H. Hays, who wanted a home for his family out in the country. His daughters needed a school, so he hired a teacher named Lizzie Lee Harris. She loved Sir Walter Scott's Waverley novels, and she named the little schoolhouse after them. Hays liked the sound of it and put the name on the whole property.</p>
+
+      <p>Which is how one of the most feared buildings in America ended up named after a romance novel.</p>
+
+      <p>The sanatorium opened on that hill in 1910 — a two-story wooden building meant to hold forty or fifty patients. It was overwhelmed almost immediately. Construction on a permanent replacement started in March 1924, and on <strong>October 17, 1926</strong>, the building people photograph today opened its doors. It could hold more than four hundred people.</p>
+
+      <p>It stayed full for the next thirty-five years.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The treatment</span>What "care" meant on that hill</h2>
+
+      <p>Here's the part that's hard to sit with. Waverly Hills was not a house of horrors run by cruel people. It was a well-regarded hospital, and by the standards of the day it was considered one of the most advanced TB facilities in the country.</p>
+
+      <p>The standards of the day were the problem.</p>
+
+      <p>Every floor had open-air solarium porches, and patients were wheeled out onto them and left there for hours — because doctors believed cold, clean air fought the infection. That meant winter, too. Patients lay in rows of iron beds on open porches in Kentucky Januarys, packed under electric blankets, snow blowing across the floor. Some of them had been there so long they no longer complained about it.</p>
+
+      <p>When air and sun failed, the surgeries began:</p>
+
+      <ul>
+        <li><strong>Heliotherapy.</strong> When the real sun wasn't enough, patients were treated under artificial sun lamps — sometimes to the point of burns.</li>
+        <li><strong>Pneumothorax.</strong> Doctors would deliberately puncture the chest and pump air in to collapse a diseased lung, on the theory that a lung at rest could heal. Patients endured it over and over.</li>
+        <li><strong>Thoracoplasty.</strong> The last resort. Surgeons removed ribs — sometimes seven or eight of them — to let the chest cave in on the infected lung. It was brutal, it left survivors permanently deformed, and most people who had it done did not live.</li>
+      </ul>
+
+      <p>Nobody was being tortured. Everybody was being saved. The two looked identical from the bed.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The children</span>The kids who lived on the roof</h2>
+
+      <p>If Waverly Hills has a heart, this is it, and it's the part that tends to stop people mid-tour.</p>
+
+      <p>Tuberculosis did not care how old you were. Waverly took children — a lot of them — and children didn't stay for a week. They stayed for months. Some stayed for years. Some of them grew up there, and the hospital had to become a childhood.</p>
+
+      <p>So there were classrooms. There were lessons. Kids sat for schooling in a building where the adults around them were dying, and were expected to keep up with their arithmetic.</p>
+
+      <p>And the children whose TB had settled into their bones were sent to the roof. Not as punishment — as prescription. Bone TB was treated with maximum sun and maximum air, so the top of the building became their world. The hospital put a small playground up there. There was a swing set.</p>
+
+      <p>Picture that for a second. A swing set, five stories up, on top of a tuberculosis hospital, in the wind, with the whole Ohio River valley spread out below and no way down.</p>
+
+      <blockquote>The healthy children of patients were housed in a separate wing. Same grounds. Same hill. Kept apart from their own dying parents, because touching them would have killed them too.</blockquote>
+
+      <p>Read that twice. Those kids weren't sick. Their crime was having a mother or father inside the building. They lived within a few hundred feet of a parent they were not permitted to hold, for as long as it took that parent to either recover or not.</p>
+
+      <p>When people ask why Waverly Hills feels the way it feels, I don't reach for the ghost stories first. I reach for that.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The tunnel</span>The Body Chute</h2>
+
+      <p>Morale was a medical concern at Waverly Hills, and the administration understood something grim: if patients saw how many bodies left the building every week, they would stop believing they could survive. Hope was one of the only treatments that actually worked.</p>
+
+      <p>So the hospital used the tunnel.</p>
+
+      <p>It ran roughly five hundred feet from the building's lower level straight down the slope of the hill to the railroad tracks below — originally built as a supply route and as a way for staff to get up and down the hill in bad weather. It had a set of stairs on one side for walking. On the other side was a motorized rail and cable system.</p>
+
+      <p>As the death toll climbed, that rail system took on a second job. The dead were loaded onto it and lowered quietly down through the hillside, out of sight, to be transferred to trains waiting at the bottom.</p>
+
+      <p>Patients on the upper floors saw people arrive. They rarely saw anyone leave. That was the point.</p>
+
+      <p>It's a concrete tube in the dark, pitched downhill, with no light except what you carry. Investigators have named it the single most oppressive space in the building, and even people who came in laughing tend to go quiet somewhere around the halfway mark.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The numbers</span>How many actually died here</h2>
+
+      <p>You will see the number <strong>63,000</strong> everywhere. On television. In documentaries. On merchandise in the gift shop of other haunted attractions.</p>
+
+      <p>It isn't true, and it's worth explaining why, because the real number is bad enough.</p>
+
+      <div class="card">
+        <span class="card-label">Fact check</span>
+        <p>Sixty-three thousand deaths would have required Waverly Hills to kill roughly five people every single day, without pause, for fifty years — in a building that held four hundred beds. The arithmetic collapses on contact.</p>
+        <p>Historians who have worked through the surviving paperwork put the real figure at somewhere around <strong>8,000 deaths</strong> across the hospital's operating life, and some researchers argue it may be closer to 6,000. The deadliest recorded year was <strong>1945</strong>, at the peak of the epidemic, with <strong>152 deaths</strong>.</p>
+        <p>An exact count is not possible. Records were lost. But eight thousand people dying on one hill does not need any help from a made-up number.</p>
+      </div>
+
+      <p>I bring it up because the invented statistic actually cheapens the place. Waverly Hills is one of the rare American hauntings that doesn't need to be exaggerated. The paperwork is worse than the legend.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">What came next</span>The cure arrived, and then something worse did</h2>
+
+      <p>Streptomycin was introduced in 1943, and it did what fifty years of sunlight and rib removal could not. Tuberculosis became treatable. Sanatoriums across the country emptied out. Waverly Hills closed as a TB hospital in <strong>1961</strong>.</p>
+
+      <p>It reopened in 1962 as Woodhaven Geriatric Center.</p>
+
+      <p>Woodhaven took in elderly patients with dementia, people with severe mobility limitations, and the severely mentally disabled — often people whose families had nowhere else to send them, and sometimes people with no family at all. It ran for roughly two decades, and the reports that came out of it were about neglect.</p>
+
+      <p>The state of Kentucky shut it down in 1980.</p>
+
+      <p>Think about what that means for the building. Its first life was full of people fighting to live. Its second was full of people nobody was coming back for. If you believe a place can hold anything, Waverly Hills got two very different kinds of grief poured into the same walls.</p>
+
+      <p>Then it sat empty. Vandals stripped it. Developers proposed knocking it down. At one point there was a plan to demolish it entirely and put a statue on the site. It was added to the <strong>National Register of Historic Places on July 12, 1983</strong>, and even that didn't fully protect it.</p>
+
+      <p>In <strong>2001</strong>, Tina and Charlie Mattingly bought the property and started the long job of saving it. The tours you can book today are the reason there's still a roof. Every ticket goes back into the building.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The legend</span>Room 502</h2>
+
+      <p>Every haunted building in America has one room, and at Waverly Hills it's on the fifth floor.</p>
+
+      <p>The story goes like this. In 1928, a young nurse working in Room 502 discovered she was pregnant, unmarried, and — depending on which version you get — also infected with the tuberculosis she'd been treating. Some tellings say the father was one of the hospital's doctors. She is said to have hanged herself from the light fixture outside the room. Four years later, in 1932, a second nurse is said to have gone off the roof of the same floor.</p>
+
+      <p>Here is where I have to be straight with you, because this is a story I would love to tell without a caveat.</p>
+
+      <div class="card">
+        <span class="card-label">What the records show</span>
+        <p>No documentation has ever surfaced confirming either nurse. Her name changes depending on the source — Mary Lee in some accounts, Mary Hillenburg in others. No death certificate, no incident report, no newspaper item has been produced.</p>
+        <p>That doesn't prove nothing happened. Institutional record-keeping in 1928 was inconsistent, and a hospital had powerful reasons to keep a staff suicide quiet. But as it stands, Room 502 is folklore, and anyone who tells you otherwise is selling something.</p>
+      </div>
+
+      <p>What's undeniable is how people behave up there. Room 502 is where visitors go pale. It's where guides say equipment fails most often, where people report being told to <em>get out</em> — and where a surprising number of skeptics decide they're done for the night.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The hauntings</span>What people report today</h2>
+
+      <p>Waverly Hills has been investigated on national television more times than almost any building in the country. What's striking isn't that people report activity. It's how specific and how repetitive the reports are, from strangers who never spoke to each other.</p>
+
+      <h3>Timmy</h3>
+      <p>A small boy said to be on the second floor, who is reported to play. Investigators leave balls on the floor for him. The stories that come back — a ball rolling to a stop, then rolling back with nobody at the other end — have been repeated by so many separate groups that Timmy has become the building's unofficial resident.</p>
+
+      <h3>The girl in the solarium</h3>
+      <p>A young girl reported running the third-floor corridor and the solarium, sometimes described as barefoot, sometimes described in ways I won't put on the page. She's the one who tends to be seen rather than heard.</p>
+
+      <h3>The Creeper</h3>
+      <p>The one nobody jokes about. A large black mass, described consistently as moving along walls and ceilings rather than the floor — crawling. It is not described as a person. Guests who don't know the legend describe it in the same terms as guests who do, which is the detail that unsettles investigators most.</p>
+
+      <h3>The man and the dog</h3>
+      <p>Owner Tina Mattingly has said that while locking up after a tour she saw a man walking with his dog inside the building. The building was empty.</p>
+
+      <h3>The rest of it</h3>
+      <p>Doors closing on empty floors. Footsteps keeping pace on the level above. Voices caught on recorders answering questions in complete sentences. A sudden, specific wave of grief in the solarium that hits people who came in as tourists and leaves them sitting on the floor.</p>
+
+      <p>You can believe every word of that or none of it. What you can't do is stand in the Body Chute and feel nothing.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">Plan your visit</span>How to get inside Waverly Hills</h2>
+
+      <dl class="ledger">
+        <dt>Address</dt><dd>4400 Paralee Lane, Louisville, KY 40272</dd>
+        <dt>Opened</dt><dd>1910; main building October 17, 1926</dd>
+        <dt>Closed</dt><dd>1961 (TB) &middot; 1980 (Woodhaven)</dd>
+        <dt>Listed</dt><dd>National Register of Historic Places, July 12, 1983</dd>
+        <dt>Access</dt><dd>Reservation only &mdash; no walk-ins</dd>
+      </dl>
+
+      <p><strong>Historical day tours.</strong> Two hours, guided, all five floors. This is the one to take if you want the story rather than the scare, and honestly it's the one that sticks with people longer.</p>
+
+      <p><strong>Paranormal investigations.</strong> Public and private, half-night and full-night. On a full overnight you get the building from dark until sunrise, including the Body Chute and the fifth floor. These sell out — October sells out <em>months</em> ahead.</p>
+
+      <p><strong>Before you book.</strong> The season runs roughly spring through fall and dates shift year to year, so check the official site rather than a third-party listing. Everything is by reservation. There is no heat, limited lighting, and a lot of stairs. Wear real shoes, bring a flashlight and layers, and understand that a decommissioned hospital is not a climate-controlled attraction.</p>
+
+      <p><strong>One request.</strong> Roughly eight thousand people died in this building, including children. The staff will ask you not to provoke, taunt, or bait anything. Take that seriously — not because of what might answer, but because of who these people were.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">Common questions</span>Waverly Hills, answered</h2>
+
+      <p class="faq-q">Is Waverly Hills Sanatorium real?</p>
+      <p>Yes. It operated as a tuberculosis hospital in Louisville, Kentucky from 1910 to 1961, then as Woodhaven Geriatric Center until 1980. It has been on the National Register of Historic Places since July 12, 1983.</p>
+
+      <p class="faq-q">How many people died at Waverly Hills?</p>
+      <p>Historians estimate around 8,000 deaths across the hospital's operating life; some researchers argue for closer to 6,000. The widely repeated figure of 63,000 is a myth and is mathematically impossible for a 400-bed hospital. The deadliest recorded year was 1945, with 152 deaths.</p>
+
+      <p class="faq-q">What is the Body Chute at Waverly Hills?</p>
+      <p>A roughly 500-foot enclosed tunnel running from the hospital's lower level down the hillside to the railroad tracks. It was built for supplies and staff access, but as deaths mounted it was used to move bodies out of the building unseen, so that patients would not know how many people were dying around them.</p>
+
+      <p class="faq-q">Can you stay overnight at Waverly Hills Sanatorium?</p>
+      <p>Yes. The building offers public and private paranormal investigations, including full overnight access from dark until sunrise. All visits are by reservation only, and October books out months in advance.</p>
+
+      <p class="faq-q">What is Room 502 at Waverly Hills?</p>
+      <p>A fifth-floor room tied to a legend that a nurse hanged herself there in 1928 while pregnant and unmarried, and that a second nurse fell from the roof in 1932. No records have ever been produced confirming either death, so Room 502 should be treated as folklore — though it remains the most reported location in the building.</p>
+
+      <p class="faq-q">Why did Waverly Hills close?</p>
+      <p>The antibiotic streptomycin, introduced in 1943, made tuberculosis treatable and emptied sanatoriums nationwide. Waverly Hills closed as a TB hospital in 1961. Its second incarnation, Woodhaven Geriatric Center, was shut down by the state of Kentucky in 1980 following reports of patient neglect.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">Last word</span>The thing that stays with you</h2>
+
+      <p>I've written about a lot of haunted American buildings, and most of them ask you to believe something. Waverly Hills doesn't.</p>
+
+      <p>You don't have to accept a single ghost story to be wrecked by this place. You only have to accept the tunnel — that a hospital full of frightened people needed a way to move its dead in secret, and that somebody sat down, drew up plans, and built one. And then that it ran for thirty-five years.</p>
+
+      <p>The swing set is gone. The porches are open to the weather now. But that hill still has a shape to it, and on the right night, standing at the mouth of the Body Chute with the dark running downhill away from you, it is very easy to understand why nobody in Louisville drives up there after dark.</p>
+
+      <p>Something is still in that building. At minimum, it's the memory of eight thousand people who were told to lie still in the cold air, and wait, and hope.</p>
+
+      <p>Some of them are waiting yet.</p>
+    </section>
+
+    <section>
+      <p class="endnote">Sources: Wikipedia (Waverly Hills Sanatorium); National Register of Historic Places; American Hauntings; published historian estimates of sanatorium mortality; ownership and tour information from the Waverly Hills Sanatorium Historical Society. Paranormal accounts are reported experiences, presented as such.</p>
+    </section>
+
+  </article>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Copied</div>
+
+<script>
+(function () {
+  var SEO = [
+    "SEO PACK - Waverly Hills Sanatorium",
+    "",
+    "Language: American English (US spellings, US date format, imperial units).",
+    "",
+    "SEO title (55 chars):",
+    "Waverly Hills Sanatorium: The Hospital That Hid Its Dead",
+    "",
+    "Meta description (156 chars):",
+    "Nearly 8,000 people died at Waverly Hills. The hospital built a 500-foot tunnel so patients would never see the bodies leave. Inside America's most haunted hospital.",
+    "",
+    "URL slug:",
+    "/waverly-hills-sanatorium",
+    "",
+    "Primary keyword: waverly hills sanatorium",
+    "Secondary keywords: waverly hills sanatorium history, waverly hills body chute, waverly hills death tunnel, waverly hills room 502, most haunted hospital in america, waverly hills sanatorium tours, haunted places in kentucky",
+    "Long-tail targets: how many people died at waverly hills sanatorium, what is the body chute at waverly hills, can you stay overnight at waverly hills sanatorium, is waverly hills sanatorium really haunted, why did waverly hills sanatorium close",
+    "",
+    "Spelling variant note: US sources use both 'Waverly' (the hospital's official spelling) and 'Waverley' (the original schoolhouse and the Walter Scott novels). Keep 'Waverly' in the title, slug and H1. The article mentions 'Waverley' once in the naming section, which captures the variant naturally.",
+    "",
+    "Featured image alt text:",
+    "The abandoned five-story Gothic Revival Waverly Hills Sanatorium on its hilltop in Louisville, Kentucky",
+    "",
+    "Publish timing:",
+    "Push live in August. Haunted-travel search climbs from late August and peaks the first week of October. Publishing 8-10 weeks early gives the page time to index before the spike.",
+    "",
+    "Publishing checklist:",
+    "- Featured image: exterior of the main building, or the Body Chute tunnel mouth (verify licensing)",
+    "- 3-4 in-body images: the solarium porches, the rooftop, the tunnel, Room 502 corridor",
+    "- Internal links: link to your Villisca Axe Murder House post and any Kentucky or asylum posts",
+    "- External authority links: National Register listing, the official Waverly Hills site",
+    "- Paste the JSON-LD block below into your head tag or SEO plugin schema field",
+    "",
+    "JSON-LD schema:",
+    JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "Waverly Hills Sanatorium: The Hospital That Hid Its Dead",
+          "description": "Nearly 8,000 people died at Waverly Hills. The hospital built a 500-foot tunnel so patients would never see the bodies leave.",
+          "datePublished": "2026-08-05",
+          "about": {
+            "@type": "Place",
+            "name": "Waverly Hills Sanatorium",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "4400 Paralee Lane",
+              "addressLocality": "Louisville",
+              "addressRegion": "KY",
+              "postalCode": "40272",
+              "addressCountry": "US"
+            }
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How many people died at Waverly Hills Sanatorium?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Historians estimate around 8,000 deaths across the hospital's operating life; some researchers argue for closer to 6,000. The widely repeated figure of 63,000 is a myth and is mathematically impossible for a 400-bed hospital. The deadliest recorded year was 1945, with 152 deaths."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the Body Chute at Waverly Hills?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A roughly 500-foot enclosed tunnel running from the hospital's lower level down the hillside to the railroad tracks. Built for supplies and staff access, it was used as deaths mounted to move bodies out of the building unseen, so patients would not know how many people were dying around them."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can you stay overnight at Waverly Hills Sanatorium?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. The building offers public and private paranormal investigations, including full overnight access from dark until sunrise. All visits are by reservation only, and October books out months in advance."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why did Waverly Hills Sanatorium close?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The antibiotic streptomycin, introduced in 1943, made tuberculosis treatable and emptied sanatoriums nationwide. Waverly Hills closed as a TB hospital in 1961. Its second incarnation, Woodhaven Geriatric Center, was shut down by the state of Kentucky in 1980 following reports of patient neglect."
+              }
+            }
+          ]
+        }
+      ]
+    }, null, 2)
+  ].join("\n");
+
+  var toast = document.getElementById("toast");
+  var toastTimer;
+
+  function flash(msg, btn, original) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2000);
+    if (btn) {
+      btn.textContent = "Copied";
+      btn.classList.add("btn-done");
+      setTimeout(function () {
+        btn.textContent = original;
+        btn.classList.remove("btn-done");
+      }, 2000);
+    }
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function copyRich(html, text, btn, original, label) {
+    var done = function () { flash(label, btn, original); };
+    var fail = function () {
+      if (fallbackCopy(text)) { done(); }
+      else { flash("Copy failed - select manually", btn, original); }
+    };
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var item = new ClipboardItem({
+        "text/html": new Blob([html], { type: "text/html" }),
+        "text/plain": new Blob([text], { type: "text/plain" })
+      });
+      navigator.clipboard.write([item]).then(done).catch(fail);
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(fail);
+    } else {
+      fail();
+    }
+  }
+
+  var TITLE = "Waverly Hills Sanatorium: The Hospital That Hid Its Dead";
+
+  document.getElementById("copyArticle").addEventListener("click", function () {
+    var src = document.getElementById("article").cloneNode(true);
+    Array.prototype.forEach.call(src.querySelectorAll(".kicker"), function (k) {
+      k.parentNode.removeChild(k);
+    });
+    var html = "<h1>" + TITLE + "</h1>" + src.innerHTML;
+    var text = TITLE + "\n\n" + src.innerText.trim();
+    copyRich(html, text, this, "Copy text only", "Copied - paste into your post editor");
+  });
+
+  function buildStandalone() {
+    var css = document.getElementById("pagecss").innerHTML;
+    var content = document.querySelector(".wrap").cloneNode(true);
+    var reset = "*,*::before,*::after{box-sizing:border-box}\n" +
+      "body,h1,h2,h3,p,dl,dd,ul,blockquote{margin:0}\n" +
+      "ul{list-style:none;padding:0}\n" +
+      "img{max-width:100%;display:block}\n" +
+      "html{-webkit-text-size-adjust:100%}\n";
+    return '<!doctype html>\n<html lang="en" data-theme="light">\n<head>\n' +
+      '<meta charset="utf-8">\n' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+      "<title>" + TITLE + "</title>\n" +
+      "<style>\n" + reset + css + "\n</style>\n" +
+      "</head>\n<body>\n" + content.outerHTML + "\n</body>\n</html>\n";
+  }
+
+  document.getElementById("copyStyled").addEventListener("click", function () {
+    var btn = this;
+    var out = buildStandalone();
+    var done = function () { flash("Full design copied", btn, "Copy with design"); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(out).then(done).catch(function () {
+        if (fallbackCopy(out)) done();
+        else flash("Copy failed", btn, "Copy with design");
+      });
+    } else if (fallbackCopy(out)) { done(); }
+    else { flash("Copy failed", btn, "Copy with design"); }
+  });
+
+  document.getElementById("copySeo").addEventListener("click", function () {
+    var btn = this;
+    var done = function () { flash("SEO pack copied", btn, "SEO pack"); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(SEO).then(done).catch(function () {
+        if (fallbackCopy(SEO)) done();
+        else flash("Copy failed", btn, "SEO pack");
+      });
+    } else if (fallbackCopy(SEO)) { done(); }
+    else { flash("Copy failed", btn, "SEO pack"); }
+  });
+})();
+</script>

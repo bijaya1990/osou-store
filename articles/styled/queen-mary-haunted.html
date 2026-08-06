@@ -1,0 +1,751 @@
+<title>Queen Mary Haunted: The Night She Cut a Warship in Half</title>
+<style id="pagecss">
+  :root {
+    --ground: #E4E5E2;
+    --surface: #EFEFEB;
+    --ink: #14202B;
+    --ink-soft: #35485A;
+    --muted: #5D7183;
+    --faint: #8A9AA6;
+    --brass: #8A6A2F;
+    --brass-lit: #A8863F;
+    --signal: #8C3A2E;
+    --shadow: 20 32 43;
+
+    --font-display: Futura, "Futura PT", "Avenir Next", "Century Gothic", "Trebuchet MS", sans-serif;
+    --font-body: "Iowan Old Style", Charter, "Sitka Text", Cambria, Georgia, serif;
+    --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+    --measure: 67ch;
+    --step--1: clamp(0.83rem, 0.81rem + 0.1vw, 0.89rem);
+    --step-0: clamp(1.06rem, 1.02rem + 0.2vw, 1.19rem);
+    --step-1: clamp(1.28rem, 1.2rem + 0.4vw, 1.5rem);
+    --step-2: clamp(1.5rem, 1.34rem + 0.8vw, 1.95rem);
+    --step-3: clamp(2rem, 1.6rem + 1.9vw, 3.15rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #0C141B;
+      --surface: #141F29;
+      --ink: #DDE5EA;
+      --ink-soft: #B4C4CE;
+      --muted: #8CA0AE;
+      --faint: #677C8A;
+      --brass: #C9A55F;
+      --brass-lit: #DEBE7C;
+      --signal: #C9705F;
+      --shadow: 0 0 0;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0C141B;
+    --surface: #141F29;
+    --ink: #DDE5EA;
+    --ink-soft: #B4C4CE;
+    --muted: #8CA0AE;
+    --faint: #677C8A;
+    --brass: #C9A55F;
+    --brass-lit: #DEBE7C;
+    --signal: #C9705F;
+    --shadow: 0 0 0;
+  }
+  :root[data-theme="light"] {
+    --ground: #E4E5E2;
+    --surface: #EFEFEB;
+    --ink: #14202B;
+    --ink-soft: #35485A;
+    --muted: #5D7183;
+    --faint: #8A9AA6;
+    --brass: #8A6A2F;
+    --brass-lit: #A8863F;
+    --signal: #8C3A2E;
+    --shadow: 20 32 43;
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: var(--measure);
+    margin-inline: auto;
+    padding-inline: clamp(1.15rem, 5vw, 2rem);
+  }
+
+  .bar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--ground) 88%, transparent);
+    backdrop-filter: blur(12px) saturate(1.3);
+    -webkit-backdrop-filter: blur(12px) saturate(1.3);
+  }
+  .bar-in {
+    max-width: var(--measure);
+    margin-inline: auto;
+    padding: 0.75rem clamp(1.15rem, 5vw, 2rem);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .stamp {
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-right: auto;
+  }
+  button {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.58rem 1rem;
+    border-radius: 1px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 140ms ease, color 140ms ease;
+  }
+  .btn-primary { background: var(--ink); color: var(--ground); font-weight: 600; }
+  .btn-primary:hover { background: var(--ink-soft); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border-color: color-mix(in srgb, var(--muted) 40%, transparent);
+  }
+  .btn-ghost:hover { color: var(--ink); background: var(--surface); }
+  button:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+  .btn-done { background: var(--brass) !important; color: var(--ground) !important; border-color: transparent !important; }
+
+  .hero {
+    padding-block: clamp(3rem, 9vw, 6.5rem) clamp(2rem, 5vw, 3.5rem);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: -50% -25% auto -25%;
+    height: 140%;
+    background: radial-gradient(ellipse 50% 40% at 78% 6%, color-mix(in srgb, var(--brass) 16%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+  .hero > * { position: relative; }
+  .eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--brass);
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    line-height: 1.02;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+    margin-bottom: 1.5rem;
+  }
+  .deck {
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    font-style: italic;
+    text-wrap: pretty;
+    margin-bottom: 1.8rem;
+  }
+  .byline {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+    display: flex;
+    gap: 1.1rem;
+    flex-wrap: wrap;
+  }
+
+  article { padding-bottom: 4rem; }
+  section { padding-block: clamp(1.6rem, 4vw, 2.6rem); }
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1.15;
+    font-weight: 600;
+    text-wrap: balance;
+    margin-bottom: 1.1rem;
+  }
+  h2 .kicker {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 400;
+    margin-bottom: 0.85rem;
+  }
+  h3 {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    line-height: 1.25;
+    font-weight: 600;
+    margin: 2rem 0 0.7rem;
+    text-wrap: balance;
+  }
+  p { margin-bottom: 1.2rem; text-wrap: pretty; }
+  p:last-child { margin-bottom: 0; }
+  strong { font-weight: 700; }
+  a { color: var(--brass); text-underline-offset: 3px; }
+  a:hover { color: var(--brass-lit); }
+
+  ul { margin: 0 0 1.3rem 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+  ul li { padding-left: 1.5rem; position: relative; }
+  ul li::before {
+    content: "";
+    position: absolute;
+    left: 0.15rem;
+    top: 0.68em;
+    width: 7px;
+    height: 7px;
+    background: var(--brass);
+  }
+
+  .lede::first-letter {
+    font-family: var(--font-display);
+    float: left;
+    font-size: 3.4em;
+    line-height: 0.85;
+    padding: 0.08em 0.12em 0 0;
+    color: var(--brass);
+    font-weight: 600;
+  }
+
+  blockquote {
+    margin: 2.2rem 0;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1.3;
+    color: var(--signal);
+    font-weight: 500;
+    text-wrap: balance;
+  }
+
+  .card {
+    background: var(--surface);
+    padding: clamp(1.3rem, 3.5vw, 1.9rem);
+    border-radius: 2px;
+    margin: 2rem 0;
+    box-shadow: 0 1px 3px rgb(var(--shadow) / 0.08);
+  }
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brass);
+    display: block;
+    margin-bottom: 0.9rem;
+  }
+  .card p { font-size: var(--step--1); line-height: 1.65; margin-bottom: 0.85rem; }
+  .card p:last-child { margin-bottom: 0; }
+
+  .ledger {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1.4rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-variant-numeric: tabular-nums;
+    margin: 1.9rem 0;
+  }
+  .ledger dt { color: var(--brass); white-space: nowrap; }
+  .ledger dd { color: var(--ink-soft); }
+
+  .faq-q {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 1.8rem 0 0.5rem;
+  }
+
+  .endnote {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.65;
+    color: var(--faint);
+    padding-top: 1rem;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 1.6rem;
+    left: 50%;
+    transform: translate(-50%, 1.5rem);
+    background: var(--ink);
+    color: var(--ground);
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.7rem 1.3rem;
+    border-radius: 1px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease, transform 220ms ease;
+    z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="bar">
+  <div class="bar-in">
+    <span class="stamp">Ready to publish</span>
+    <button class="btn-ghost" id="copySeo" type="button">SEO pack</button>
+    <button class="btn-ghost" id="copyArticle" type="button">Copy text only</button>
+    <button class="btn-primary" id="copyStyled" type="button">Copy with design</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">California &middot; True Haunting</span>
+    <h1>Queen Mary Haunted: The Night She Cut a Warship in Half</h1>
+    <p class="deck">Three hundred and thirty-seven men went into the North Atlantic. The ship that put them there had orders never to stop. She's a hotel now, and you can sleep aboard her tonight.</p>
+    <div class="byline">
+      <span>Long Beach, California</span>
+      <span>Est. 12 min read</span>
+    </div>
+  </header>
+
+  <article id="article">
+
+    <section>
+      <p class="lede">There were men in the water, and they watched her go.</p>
+
+      <p>That's the detail that gets me every time. Not the collision. Not the sound of a hull tearing open, which survivors said they felt in their teeth. It's the part right after — hundreds of British sailors floating in the North Atlantic in October, oil in their eyes, and the enormous grey shape that had just run them down not slowing, not turning, not stopping. Just going. Getting smaller.</p>
+
+      <p>She had fifteen thousand American troops aboard and orders that left no room for mercy.</p>
+
+      <p>Today that ship is tied up at a pier in Long Beach, California, with a gift shop and a Sunday brunch and rooms you can book from your phone. She is arguably the most famous haunted place in the state, and by some counts the most haunted vessel in the world.</p>
+
+      <p>Most articles about the Queen Mary start with the ghost stories. I want to start with why there are any.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The ship</span>The most beautiful thing ever built on the Clyde</h2>
+
+      <p>She was launched in Scotland in 1934 and made her maiden voyage in 1936, and she was meant to be the answer to a question the 1930s took very seriously: whose ocean liner was the best in the world?</p>
+
+      <p>Cunard's answer was overwhelming. More than a thousand feet of ship. Art Deco throughout — burled walnut, etched glass, brass fittings polished by hand, a first-class swimming pool with tile that still catches the light. She took the Blue Riband for the fastest Atlantic crossing. Fred Astaire danced on her. Churchill crossed on her. She was, for a few years, the single most glamorous object on earth.</p>
+
+      <p>Then the war came, and they painted the whole thing grey.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The war</span>The Grey Ghost</h2>
+
+      <p>Stripped of her furniture and painted battleship grey, the Queen Mary became a troopship. The Germans called her the Grey Ghost, because she was fast enough that no U-boat could reliably catch her and she seemed to appear and vanish at will. Hitler is widely reported to have offered a fortune and the Iron Cross to any submarine commander who could put her under. Nobody collected.</p>
+
+      <p>What she did instead was carry men. Enormous numbers of men.</p>
+
+      <p>In July 1943 she crossed with <strong>16,683 people</strong> aboard — 15,740 troops and 943 crew. That is still the record for the most people ever carried on a single ship, and it will almost certainly never be broken.</p>
+
+      <p>Understand what that meant for the men inside. Bunks stacked six high in rooms designed for two. Soldiers sleeping in shifts, in corridors, in the drained swimming pool. Standing-room-only meals run around the clock. Life jackets worn at all times because there was no plausible way to evacuate that many people. A week of that, in the dark, in a submarine war, with the ship changing course every few minutes to throw off torpedoes.</p>
+
+      <p>That zigzag was the safest thing she did. On October 2, 1942, it also killed 337 men.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">October 2, 1942</span>The ship that couldn't stop</h2>
+
+      <p>She was inbound to Britain with roughly fifteen thousand American servicemen aboard, doing 28.5 knots — well over 30 miles an hour, which for a vessel of that mass is a genuinely frightening number.</p>
+
+      <p>Escorting her was <strong>HMS Curacoa</strong>, a British anti-aircraft cruiser with about 460 officers and men aboard. The Curacoa's job was to screen the liner from air attack as she came into range of German bombers.</p>
+
+      <p>Both ships were zigzagging. Both crews believed the other understood the pattern. Neither did.</p>
+
+      <p>At <strong>14:04</strong>, the Queen Mary's bow came around and went straight into the Curacoa amidships.</p>
+
+      <p>The cruiser was cut clean in half. The stern section went down almost immediately. The forward half stayed up a few minutes longer — long enough for men to get into the water, and long enough for the ones already in it to look up.</p>
+
+      <p>Captain Cyril Illingworth did not stop.</p>
+
+      <p>He couldn't. His standing orders were absolute: under no circumstances was the Queen Mary to halt in submarine waters, no matter what happened, until she had delivered her troops. A stationary ship carrying fifteen thousand men is not a rescue platform. It's the largest torpedo target in the history of naval warfare.</p>
+
+      <p>So the Queen Mary signaled the destroyers and kept going. Her bow was crushed inward for something like forty feet, and she sailed on at reduced speed with a hole in her, and thousands of American soldiers lined her rails and watched British sailors thrash in the water behind them and could do absolutely nothing.</p>
+
+      <blockquote>The destroyers took about two hours to reach them. In the North Atlantic in October, two hours is not a rescue window. It's a sentence.</blockquote>
+
+      <p>Of roughly 460 men aboard the Curacoa, about <strong>101 survived</strong>. <strong>337 did not.</strong> Many of the dead didn't die in the collision at all. They died of cold, waiting.</p>
+
+      <div class="card">
+        <span class="card-label">Fact check</span>
+        <p>You will see the Curacoa's death toll given as <strong>239</strong> on a lot of haunted-travel sites. That figure is wrong and appears to be a long-running copy-paste error.</p>
+        <p>Official records released in <strong>2013</strong> put the loss at <strong>337 officers and men</strong>, with approximately 101 survivors, from a complement of roughly 460. Where sources conflict, use 337.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The cover-up</span>Nobody was allowed to know</h2>
+
+      <p>Here is the part that turns a tragedy into a haunting.</p>
+
+      <p>The British government classified it. Not for a week — for years. Losing an escort cruiser to a collision with your own flagship troopship, in wartime, was catastrophic for morale and a gift to German propaganda. So the men of HMS Curacoa were simply gone. Families were told almost nothing. Survivors were ordered to keep their mouths shut, and most of them did.</p>
+
+      <p>The official inquiry was postponed until <strong>June 1945</strong> — weeks after the war in Europe ended. The Admiralty sued Cunard. The case ground on into 1947, and the first judgment cleared the Queen Mary entirely and put the whole thing on the Curacoa's officers.</p>
+
+      <p>On appeal it was reapportioned: <strong>two-thirds of the blame to the Admiralty, one-third to Cunard White Star.</strong> The House of Lords upheld it.</p>
+
+      <p>That's the legal record. Three hundred and thirty-seven men, reduced to a fraction and a percentage, five years after they drowned, in a courtroom none of them lived to see.</p>
+
+      <p>Whatever you believe about the dead staying put, that's the kind of ending that people have always said doesn't let a place rest.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">Door 13</span>The boy in the engine room</h2>
+
+      <p>The Queen Mary's other famous death is smaller, and in some ways worse, because it's so ordinary.</p>
+
+      <p>On <strong>July 10, 1966</strong>, an 18-year-old crewman named <strong>John Pedder</strong> was working near the watertight doors on D Deck during a routine drill. Watertight door 13 closed on him. He was crushed.</p>
+
+      <p>He was eighteen. It was a drill. Nothing was under attack, nothing was sinking, and the ship was doing exactly what it was supposed to do.</p>
+
+      <p>Door 13 is still there, and it's on the tour route. Guides will tell you what visitors report in that stretch of corridor: knocking from inside the machinery spaces, footsteps pacing the passage, and a young man in blue coveralls who is seen walking the corridor and then is not there. He's described so consistently that he has become the single most reported figure on the ship.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">B340</span>The room they sealed for thirty years</h2>
+
+      <p>Stateroom B340 has the reputation, and unlike a lot of famous haunted rooms, there's a documented death attached to it: a passenger named <strong>Walter J. Adamson</strong> died in the room in <strong>1948</strong>.</p>
+
+      <p>What followed was decades of guest complaints. Faucets running in an empty bathroom. Lights switching themselves. Closet and bathroom doors opening. Knocking on the cabin door from a corridor with nobody in it. Bedding pulled. People leaving in the middle of the night and asking to be moved.</p>
+
+      <p>Eventually the ship stopped fighting it and simply took the room out of service. B340 sat closed for roughly <strong>thirty years</strong>.</p>
+
+      <p>It reopened in 2018 — and the hotel leaned all the way in. The room now comes appointed with tarot cards, a crystal ball, and an Ouija board, with instructions in the bathroom for summoning Bloody Mary in the mirror. It reopened again after the ship's pandemic closure, and the date they chose to unlock it was <strong>Friday, September 13, 2024</strong>.</p>
+
+      <p>Is that theater? Obviously. Does it also happen to be the room with the most complaints in the ship's history? Also yes. Both things are true, and you can decide which one you're paying for.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The pool</span>The most famous ghost that has no death certificate</h2>
+
+      <p>The first-class swimming pool is the ship's signature haunted space — a beautiful, drained Art Deco room with cracked tile and a diving platform and terrible acoustics that make every noise sound like it came from behind you.</p>
+
+      <p>The legend is a little girl, usually called Jackie, who is said to be heard singing and laughing near the pool, and who turns up on audio recordings answering questions. She is the Queen Mary's most beloved ghost and she sells a lot of tour tickets.</p>
+
+      <div class="card">
+        <span class="card-label">What the records show</span>
+        <p>No documented drowning of a child in the Queen Mary's first-class pool has ever been produced. No name, no date, no certificate. Jackie is folklore.</p>
+        <p>What is documented is that during the war the drained pool was packed with sleeping troops, and that the ship has recorded roughly 49 to 50 deaths aboard across its service life from illness, accidents, and the ordinary attrition of a floating town. The pool's reputation is real. Its origin story is not.</p>
+      </div>
+
+      <p>I'd rather tell you that than sell you a dead child who may never have existed. The ship has 337 verified dead. It doesn't need an invented one.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">Today</span>What people report aboard</h2>
+
+      <p>The Queen Mary arrived in Long Beach in December 1967 and has been a hotel since 1972. She closed for three years during the pandemic and reopened in spring 2023, tours and all — and they've been selling out.</p>
+
+      <p>What guests and staff consistently report:</p>
+
+      <ul>
+        <li><strong>The engine and boiler rooms.</strong> Knocking and metallic banging from spaces where no machinery has run in decades. This is where crew deaths happened, and it's the most-cited area on the ship.</li>
+        <li><strong>The pool and the changing rooms.</strong> Wet footprints on dry tile. Voices. The changing rooms are where guides say the strongest reactions happen.</li>
+        <li><strong>Second-class corridors.</strong> Doors closing. Figures in period clothing seen at the far end of a passage, walking away.</li>
+        <li><strong>The first-class staterooms.</strong> Guests woken by knocking and by faucets, most often on B Deck.</li>
+        <li><strong>Men in uniform.</strong> Reported throughout, and reported most often below the waterline.</li>
+      </ul>
+
+      <p>Time magazine has listed her among the ten most haunted places in the United States. Some tour operators claim as many as 150 spirits aboard, which is the kind of number I'd take with a shovel of salt. But the ship's advantage over almost every haunted site in America is simple: you don't have to buy a ghost tour to be there. You can just book a room and go to sleep in it.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">Plan your visit</span>How to stay on the Queen Mary</h2>
+
+      <dl class="ledger">
+        <dt>Where</dt><dd>1126 Queens Highway, Long Beach, CA 90802</dd>
+        <dt>Launched</dt><dd>1934 &middot; maiden voyage 1936</dd>
+        <dt>Wartime</dt><dd>Troopship 1940&ndash;1946 &middot; record 16,683 aboard</dd>
+        <dt>Retired</dt><dd>Arrived Long Beach December 1967</dd>
+        <dt>Hotel since</dt><dd>1972 &middot; reopened spring 2023</dd>
+      </dl>
+
+      <p><strong>Stay the night.</strong> This is the whole point. The staterooms are original — same portholes, same doors, same corridors. Rooms on B Deck are the ones people request. B340 books far ahead and costs a premium.</p>
+
+      <p><strong>Tours.</strong> The ship runs historical tours, a Haunted Encounters tour, and evening paranormal tours that get you into the engine room, the boiler rooms, and the pool area. The historical tour is the one I'd take first — the war material is stronger than the ghost material, and it makes the ghost material land harder.</p>
+
+      <p><strong>Practical notes.</strong> It's a 1930s ship, not a modern hotel: narrow passages, small bathrooms, thin walls, and a lot of stairs. Parking is on the pier. Book the tours separately from the room, and book both early for October.</p>
+
+      <p><strong>One thing worth doing.</strong> Go out on deck at night, face the water, and give the Curacoa a minute. Almost nobody does. There's a memorial to those men, and most guests walk past it on the way to a cocktail.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">Common questions</span>The Queen Mary, answered</h2>
+
+      <p class="faq-q">Is the Queen Mary really haunted?</p>
+      <p>She has one of the most consistent and long-running bodies of reported activity of any site in America, spanning guests, staff, and investigators since the 1970s. Whether that constitutes a haunting is up to you. What isn't in question is the death toll: 337 sailors died in the HMS Curacoa collision, an 18-year-old crewman was crushed by a watertight door in 1966, and roughly 49 to 50 deaths were recorded aboard during her service.</p>
+
+      <p class="faq-q">What happened between the Queen Mary and HMS Curacoa?</p>
+      <p>On October 2, 1942, while both ships were zigzagging to evade U-boats, the Queen Mary struck the escort cruiser HMS Curacoa amidships at 28.5 knots and cut her in half. Carrying about 15,000 American troops and under orders never to stop in submarine waters, the Queen Mary could not mount a rescue. Of roughly 460 men aboard the Curacoa, 337 were lost.</p>
+
+      <p class="faq-q">Can you sleep on the Queen Mary?</p>
+      <p>Yes. She has operated as a hotel since 1972 and reopened in spring 2023 after a three-year closure. The staterooms are original to the ship.</p>
+
+      <p class="faq-q">What is Stateroom B340?</p>
+      <p>The ship's most reported cabin, where a passenger named Walter J. Adamson died in 1948. After decades of guest complaints it was taken out of service for about thirty years, then reopened in 2018 outfitted for paranormal guests. It reopened again on Friday, September 13, 2024.</p>
+
+      <p class="faq-q">Who is the ghost at Door 13?</p>
+      <p>John Pedder, an 18-year-old crewman crushed by watertight door 13 on D Deck during a routine drill on July 10, 1966. A young man in coveralls is the most frequently reported figure aboard the ship.</p>
+
+      <p class="faq-q">Why was the Queen Mary called the Grey Ghost?</p>
+      <p>Because she was painted battleship grey for war service and was fast enough to outrun U-boats, appearing and disappearing without escort. In July 1943 she carried 16,683 people in a single crossing, still the record for any ship.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">Last word</span>Two hours</h2>
+
+      <p>I've stood on that ship. It's a lovely place. The wood is warm, the brass is polished, the pool room is genuinely one of the most beautiful ruined interiors in America. People get married on her.</p>
+
+      <p>And somewhere under all of that is a hull that was rebuilt after it went through a British cruiser like a knife through a loaf of bread.</p>
+
+      <p>Whatever is or isn't walking those corridors, the arithmetic doesn't change. Three hundred and thirty-seven men. Two hours in the water. A ship that was ordered to keep going and did, because fifteen thousand other lives said it had to.</p>
+
+      <p>Then five years of silence, and a percentage in a courtroom.</p>
+
+      <p>People say you can hear knocking down near the engine rooms, from inside the steel. I don't know what that is. I know I'd knock too.</p>
+    </section>
+
+    <section>
+      <p class="endnote">Sources: HMS Curacoa official records released 2013; Naval Historical Society of Australia; Cunard and Long Beach historical records; Queen Mary hotel and tour operations. Paranormal accounts are reported experiences, presented as such.</p>
+    </section>
+
+  </article>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Copied</div>
+
+<script>
+(function () {
+  var SEO = [
+    "SEO PACK - RMS Queen Mary",
+    "",
+    "Language: American English (US spellings, US date format, imperial units).",
+    "",
+    "SEO title (54 chars):",
+    "Queen Mary Haunted: The Night She Cut a Warship in Half",
+    "",
+    "Meta description (152 chars):",
+    "337 sailors died when the Queen Mary sliced HMS Curacoa in two - and she was ordered not to stop. Inside America's most haunted ship, now a Long Beach hotel.",
+    "",
+    "URL slug:",
+    "/queen-mary-haunted",
+    "",
+    "Primary keyword: queen mary haunted",
+    "Secondary keywords: rms queen mary ghosts, queen mary stateroom b340, queen mary door 13, hms curacoa collision, haunted hotels in california, queen mary long beach ghost tour, most haunted ship in america",
+    "Long-tail targets: is the queen mary really haunted, can you sleep on the queen mary, what happened to hms curacoa, what is stateroom b340 queen mary, how many people died on the queen mary, queen mary ghost tour worth it",
+    "",
+    "Why this ranks: unlike most haunted subjects, this one carries commercial search intent - readers can book a room tonight. Target the booking keywords alongside the ghost keywords.",
+    "",
+    "Accuracy note - use this as a differentiator:",
+    "Most competing articles state the HMS Curacoa death toll as 239. That is wrong. Official records released in 2013 put it at 337 lost of roughly 460 aboard, with about 101 survivors. Correcting it in the article is a trust signal and a link magnet.",
+    "",
+    "Featured image alt text:",
+    "The RMS Queen Mary moored at Long Beach, California, her three funnels lit at dusk",
+    "",
+    "Publish timing:",
+    "Live in August. Haunted-travel search climbs from late August and peaks the first week of October. October 2 is the anniversary of the Curacoa collision - schedule a social push for that date.",
+    "",
+    "Publishing checklist:",
+    "- Featured image: the ship at dusk, or the drained first-class pool (verify licensing)",
+    "- In-body images: the pool, Door 13, stateroom B340, a wartime troopship photo",
+    "- Internal links: link to your Waverly Hills and Villisca posts",
+    "- External authority links: HMS Curacoa records, the official Queen Mary site",
+    "- Paste the JSON-LD block below into your head tag or SEO plugin schema field",
+    "",
+    "JSON-LD schema:",
+    JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "Queen Mary Haunted: The Night She Cut a Warship in Half",
+          "description": "337 sailors died when the Queen Mary sliced HMS Curacoa in two - and she was ordered not to stop.",
+          "datePublished": "2026-08-06",
+          "about": {
+            "@type": "Place",
+            "name": "The Queen Mary",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "1126 Queens Highway",
+              "addressLocality": "Long Beach",
+              "addressRegion": "CA",
+              "postalCode": "90802",
+              "addressCountry": "US"
+            }
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is the Queen Mary really haunted?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The Queen Mary has one of the most consistent bodies of reported paranormal activity of any site in America, spanning guests, staff and investigators since the 1970s. The documented death toll is not in question: 337 sailors died in the HMS Curacoa collision, an 18-year-old crewman was crushed by a watertight door in 1966, and roughly 49 to 50 deaths were recorded aboard during her service."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What happened between the Queen Mary and HMS Curacoa?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "On October 2, 1942, while both ships zigzagged to evade U-boats, the Queen Mary struck the escort cruiser HMS Curacoa amidships at 28.5 knots and cut her in half. Carrying about 15,000 American troops and under orders never to stop in submarine waters, the Queen Mary could not mount a rescue. Of roughly 460 men aboard the Curacoa, 337 were lost."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can you sleep on the Queen Mary?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. The Queen Mary has operated as a hotel since 1972 and reopened in spring 2023 after a three-year closure. The staterooms are original to the ship."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is Stateroom B340 on the Queen Mary?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The ship's most reported cabin, where passenger Walter J. Adamson died in 1948. After decades of guest complaints it was taken out of service for roughly thirty years, then reopened in 2018 outfitted for paranormal guests. It reopened again on Friday, September 13, 2024."
+              }
+            }
+          ]
+        }
+      ]
+    }, null, 2)
+  ].join("\n");
+
+  var toast = document.getElementById("toast");
+  var toastTimer;
+
+  function flash(msg, btn, original) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2000);
+    if (btn) {
+      btn.textContent = "Copied";
+      btn.classList.add("btn-done");
+      setTimeout(function () {
+        btn.textContent = original;
+        btn.classList.remove("btn-done");
+      }, 2000);
+    }
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function copyRich(html, text, btn, original, label) {
+    var done = function () { flash(label, btn, original); };
+    var fail = function () {
+      if (fallbackCopy(text)) { done(); }
+      else { flash("Copy failed - select manually", btn, original); }
+    };
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var item = new ClipboardItem({
+        "text/html": new Blob([html], { type: "text/html" }),
+        "text/plain": new Blob([text], { type: "text/plain" })
+      });
+      navigator.clipboard.write([item]).then(done).catch(fail);
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(fail);
+    } else {
+      fail();
+    }
+  }
+
+  var TITLE = "Queen Mary Haunted: The Night She Cut a Warship in Half";
+
+  document.getElementById("copyArticle").addEventListener("click", function () {
+    var src = document.getElementById("article").cloneNode(true);
+    Array.prototype.forEach.call(src.querySelectorAll(".kicker"), function (k) {
+      k.parentNode.removeChild(k);
+    });
+    var html = "<h1>" + TITLE + "</h1>" + src.innerHTML;
+    var text = TITLE + "\n\n" + src.innerText.trim();
+    copyRich(html, text, this, "Copy text only", "Copied - paste into your post editor");
+  });
+
+  function buildStandalone() {
+    var css = document.getElementById("pagecss").innerHTML;
+    var content = document.querySelector(".wrap").cloneNode(true);
+    var reset = "*,*::before,*::after{box-sizing:border-box}\n" +
+      "body,h1,h2,h3,p,dl,dd,ul,blockquote{margin:0}\n" +
+      "ul{list-style:none;padding:0}\n" +
+      "img{max-width:100%;display:block}\n" +
+      "html{-webkit-text-size-adjust:100%}\n";
+    return '<!doctype html>\n<html lang="en" data-theme="light">\n<head>\n' +
+      '<meta charset="utf-8">\n' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+      "<title>" + TITLE + "</title>\n" +
+      "<style>\n" + reset + css + "\n</style>\n" +
+      "</head>\n<body>\n" + content.outerHTML + "\n</body>\n</html>\n";
+  }
+
+  document.getElementById("copyStyled").addEventListener("click", function () {
+    var btn = this;
+    var out = buildStandalone();
+    var done = function () { flash("Full design copied", btn, "Copy with design"); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(out).then(done).catch(function () {
+        if (fallbackCopy(out)) done();
+        else flash("Copy failed", btn, "Copy with design");
+      });
+    } else if (fallbackCopy(out)) { done(); }
+    else { flash("Copy failed", btn, "Copy with design"); }
+  });
+
+  document.getElementById("copySeo").addEventListener("click", function () {
+    var btn = this;
+    var done = function () { flash("SEO pack copied", btn, "SEO pack"); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(SEO).then(done).catch(function () {
+        if (fallbackCopy(SEO)) done();
+        else flash("Copy failed", btn, "SEO pack");
+      });
+    } else if (fallbackCopy(SEO)) { done(); }
+    else { flash("Copy failed", btn, "SEO pack"); }
+  });
+})();
+</script>
