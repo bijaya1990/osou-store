@@ -67,6 +67,15 @@ get_header();
 						<span><?php echo esc_html( $name ); ?></span>
 					</a>
 				<?php endforeach; ?>
+
+				<a class="np-quick-btn np-quick-5" href="https://naukripatra.in/resume.php">
+					<span class="np-quick-ico">📄</span>
+					<span class="np-quick-5-txt">
+						<span class="np-quick-5-title">Resume Maker</span>
+						<small>Free ATS Resume<span class="np-quick-5-more"> &middot; PDF Download</span></small>
+					</span>
+					<span class="np-quick-5-badge">NEW</span>
+				</a>
 			</div>
 		</div>
 	</section>
@@ -82,11 +91,6 @@ get_header();
 			</div>
 		</div>
 		<div class="np-appbar-btns">
-			<a class="np-appbtn np-appbtn-resume" href="https://naukripatra.in/resume.php">
-				<span class="np-appbtn-badge">NEW</span>
-				<span class="np-appbtn-ico">📄</span>
-				<span class="np-appbtn-txt"><small>FREE ATS</small>Resume Maker</span>
-			</a>
 			<a class="np-appbtn np-appbtn-play" href="<?php echo esc_url( $np_social['playstore'] ); ?>" target="_blank" rel="noopener">
 				<span class="np-appbtn-ico">▶</span>
 				<span class="np-appbtn-txt"><small>GET IT ON</small>Google Play</span>
