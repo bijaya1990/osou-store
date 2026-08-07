@@ -696,7 +696,7 @@ html.np-dark .np-sl{background:#1a2a5c;color:#8fc5ff}
 	grid-column:1 / -1;
 	flex-direction:row;justify-content:flex-start;
 	gap:14px;padding:16px 18px;min-height:78px;
-	background:linear-gradient(135deg,#e65100,#ff8f00 55%,#ffb300);
+	background:linear-gradient(135deg,#8e0000,var(--np-red) 55%,#ff6f60);
 }
 .np-quick-5 .np-quick-ico{font-size:30px;flex:0 0 auto}
 .np-quick-5-txt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;min-width:0}
@@ -704,7 +704,7 @@ html.np-dark .np-sl{background:#1a2a5c;color:#8fc5ff}
 .np-quick-5-txt small{font-size:11.5px;font-weight:600;opacity:.92;line-height:1.2}
 .np-quick-5-badge{
 	margin-left:auto;flex:0 0 auto;align-self:center;
-	background:rgba(255,255,255,.95);color:#e65100;
+	background:rgba(255,255,255,.95);color:#c62828;
 	font-size:10px;font-weight:800;letter-spacing:.7px;
 	padding:4px 10px;border-radius:99px;box-shadow:0 2px 6px rgba(0,0,0,.18);
 }
