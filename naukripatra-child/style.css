@@ -664,15 +664,24 @@ html.np-dark .np-sl{background:#1a2a5c;color:#8fc5ff}
 /* ---- Trending + Quick Menu zone ---- */
 .np-trend-zone{
 	display:grid;grid-template-columns:1.5fr 1fr;gap:22px;margin:22px 0;
-	align-items:start;
+	align-items:stretch;   /* both columns share one height so they line up */
 }
 .np-trend-zone .np-trending{margin:0;text-align:left}
+/* Trending Jobs sets the height (its cards keep their natural size - stretching
+   them would leave big empty gaps inside white cards). The Quick Menu column
+   then fills that same height: its 4 solid tiles share the spare space via the
+   1fr rows, so both blocks finish on exactly the same line. */
+.np-trend-zone .np-trending,.np-trend-zone .np-quick{display:flex;flex-direction:column}
 .np-zone-title{font-size:19px;font-weight:800;margin:0 0 12px;color:var(--np-ink)}
-.np-trend-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.np-quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.np-trend-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;grid-auto-rows:1fr}
+/* Homepage trending cards only (related-post grids elsewhere keep display:block).
+   Pins the views/last-date line to the bottom, so a card that grew to match the
+   Quick Menu reads as a designed card instead of one with a hole in it. */
+.np-trend-list .np-rel-item{display:flex;flex-direction:column;justify-content:space-between}
+.np-quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;grid-template-rows:1fr 1fr auto}
 .np-quick-btn{
 	display:flex;flex-direction:column;align-items:center;justify-content:center;
-	gap:6px;padding:22px 10px;min-height:104px;
+	gap:6px;padding:18px 10px;min-height:84px;
 	border-radius:16px;text-decoration:none;color:#fff!important;
 	font-size:14.5px;font-weight:700;box-shadow:0 6px 16px rgba(11,22,51,.15);
 	position:relative;overflow:hidden;transition:transform .2s ease;
