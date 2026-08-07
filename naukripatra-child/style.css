@@ -701,12 +701,24 @@ html.np-dark .np-sl{background:#1a2a5c;color:#8fc5ff}
 
 /* ---- 5th tile: Resume Maker. Spans both columns so the 2-column grid
        still ends on a complete row instead of leaving a half-empty gap. ---- */
-.np-quick-5{
+/* Colour is deliberately defence-in-depth so the tile can never render white:
+   - solid background-color first, so if the gradient is stripped (some mobile
+     cache/optimiser plugins do this) the tile is still solid red;
+   - literal hex instead of var(--np-red), so it survives even if the custom
+     properties in :root are missing from a minified or critical-CSS build;
+   - !important + the doubled class, so no plugin or parent theme rule wins.
+   Result: identical red on laptop, tablet and mobile. */
+.np-quick-btn.np-quick-5{
 	grid-column:1 / -1;
 	flex-direction:row;justify-content:flex-start;
 	gap:14px;padding:16px 18px;min-height:78px;
-	background:linear-gradient(135deg,#8e0000,var(--np-red) 55%,#ff6f60);
+	background-color:#d32f2f!important;
+	background-image:linear-gradient(135deg,#8e0000 0%,#e53935 55%,#ff6f60 100%)!important;
+	color:#fff!important;
 }
+.np-quick-5 .np-quick-5-title,
+.np-quick-5 .np-quick-5-txt,
+.np-quick-5 .np-quick-5-txt small{color:#fff!important}
 .np-quick-5 .np-quick-ico{font-size:30px;flex:0 0 auto}
 .np-quick-5-txt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;min-width:0}
 .np-quick-5-title{font-size:17px;font-weight:800;line-height:1.15}
@@ -790,7 +802,7 @@ html{-webkit-tap-highlight-color:transparent;scroll-behavior:smooth}
 	.np-quick-grid{grid-template-columns:1fr 1fr;gap:10px}
 	.np-quick-btn{padding:16px 8px;min-height:86px;border-radius:14px;font-size:13.5px}
 	.np-quick-ico{font-size:24px}
-	.np-quick-5{padding:14px 15px;min-height:70px;gap:12px}
+	.np-quick-btn.np-quick-5{padding:14px 15px;min-height:70px;gap:12px}
 	.np-quick-5 .np-quick-ico{font-size:26px}
 	.np-quick-5-title{font-size:15.5px}
 	.np-quick-5-txt small{font-size:11px}
@@ -862,7 +874,7 @@ html{-webkit-tap-highlight-color:transparent;scroll-behavior:smooth}
 	.np-hero-title{font-size:23px}
 	.np-quick-btn{font-size:12.5px;min-height:78px;padding:14px 6px}
 	.np-quick-ico{font-size:22px}
-	.np-quick-5{padding:12px 13px;min-height:64px;gap:10px}
+	.np-quick-btn.np-quick-5{padding:12px 13px;min-height:64px;gap:10px}
 	.np-quick-5 .np-quick-ico{font-size:24px}
 	.np-quick-5-title{font-size:14.5px}
 	.np-quick-5-txt small{font-size:10.2px;white-space:nowrap}

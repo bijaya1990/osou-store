@@ -68,7 +68,7 @@ get_header();
 					</a>
 				<?php endforeach; ?>
 
-				<a class="np-quick-btn np-quick-5" href="https://naukripatra.in/resume.php">
+				<a class="np-quick-btn np-quick-5" href="https://naukripatra.in/resume-builder/">
 					<span class="np-quick-ico">📄</span>
 					<span class="np-quick-5-txt">
 						<span class="np-quick-5-title">Resume Maker</span>
