@@ -943,41 +943,82 @@ input[type=range]::-moz-range-thumb{
 
   /* ------------------------------------------------------- file validation */
   /**
-   * Validates by decoding, not by trusting name or reported type. A file that
-   * does not decode as a real raster image is rejected whatever it claims.
+   * Detect the real format from the file's magic bytes.
+   *
+   * file.type is deliberately NOT trusted. It is unreliable in both
+   * directions: Android file managers, Downloads folders and chat apps often
+   * hand over a perfectly good JPEG labelled "application/octet-stream" or the
+   * non-standard "image/jpg" (which would wrongly reject a real photo), while
+   * a renamed script can simply claim "image/jpeg". The bytes cannot lie.
+   */
+  function sniffType(file) {
+    return new Promise(function (resolve) {
+      var slice = file.slice(0, 16);
+      function read(buf) {
+        var b = new Uint8Array(buf);
+        if (b.length >= 3 && b[0] === 0xFF && b[1] === 0xD8 && b[2] === 0xFF) {
+          resolve('image/jpeg'); return;
+        }
+        if (b.length >= 8 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4E && b[3] === 0x47 &&
+            b[4] === 0x0D && b[5] === 0x0A && b[6] === 0x1A && b[7] === 0x0A) {
+          resolve('image/png'); return;
+        }
+        if (b.length >= 12 && b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 &&
+            b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) {
+          resolve('image/webp'); return;
+        }
+        resolve(null);
+      }
+      if (slice.arrayBuffer) {
+        slice.arrayBuffer().then(read).catch(function () { resolve(null); });
+      } else {
+        var fr = new FileReader();
+        fr.onload = function () { read(fr.result); };
+        fr.onerror = function () { resolve(null); };
+        fr.readAsArrayBuffer(slice);
+      }
+    });
+  }
+
+  /**
+   * Validates by signature and then by decoding — never by file name or by the
+   * type the browser reports. Resolves with {img, kind}.
    */
   function loadImageFile(file) {
     return new Promise(function (resolve, reject) {
       if (!file) { reject(new Error('No file selected.')); return; }
-      if (OK_TYPES.indexOf(file.type) === -1) {
-        reject(new Error('Only JPG, JPEG, PNG and WEBP images are supported.'));
-        return;
-      }
+      if (file.size === 0) { reject(new Error('That file is empty.')); return; }
       if (file.size > MAX_BYTES) {
         reject(new Error('That file is ' + fmtBytes(file.size) + '. Please use an image under <?= (int) $MAX_MB ?> MB.'));
         return;
       }
-      if (file.size === 0) { reject(new Error('That file is empty.')); return; }
 
-      // createImageBitmap honours EXIF rotation, which matters for phone photos.
-      if (window.createImageBitmap) {
-        createImageBitmap(file, { imageOrientation: 'from-image' })
-          .then(function (bmp) {
-            if (!bmp.width || !bmp.height) { throw new Error('bad'); }
-            resolve(bmp);
-          })
-          .catch(function () { fallback(); });
-      } else {
-        fallback();
-      }
+      sniffType(file).then(function (kind) {
+        if (OK_TYPES.indexOf(kind) === -1) {
+          reject(new Error('Only JPG, JPEG, PNG and WEBP images are supported. That file does not look like one of them.'));
+          return;
+        }
 
-      function fallback() {
+        // createImageBitmap honours EXIF rotation, which matters for phone photos.
+        if (window.createImageBitmap) {
+          createImageBitmap(file, { imageOrientation: 'from-image' })
+            .then(function (bmp) {
+              if (!bmp.width || !bmp.height) { throw new Error('bad'); }
+              resolve({ img: bmp, kind: kind });
+            })
+            .catch(function () { fallback(kind); });
+        } else {
+          fallback(kind);
+        }
+      });
+
+      function fallback(kind) {
         var url = URL.createObjectURL(file);
         var img = new Image();
         img.onload = function () {
           URL.revokeObjectURL(url);
           if (!img.naturalWidth) { reject(new Error('That file is not a valid image.')); return; }
-          resolve(img);
+          resolve({ img: img, kind: kind });
         };
         img.onerror = function () {
           URL.revokeObjectURL(url);
@@ -1221,15 +1262,16 @@ input[type=range]::-moz-range-thumb{
 
   function rLoad(file) {
     note($('#r-upload-note'), '', '');
-    loadImageFile(file).then(function (img) {
-      R.img = img; R.name = file.name; R.type = file.type; R.size = file.size;
+    loadImageFile(file).then(function (res) {
+      var img = res.img;
+      R.img = img; R.name = file.name; R.type = res.kind; R.size = file.size;
       R.w = img.width; R.h = img.height;
 
       var meta = $('#r-src-meta');
       meta.classList.remove('hidden');
       meta.innerHTML =
         '<span>File: <b>' + esc(file.name) + '</b></span>' +
-        '<span>Format: <b>' + esc(file.type.replace('image/', '').toUpperCase()) + '</b></span>' +
+        '<span>Format: <b>' + esc(res.kind.replace('image/', '').toUpperCase()) + '</b></span>' +
         '<span>Size: <b>' + R.w + ' &times; ' + R.h + ' px</b></span>' +
         '<span>File size: <b>' + fmtBytes(file.size) + '</b></span>';
 
@@ -1241,7 +1283,7 @@ input[type=range]::-moz-range-thumb{
       c.style.borderRadius = '6px';
       stage.appendChild(c);
       $('#r-pv-src-f').innerHTML = '<b>' + R.w + ' &times; ' + R.h + ' px</b> · ' + fmtBytes(file.size) +
-        ' · ' + esc(file.type.replace('image/', '').toUpperCase());
+        ' · ' + esc(res.kind.replace('image/', '').toUpperCase());
 
       $('#r-w').value = R.w;
       $('#r-h').value = R.h;
@@ -1538,15 +1580,16 @@ input[type=range]::-moz-range-thumb{
 
   function sLoad(file) {
     note($('#s-upload-note'), '', '');
-    loadImageFile(file).then(function (img) {
-      S.img = img; S.name = file.name; S.type = file.type; S.size = file.size;
+    loadImageFile(file).then(function (res) {
+      var img = res.img;
+      S.img = img; S.name = file.name; S.type = res.kind; S.size = file.size;
       S.w = img.width; S.h = img.height;
 
       var meta = $('#s-src-meta');
       meta.classList.remove('hidden');
       meta.innerHTML =
         '<span>File: <b>' + esc(file.name) + '</b></span>' +
-        '<span>Format: <b>' + esc(file.type.replace('image/', '').toUpperCase()) + '</b></span>' +
+        '<span>Format: <b>' + esc(res.kind.replace('image/', '').toUpperCase()) + '</b></span>' +
         '<span>Size: <b>' + S.w + ' &times; ' + S.h + ' px</b></span>' +
         '<span>File size: <b>' + fmtBytes(file.size) + '</b></span>';
 
@@ -1557,7 +1600,7 @@ input[type=range]::-moz-range-thumb{
       c.style.borderRadius = '6px';
       stage.appendChild(c);
       $('#s-pv-src-f').innerHTML = '<b>' + S.w + ' &times; ' + S.h + ' px</b> · ' + fmtBytes(file.size) +
-        ' · ' + esc(file.type.replace('image/', '').toUpperCase());
+        ' · ' + esc(res.kind.replace('image/', '').toUpperCase());
 
       // Default to a typical signature box, keeping the aspect ratio.
       var dw = Math.min(300, S.w);
