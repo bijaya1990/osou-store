@@ -889,6 +889,12 @@ input[type=range]::-moz-range-thumb{
   var MAX_BYTES = <?= (int) $MAX_MB ?> * 1024 * 1024;
   var OK_TYPES  = ['image/jpeg', 'image/png', 'image/webp'];
   var MAX_DIM   = 12000;
+  // Above this the live preview is skipped: re-composing e.g. 9000x9000 on
+  // every keystroke locks the page up for many seconds.
+  var PREVIEW_MAX_PX = 4000000;
+  // iOS Safari refuses to produce a bitmap beyond roughly 16.7 million pixels,
+  // so anything past this may fail on a phone even though desktop copes.
+  var SAFE_MAX_PX = 16000000;
 
   /* ------------------------------------------------------------------ misc */
   function toast(msg, kind) {
@@ -1422,6 +1428,14 @@ input[type=range]::-moz-range-thumb{
 
   var rPreview = debounce(function () {
     if (!R.img) { return; }
+    var pw = rClamp($('#r-w').value), ph = rClamp($('#r-h').value);
+    if (pw * ph > PREVIEW_MAX_PX) {
+      $('#r-pv-out').classList.remove('checker');
+      $('#r-pv-out').innerHTML = '<div class="pv-empty">Live preview is paused at this size ' +
+        '(' + pw + ' &times; ' + ph + ' px).<br>Press <b>Resize Image</b> to generate it.</div>';
+      $('#r-pv-out-f').innerHTML = '<b>' + pw + ' &times; ' + ph + ' px</b> · not previewed';
+      return;
+    }
     var c = rCompose();
     var fmt = segValue($('#r-format'));
     var q = parseInt($('#r-quality').value, 10) / 100;
@@ -1472,7 +1486,14 @@ input[type=range]::-moz-range-thumb{
           '<span>' + (pct >= 0 ? 'Reduced by' : 'Increased by') + ': <b>' + Math.abs(pct) + '%</b></span>';
         $('#r-result').classList.remove('hidden');
 
+        var big = canvas.width * canvas.height > SAFE_MAX_PX;
         if (res.note) { note(msg, 'w', esc(res.note)); }
+        else if (big) {
+          note(msg, 'w', 'This output is ' + canvas.width + ' &times; ' + canvas.height +
+            ' px. Sizes this large can fail on iPhones and older Android phones, which cap ' +
+            'how big an image the browser may build. Reduce the width and height if the ' +
+            'result does not appear on a phone.');
+        }
         else if (rTargetBytes()) { note(msg, 'o', 'Target file size reached.'); }
 
         $('#r-copy').classList.toggle('hidden', !clipboardSupported());
@@ -1716,7 +1737,10 @@ input[type=range]::-moz-range-thumb{
       var members = [];
       while (sp > 0) {
         var p = stack[--sp];
-        members.push(p);
+        // Only small blobs get erased, so stop recording once we know this one
+        // is a keeper. Without this a mostly-dark image would build a members
+        // array holding every pixel.
+        if (members.length < minArea) { members.push(p); }
         n++;
         var px = p % w, py = (p / w) | 0;
         for (var dy = -1; dy <= 1; dy++) {
@@ -1866,6 +1890,14 @@ input[type=range]::-moz-range-thumb{
 
   var sPreview = debounce(function () {
     if (!S.img) { return; }
+    var pw = rClamp($('#s-w').value), ph = rClamp($('#s-h').value);
+    if (pw * ph > PREVIEW_MAX_PX) {
+      $('#s-pv-out').classList.remove('checker');
+      $('#s-pv-out').innerHTML = '<div class="pv-empty">Live preview is paused at this size ' +
+        '(' + pw + ' &times; ' + ph + ' px).<br>Press <b>Scan &amp; Prepare Signature</b> to generate it.</div>';
+      $('#s-pv-out-f').innerHTML = '<b>' + pw + ' &times; ' + ph + ' px</b> · not previewed';
+      return;
+    }
     var r;
     try { r = sCompose(); } catch (e) { return; }
     var fmt = segValue($('#s-format'));
