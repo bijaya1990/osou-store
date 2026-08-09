@@ -104,69 +104,79 @@ $YEAR = date('Y');
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Free online image resizer and signature scanner. Resize to exact pixel size and target file size in KB, and clean your signature for online forms. Runs entirely in your browser.">
 <meta name="robots" content="index, follow">
-<meta name="theme-color" content="#1d4ed8">
+<meta name="theme-color" content="#e8123f">
 <title><?= e($TOOL_NAME) ?> — Image Resizer &amp; Signature Scanner</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231d4ed8'/%3E%3Cpath d='M26 66l16-18 12 13 8-9 12 14z' fill='%23fff'/%3E%3Ccircle cx='36' cy='34' r='7' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23e8123f'/%3E%3Cpath d='M26 66l16-18 12 13 8-9 12 14z' fill='%23fff'/%3E%3Ccircle cx='36' cy='34' r='7' fill='%23fff'/%3E%3C/svg%3E">
 
 <style>
 /* ===========================================================================
    1. Design tokens
    =========================================================================== */
+/* Brand: red. One red gradient drives every button, in both tools. Warm
+   secondary hues (orange / pink / violet) appear only on small decorative
+   icon tiles; green stays for success and amber for warnings so those still
+   read as status rather than branding. */
 :root{
-  --indigo:#6366f1;  --indigo-d:#4f46e5;
-  --violet:#8b5cf6;
-  --pink:#ec4899;
-  --sky:#0ea5e9;
-  --emerald:#10b981; --emerald-d:#059669;
-  --teal:#14b8a6;
-  --amber:#f59e0b;
-  --rose:#f43f5e;
+  --red-1:#ff5f7e;
+  --red:#e8123f;
+  --red-2:#a90a2c;
+  --red-grad:linear-gradient(135deg,#ff5470 0%,#e8123f 52%,#b00a2c 100%);
+  --red-soft:#fff1f4;
+  --red-line:#ffc9d4;
+  --red-glow:0 8px 26px rgba(232,18,63,.34);
 
-  --ink:#0f1729;
-  --ink-2:#334155;
-  --muted:#64748b;
-  --faint:#94a3b8;
-  --line:#e6ebf3;
-  --line-2:#eff3f9;
+  --orange:#ff7a18;
+  --pink:#ff2d95;
+  --violet:#7c3aed;
+
+  --ink:#12101a;
+  --ink-2:#3a3644;
+  --muted:#6b6675;
+  --faint:#9a94a5;
+  --line:#eee7ea;
+  --line-2:#f6f1f3;
   --card:#fff;
 
-  --ok:#059669; --ok-bg:#ecfdf5; --ok-line:#a7f3d0;
+  --ok:#0d9668; --ok-bg:#ecfdf5; --ok-line:#a7f3d0;
   --warn:#b45309; --warn-bg:#fffbeb; --warn-line:#fde68a;
-  --err:#e11d48; --err-bg:#fff1f2; --err-line:#fecdd3;
+  --err:#9f0f30; --err-bg:#fff5f7; --err-line:#ffc9d4;
 
-  --r-sm:12px; --r:18px; --r-lg:24px;
-  --sh-1:0 1px 2px rgba(15,23,41,.05), 0 4px 12px rgba(15,23,41,.05);
-  --sh-2:0 4px 10px rgba(15,23,41,.06), 0 16px 40px rgba(15,23,41,.09);
-  --sh-glow:0 8px 24px rgba(99,102,241,.35);
+  --r-sm:12px; --r:18px; --r-lg:26px;
+  --sh-1:0 1px 2px rgba(18,16,26,.05), 0 4px 14px rgba(18,16,26,.05);
+  --sh-2:0 4px 12px rgba(18,16,26,.07), 0 18px 44px rgba(18,16,26,.10);
 
-  /* Per-tool accent, swapped when a tab is chosen */
-  --accent:var(--indigo);
-  --accent-d:var(--indigo-d);
-  --accent-grad:linear-gradient(135deg,#6366f1,#8b5cf6 55%,#a855f7);
-  --accent-soft:#eef2ff;
-  --accent-line:#c7d2fe;
-}
-body[data-tool="signature"]{
-  --accent:var(--emerald);
-  --accent-d:var(--emerald-d);
-  --accent-grad:linear-gradient(135deg,#10b981,#14b8a6 55%,#06b6d4);
-  --accent-soft:#ecfdf5;
-  --accent-line:#a7f3d0;
+  /* Single accent for the whole app - both tools use the same red. */
+  --accent:var(--red);
+  --accent-d:var(--red-2);
+  --accent-grad:var(--red-grad);
+  --accent-soft:var(--red-soft);
+  --accent-line:var(--red-line);
+  --sh-glow:var(--red-glow);
 }
 
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+/* No global scroll-behavior:smooth. It does not affect flick scrolling, but an
+   in-flight smooth animation fights a user who starts scrolling during it,
+   which feels like lag. The few places that want an animated jump ask for it
+   explicitly in JS. */
+html{-webkit-text-size-adjust:100%}
+/* html carries the flat base colour; the decorative mesh lives on a FIXED,
+   composited pseudo-element. Putting background-attachment:fixed on <body>
+   instead makes the browser repaint the whole viewport on every scroll frame,
+   which is the usual cause of stuttery scrolling on phones. */
+html{background:#fdf8f9}
 body{
-  margin:0;color:var(--ink);
+  margin:0;color:var(--ink);background:transparent;
   font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   font-size:15.5px;line-height:1.55;-webkit-font-smoothing:antialiased;
   overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:
-    radial-gradient(900px 500px at 8% -8%, #e0e7ff 0%, transparent 60%),
-    radial-gradient(800px 460px at 96% 2%, #fce7f3 0%, transparent 58%),
-    radial-gradient(700px 500px at 50% 108%, #cffafe 0%, transparent 60%),
-    #f7f9fd;
-  background-attachment:fixed;
+    radial-gradient(900px 520px at 4% -10%, #ffdfe6 0%, transparent 62%),
+    radial-gradient(820px 470px at 100% -2%, #ffe6d6 0%, transparent 60%),
+    radial-gradient(780px 540px at 52% 110%, #ffeaf0 0%, transparent 62%);
 }
 img{max-width:100%;display:block}
 button{font:inherit;color:inherit}
@@ -180,19 +190,23 @@ button{font:inherit;color:inherit}
    =========================================================================== */
 .site-head{
   position:sticky;top:0;z-index:60;
-  background:rgba(255,255,255,.82);backdrop-filter:saturate(180%) blur(14px);
-  border-bottom:1px solid rgba(226,232,240,.9);
+  background:#fff;border-bottom:1px solid var(--line);
+}
+/* Blur only where it is cheap. On phones a translucent blurred header must be
+   re-composited every scroll frame, so there we keep it solid. */
+@media (min-width:701px){
+  .site-head{background:rgba(255,255,255,.8);backdrop-filter:saturate(180%) blur(10px)}
 }
 .site-head-in{display:flex;align-items:center;gap:12px;padding:12px 0}
 .logo{
   width:42px;height:42px;border-radius:13px;flex:0 0 42px;display:grid;place-items:center;
-  background:linear-gradient(135deg,#6366f1,#8b5cf6 50%,#ec4899);color:#fff;
-  box-shadow:0 6px 18px rgba(139,92,246,.4);
+  background:var(--red-grad);color:#fff;
+  box-shadow:var(--red-glow);
 }
 .logo svg{width:23px;height:23px}
 .brand b{
   display:block;font-size:17px;font-weight:800;letter-spacing:-.35px;line-height:1.15;
-  background:linear-gradient(90deg,#4f46e5,#8b5cf6 55%,#ec4899);
+  background:linear-gradient(90deg,#e8123f,#ff2d95 55%,#ff7a18);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .brand span{display:block;font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.02em}
@@ -212,14 +226,14 @@ button{font:inherit;color:inherit}
   padding:6px 15px;font-size:12.5px;font-weight:700;color:var(--ink-2);
   box-shadow:var(--sh-1);margin-bottom:16px;
 }
-.hero .pill i{width:7px;height:7px;border-radius:50%;background:var(--emerald);animation:pulse 2s ease-in-out infinite}
+.hero .pill i{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.82)}}
 .hero h1{
   margin:0 0 12px;font-size:clamp(28px,5.4vw,46px);font-weight:900;letter-spacing:-1.4px;line-height:1.08;
 }
 .hero h1 em{
   font-style:normal;
-  background:linear-gradient(100deg,#4f46e5,#8b5cf6 40%,#ec4899 75%,#f59e0b);
+  background:linear-gradient(100deg,#e8123f,#ff2d95 38%,#ff5470 62%,#ff7a18);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .hero p{margin:0 auto;max-width:620px;color:var(--muted);font-size:16px}
@@ -262,8 +276,8 @@ button{font:inherit;color:inherit}
   box-shadow:0 8px 20px rgba(15,23,41,.16);
 }
 .tool-card .ic svg{width:26px;height:26px}
-#tab-resizer .ic{background:linear-gradient(135deg,#6366f1,#8b5cf6 60%,#a855f7)}
-#tab-signature .ic{background:linear-gradient(135deg,#10b981,#14b8a6 60%,#06b6d4)}
+#tab-resizer .ic{background:linear-gradient(135deg,#ff5470,#e8123f 60%,#b00a2c)}
+#tab-signature .ic{background:linear-gradient(135deg,#ff7a18,#ff2d55 60%,#e8123f)}
 .tool-card h2{margin:0 0 4px;font-size:18px;font-weight:800;letter-spacing:-.3px}
 .tool-card p{margin:0;font-size:13.8px;color:var(--muted);line-height:1.45}
 .tool-card .tick{
@@ -271,8 +285,8 @@ button{font:inherit;color:inherit}
   display:grid;place-items:center;background:var(--line-2);color:transparent;transition:.2s;
 }
 .tool-card .tick svg{width:14px;height:14px}
-#tab-resizer[aria-selected="true"]{border-color:var(--indigo);background:linear-gradient(180deg,#f5f3ff,#fff 60%)}
-#tab-signature[aria-selected="true"]{border-color:var(--emerald);background:linear-gradient(180deg,#ecfdf5,#fff 60%)}
+#tab-resizer[aria-selected="true"]{border-color:var(--red);background:linear-gradient(180deg,#fff1f4,#fff 62%)}
+#tab-signature[aria-selected="true"]{border-color:var(--red);background:linear-gradient(180deg,#fff3ec,#fff 62%)}
 .tool-card[aria-selected="true"]{box-shadow:var(--sh-2)}
 .tool-card[aria-selected="true"] .tick{background:var(--accent);color:#fff}
 .tool-card[aria-selected="true"]::after{opacity:1}
@@ -288,7 +302,7 @@ button{font:inherit;color:inherit}
 }
 .privacy .pi{
   width:38px;height:38px;flex:0 0 38px;border-radius:12px;display:grid;place-items:center;color:#fff;
-  background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 6px 16px rgba(16,185,129,.35);
+  background:linear-gradient(135deg,#12b981,#0d9668);box-shadow:0 6px 16px rgba(13,150,104,.3);
 }
 .privacy .pi svg{width:20px;height:20px}
 .privacy b{display:block;font-size:14.5px;margin-bottom:2px;color:#065f46}
@@ -309,9 +323,8 @@ button{font:inherit;color:inherit}
 .card-h .n{
   width:32px;height:32px;flex:0 0 32px;border-radius:11px;color:#fff;
   display:grid;place-items:center;font-size:14px;font-weight:800;
-  background:var(--accent-grad);box-shadow:0 5px 14px rgba(99,102,241,.3);
+  background:var(--accent-grad);box-shadow:0 5px 14px rgba(232,18,63,.3);
 }
-body[data-tool="signature"] .card-h .n{box-shadow:0 5px 14px rgba(16,185,129,.32)}
 .card-h h3{margin:0;font-size:17px;font-weight:800;letter-spacing:-.25px}
 .card-h .sub{margin:0;font-size:13px;color:var(--muted);flex:1 1 100%}
 .card-b{padding:20px}
@@ -329,9 +342,8 @@ body[data-tool="signature"] .card-h .n{box-shadow:0 5px 14px rgba(16,185,129,.32
 .drop.over{border-color:var(--accent);background:var(--accent-soft);transform:scale(1.01)}
 .drop .di{
   width:66px;height:66px;margin:0 auto 14px;border-radius:20px;display:grid;place-items:center;
-  color:#fff;background:var(--accent-grad);box-shadow:0 10px 26px rgba(99,102,241,.34);
+  color:#fff;background:var(--accent-grad);box-shadow:var(--red-glow);
 }
-body[data-tool="signature"] .drop .di{box-shadow:0 10px 26px rgba(16,185,129,.34)}
 .drop .di svg{width:32px;height:32px}
 .drop b{display:block;font-size:18px;font-weight:800;margin-bottom:4px;letter-spacing:-.3px}
 .drop .dsub{display:block;font-size:14px;color:var(--muted)}
@@ -340,8 +352,8 @@ body[data-tool="signature"] .drop .di{box-shadow:0 10px 26px rgba(16,185,129,.34
   display:flex;align-items:center;gap:10px;max-width:220px;
 }
 .drop .or::before,.drop .or::after{content:"";flex:1;height:1px;background:var(--line)}
-/* display:flex, not inline-flex: as an inline box it would sit on the same
-   line as the Choose button instead of below it. */
+/* display:flex, not inline-flex: as an inline box it sits on the same line as
+   the Choose button instead of below it. */
 .drop .fmts{
   margin-top:16px;font-size:12.2px;color:var(--muted);font-weight:600;
   display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:7px 10px;
@@ -368,7 +380,6 @@ body[data-tool="signature"] .drop .di{box-shadow:0 10px 26px rgba(16,185,129,.34
   background:var(--accent-grad);border-color:transparent;color:#fff;
   box-shadow:var(--sh-glow);
 }
-body[data-tool="signature"] .btn-p{box-shadow:0 8px 24px rgba(16,185,129,.35)}
 .btn-p:hover{filter:brightness(1.07);color:#fff;border-color:transparent}
 .btn-s{background:var(--accent-soft);border-color:transparent;color:var(--accent-d)}
 .btn-s:hover{background:color-mix(in srgb,var(--accent) 14%, #fff);color:var(--accent-d)}
@@ -398,11 +409,11 @@ body[data-tool="signature"] .btn-p{box-shadow:0 8px 24px rgba(16,185,129,.35)}
   color:#fff;margin-bottom:10px;
 }
 .qp .qi svg{width:19px;height:19px}
-.qp .q1 .qi{background:linear-gradient(135deg,#6366f1,#818cf8)}
-.qp .q2 .qi{background:linear-gradient(135deg,#0ea5e9,#38bdf8)}
-.qp .q3 .qi{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
-.qp .q4 .qi{background:linear-gradient(135deg,#ec4899,#f472b6)}
-.qp .q5 .qi{background:linear-gradient(135deg,#10b981,#34d399)}
+.qp .q1 .qi{background:linear-gradient(135deg,#ff5470,#e8123f)}
+.qp .q2 .qi{background:linear-gradient(135deg,#ff2d95,#c9186f)}
+.qp .q3 .qi{background:linear-gradient(135deg,#ff7a18,#f2560a)}
+.qp .q4 .qi{background:linear-gradient(135deg,#7c3aed,#a855f7)}
+.qp .q5 .qi{background:linear-gradient(135deg,#e8123f,#ff7a18)}
 .qp strong{display:block;font-size:14.5px;font-weight:800;letter-spacing:-.2px;margin-bottom:2px}
 .qp em{display:block;font-style:normal;font-size:12.2px;color:var(--muted);font-weight:600}
 
@@ -466,7 +477,7 @@ select.inp{
 /* range */
 input[type=range]{
   -webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:99px;
-  background:linear-gradient(90deg,var(--accent) 0%,#dbe3ee 0%);outline:none;margin:14px 0;cursor:pointer;
+  background:linear-gradient(90deg,var(--accent) 0%,#f0e6ea 0%);outline:none;margin:14px 0;cursor:pointer;
 }
 input[type=range]::-webkit-slider-thumb{
   -webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;
@@ -492,7 +503,6 @@ input[type=range]:disabled{opacity:.45;cursor:not-allowed}
 }
 .chip:hover{border-color:var(--accent-line);color:var(--accent-d);transform:translateY(-2px)}
 .chip[aria-pressed="true"]{background:var(--accent-grad);border-color:transparent;color:#fff;box-shadow:var(--sh-glow)}
-body[data-tool="signature"] .chip[aria-pressed="true"]{box-shadow:0 6px 18px rgba(16,185,129,.32)}
 
 /* segmented */
 .seg{display:flex;gap:6px;background:#f1f5f9;padding:6px;border-radius:15px;flex-wrap:wrap}
@@ -557,9 +567,9 @@ body[data-tool="signature"] .chip[aria-pressed="true"]{box-shadow:0 6px 18px rgb
 /* notes */
 .note{display:flex;gap:11px;align-items:flex-start;border-radius:14px;padding:13px 15px;font-size:13.4px;line-height:1.55;margin-top:14px;border:1px solid transparent}
 .note svg{width:18px;height:18px;flex:0 0 18px;margin-top:1px}
-.note-i{background:#eef2ff;border-color:#c7d2fe;color:#3730a3}
+.note-i{background:var(--red-soft);border-color:var(--red-line);color:#8a0d2b}
 .note-w{background:var(--warn-bg);border-color:var(--warn-line);color:#92400e}
-.note-e{background:var(--err-bg);border-color:var(--err-line);color:#9f1239}
+.note-e{background:var(--err-bg);border-color:var(--err-line);border-left:4px solid var(--err);color:#7d0a24}
 .note-o{background:var(--ok-bg);border-color:var(--ok-line);color:#065f46}
 
 /* result */
@@ -571,7 +581,7 @@ body[data-tool="signature"] .chip[aria-pressed="true"]{box-shadow:0 6px 18px rgb
 .result h4{margin:0 0 11px;font-size:16px;font-weight:800;color:#065f46;display:flex;align-items:center;gap:10px}
 .result h4 .rk{
   width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;
-  background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 12px rgba(16,185,129,.4);
+  background:linear-gradient(135deg,#12b981,#0d9668);box-shadow:0 4px 12px rgba(13,150,104,.35);
 }
 .result h4 svg{width:17px;height:17px}
 
@@ -596,8 +606,8 @@ body[data-tool="signature"] .chip[aria-pressed="true"]{box-shadow:0 6px 18px rgb
   z-index:200;max-width:92vw;text-align:center;
 }
 .toast.show{opacity:1;transform:translate(-50%,0)}
-.toast.err{background:linear-gradient(135deg,#e11d48,#be123c)}
-.toast.ok{background:linear-gradient(135deg,#059669,#047857)}
+.toast.err{background:linear-gradient(135deg,#7d0a24,#4a0416)}
+.toast.ok{background:linear-gradient(135deg,#0d9668,#065f46)}
 
 /* ===========================================================================
    13. Responsive
@@ -2097,10 +2107,16 @@ body[data-tool="signature"] .chip[aria-pressed="true"]{box-shadow:0 6px 18px rgb
      A summed-area table gives the local mean in O(1) per pixel, so this stays
      fast even on a full-resolution phone photo.
      ------------------------------------------------------------------------ */
-  var WORK_MAX = 1600;   // cap the processing resolution for speed
+  // Full quality for the final render. The live preview uses PREVIEW_WORK_MAX
+  // instead: the adaptive-threshold pass is O(pixels) on the main thread, and
+  // at 1600px it can run for seconds on a phone, which makes the whole page
+  // (including scrolling) stutter while the user is still adjusting sliders.
+  // Previewing at 600px is ~7x less work and looks identical at preview size.
+  var WORK_MAX = 1600;
+  var PREVIEW_WORK_MAX = 600;
 
-  function sWorkCanvas() {
-    var scale = Math.min(1, WORK_MAX / Math.max(S.w, S.h));
+  function sWorkCanvas(maxPx) {
+    var scale = Math.min(1, (maxPx || WORK_MAX) / Math.max(S.w, S.h));
     var w = Math.max(1, Math.round(S.w * scale)), h = Math.max(1, Math.round(S.h * scale));
     var c = newCanvas(w, h), ctx = c.getContext('2d');
     ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h);
@@ -2242,7 +2258,7 @@ body[data-tool="signature"] .chip[aria-pressed="true"]{box-shadow:0 6px 18px rgb
     return res;
   }
 
-  function sCompose() {
+  function sCompose(workMax) {
     var mode = segValue($('#s-mode'));
     var fmt = segValue($('#s-format'));
     var png = fmt === 'png';
@@ -2250,7 +2266,7 @@ body[data-tool="signature"] .chip[aria-pressed="true"]{box-shadow:0 6px 18px rgb
     var detect = parseInt($('#s-thr').value, 10);
     var denoise = $('#s-noise').checked;
 
-    var work = sWorkCanvas();
+    var work = sWorkCanvas(workMax);
     var cleaned = sClean(work, mode, detect, denoise, transparent);
 
     var w = rClamp($('#s-w').value), h = rClamp($('#s-h').value);
@@ -2282,13 +2298,13 @@ body[data-tool="signature"] .chip[aria-pressed="true"]{box-shadow:0 6px 18px rgb
       return;
     }
     var r;
-    try { r = sCompose(); } catch (e) { return; }
+    try { r = sCompose(PREVIEW_WORK_MAX); } catch (e) { return; }
     var fmt = segValue($('#s-format'));
     var q = parseInt($('#s-quality').value, 10) / 100;
     canvasToBlob(r.canvas, mimeFor(fmt), q).then(function (b) {
       sShowOut(r.canvas, b, fmt, r.transparent, false);
     }).catch(function () {});
-  }, 260);
+  }, 320);
 
   function sShowOut(canvas, blob, fmt, transparent, isFinal) {
     var stage = $('#s-pv-out');
