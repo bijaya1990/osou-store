@@ -180,7 +180,7 @@ body::before{
 }
 img{max-width:100%;display:block}
 button{font:inherit;color:inherit}
-:focus-visible{outline:3px solid color-mix(in srgb, var(--accent) 45%, transparent);outline-offset:2px}
+:focus-visible{outline:3px solid rgba(232,18,63,.45);outline-offset:2px}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .hidden{display:none!important}
 .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
@@ -372,7 +372,10 @@ button{font:inherit;color:inherit}
   border-radius:13px;padding:12px 18px;font-size:15px;font-weight:700;
   cursor:pointer;transition:.16s;text-decoration:none;min-height:48px;
 }
-.btn:hover{background:#fbfcfe;border-color:#cdd7e5;transform:translateY(-1px)}
+/* background-COLOR, not the `background` shorthand: the shorthand resets
+   background-image, which wiped .btn-p's red gradient and made every primary
+   button flash white on hover. */
+.btn:hover{background-color:#fbfcfe;border-color:#cdd7e5;transform:translateY(-1px)}
 .btn:active{transform:translateY(0)}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .btn svg{width:18px;height:18px;flex:0 0 18px}
@@ -380,9 +383,9 @@ button{font:inherit;color:inherit}
   background:var(--accent-grad);border-color:transparent;color:#fff;
   box-shadow:var(--sh-glow);
 }
-.btn-p:hover{filter:brightness(1.07);color:#fff;border-color:transparent}
+.btn-p:hover{background:var(--accent-grad);filter:brightness(1.08);color:#fff;border-color:transparent}
 .btn-s{background:var(--accent-soft);border-color:transparent;color:var(--accent-d)}
-.btn-s:hover{background:color-mix(in srgb,var(--accent) 14%, #fff);color:var(--accent-d)}
+.btn-s:hover{background:#ffe0e7;color:var(--accent-d)}
 .btn-d{color:var(--err);border-color:var(--err-line);background:var(--err-bg)}
 .btn-d:hover{background:#ffe4e6;border-color:#fda4af}
 .btn-lg{width:100%;padding:17px 22px;font-size:17px;border-radius:15px;min-height:58px;letter-spacing:-.2px}
@@ -446,7 +449,7 @@ button{font:inherit;color:inherit}
   font-size:16px;font-weight:600;background:#fcfdff;color:var(--ink);min-height:50px;
   transition:.15s;
 }
-.inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent);background:#fff}
+.inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px rgba(232,18,63,.16);background:#fff}
 select.inp{
   appearance:none;cursor:pointer;
   background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2364748b'%3E%3Cpath d='M4 6l4 4 4-4z'/%3E%3C/svg%3E");
@@ -469,7 +472,7 @@ select.inp{
 .tgl .track::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.22s;box-shadow:0 2px 5px rgba(0,0,0,.22)}
 .tgl input:checked+.track{background:var(--accent)}
 .tgl input:checked+.track::after{transform:translateX(20px)}
-.tgl input:focus-visible+.track{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 30%,transparent)}
+.tgl input:focus-visible+.track{box-shadow:0 0 0 4px rgba(232,18,63,.3)}
 .tgl .tl{font-size:14.5px;font-weight:700}
 .tgl .td{font-size:12.4px;color:var(--muted);font-weight:500}
 .tgl input:checked~span .tl{color:var(--accent-d)}
@@ -544,7 +547,7 @@ input[type=range]:disabled{opacity:.45;cursor:not-allowed}
 }
 .pv-h .dot{width:8px;height:8px;border-radius:50%;background:var(--faint)}
 .pv-out .pv-h{background:var(--accent-soft);color:var(--accent-d)}
-.pv-out .pv-h .dot{background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent)}
+.pv-out .pv-h .dot{background:var(--accent);box-shadow:0 0 0 4px rgba(232,18,63,.22)}
 .pv-stage{flex:1;min-height:200px;display:grid;place-items:center;padding:16px;background:#f8fafc}
 .pv-stage img,.pv-stage canvas{max-height:290px;width:auto;max-width:100%;border-radius:8px;box-shadow:0 3px 12px rgba(15,23,41,.14)}
 .pv-stage.checker{
