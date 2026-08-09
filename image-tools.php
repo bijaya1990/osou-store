@@ -660,7 +660,7 @@ body[data-tool="signature"] .chip[aria-pressed="true"]{box-shadow:0 6px 18px rgb
 <main class="wrap">
 
   <div class="hero">
-    <span class="pill"><i></i> 100% free &middot; No sign-up &middot; Works offline</span>
+    <span class="pill"><i></i> 100% free &middot; No sign-up &middot; Nothing is uploaded</span>
     <h1>Resize photos &amp; clean your <em>signature</em> in seconds</h1>
     <p><?= e($TOOL_SUB) ?></p>
     <ul class="howto">
@@ -1328,6 +1328,17 @@ body[data-tool="signature"] .chip[aria-pressed="true"]{box-shadow:0 6px 18px rgb
             b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) {
           resolve('image/webp'); return;
         }
+        // ISO-BMFF container: "....ftyp<brand>". iPhones shoot HEIC by default,
+        // so this is a common upload. Safari can decode it, most other browsers
+        // cannot — we detect it here so the user gets useful advice instead of
+        // a blank "unsupported" message.
+        if (b.length >= 12 && b[4] === 0x66 && b[5] === 0x74 && b[6] === 0x79 && b[7] === 0x70) {
+          var brand = String.fromCharCode(b[8], b[9], b[10], b[11]).toLowerCase();
+          if (['heic', 'heix', 'heim', 'heis', 'hevc', 'hevm', 'hevs', 'mif1', 'msf1'].indexOf(brand) !== -1) {
+            resolve('image/heic'); return;
+          }
+          if (brand === 'avif' || brand === 'avis') { resolve('image/avif'); return; }
+        }
         resolve(null);
       }
       if (slice.arrayBuffer) {
@@ -1355,7 +1366,11 @@ body[data-tool="signature"] .chip[aria-pressed="true"]{box-shadow:0 6px 18px rgb
       }
 
       sniffType(file).then(function (kind) {
-        if (OK_TYPES.indexOf(kind) === -1) {
+        // HEIC/AVIF are not in the advertised list, but if the browser happens
+        // to decode them (Safari does) there is no reason to refuse the user.
+        // Anything that decodes is re-encoded to JPG/PNG on the way out.
+        var tryAnyway = (kind === 'image/heic' || kind === 'image/avif');
+        if (OK_TYPES.indexOf(kind) === -1 && !tryAnyway) {
           reject(new Error('Only JPG, JPEG, PNG and WEBP images are supported. That file does not look like one of them.'));
           return;
         }
@@ -1383,6 +1398,19 @@ body[data-tool="signature"] .chip[aria-pressed="true"]{box-shadow:0 6px 18px rgb
         };
         img.onerror = function () {
           URL.revokeObjectURL(url);
+          if (kind === 'image/heic') {
+            reject(new Error('This looks like an iPhone HEIC photo, which this browser cannot open. ' +
+              'Easiest fix: on your iPhone go to Settings \u2192 Camera \u2192 Formats and choose ' +
+              '"Most Compatible", then take the photo again. For a photo you already have, open it in ' +
+              'Photos, tap Share \u2192 Copy Photo, paste it into a new note or message, and save that ' +
+              'copy as a JPG.'));
+            return;
+          }
+          if (kind === 'image/avif') {
+            reject(new Error('This is an AVIF image, which this browser cannot open. Please save or ' +
+              'export it as a JPG or PNG and try again.'));
+            return;
+          }
           reject(new Error('That file could not be read as an image.'));
         };
         img.src = url;
