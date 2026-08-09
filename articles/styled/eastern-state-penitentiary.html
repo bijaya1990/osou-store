@@ -1,0 +1,752 @@
+<title>Eastern State Penitentiary: The Prison That Drove Men Mad</title>
+<style id="pagecss">
+  :root {
+    --ground: #E3E1DB;
+    --surface: #EFEDE7;
+    --ink: #1C1A17;
+    --ink-soft: #3E3A34;
+    --muted: #6A6459;
+    --faint: #97917F;
+    --accent: #2E4A5C;
+    --accent-lit: #46697F;
+    --iron: #97502F;
+    --shadow: 28 26 23;
+
+    --font-display: Baskerville, "Baskerville Old Face", "Hoefler Text", "Times New Roman", Georgia, serif;
+    --font-body: "Sitka Text", Cambria, Charter, Georgia, serif;
+    --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+    --measure: 66ch;
+    --step--1: clamp(0.83rem, 0.81rem + 0.1vw, 0.89rem);
+    --step-0: clamp(1.06rem, 1.02rem + 0.2vw, 1.19rem);
+    --step-1: clamp(1.3rem, 1.22rem + 0.4vw, 1.52rem);
+    --step-2: clamp(1.58rem, 1.4rem + 0.85vw, 2.05rem);
+    --step-3: clamp(2.1rem, 1.7rem + 1.9vw, 3.3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #14161A;
+      --surface: #1C2026;
+      --ink: #E0DDD6;
+      --ink-soft: #BDB9B0;
+      --muted: #918C82;
+      --faint: #6C6960;
+      --accent: #7FA8C0;
+      --accent-lit: #9CC1D6;
+      --iron: #C8815C;
+      --shadow: 0 0 0;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #14161A;
+    --surface: #1C2026;
+    --ink: #E0DDD6;
+    --ink-soft: #BDB9B0;
+    --muted: #918C82;
+    --faint: #6C6960;
+    --accent: #7FA8C0;
+    --accent-lit: #9CC1D6;
+    --iron: #C8815C;
+    --shadow: 0 0 0;
+  }
+  :root[data-theme="light"] {
+    --ground: #E3E1DB;
+    --surface: #EFEDE7;
+    --ink: #1C1A17;
+    --ink-soft: #3E3A34;
+    --muted: #6A6459;
+    --faint: #97917F;
+    --accent: #2E4A5C;
+    --accent-lit: #46697F;
+    --iron: #97502F;
+    --shadow: 28 26 23;
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: var(--measure);
+    margin-inline: auto;
+    padding-inline: clamp(1.15rem, 5vw, 2rem);
+  }
+
+  .bar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--ground) 88%, transparent);
+    backdrop-filter: blur(12px) saturate(1.25);
+    -webkit-backdrop-filter: blur(12px) saturate(1.25);
+  }
+  .bar-in {
+    max-width: var(--measure);
+    margin-inline: auto;
+    padding: 0.75rem clamp(1.15rem, 5vw, 2rem);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .stamp {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-right: auto;
+  }
+  button {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.55rem 0.95rem;
+    border-radius: 1px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 140ms ease, color 140ms ease;
+  }
+  .btn-primary { background: var(--accent); color: var(--ground); font-weight: 600; }
+  .btn-primary:hover { background: var(--accent-lit); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border-color: color-mix(in srgb, var(--muted) 40%, transparent);
+  }
+  .btn-ghost:hover { color: var(--ink); background: var(--surface); }
+  button:focus-visible { outline: 2px solid var(--iron); outline-offset: 2px; }
+  .btn-done { background: var(--iron) !important; color: var(--ground) !important; border-color: transparent !important; }
+
+  .hero {
+    padding-block: clamp(3rem, 9vw, 6.5rem) clamp(2rem, 5vw, 3.5rem);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: -60% 30% auto -10%;
+    height: 150%;
+    background: radial-gradient(ellipse 28% 42% at 50% 0%, color-mix(in srgb, #FFF6DC 34%, transparent), transparent 72%);
+    pointer-events: none;
+  }
+  .hero > * { position: relative; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--iron);
+    display: block;
+    margin-bottom: 1.4rem;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    line-height: 1.02;
+    font-weight: 600;
+    letter-spacing: -0.014em;
+    text-wrap: balance;
+    margin-bottom: 1.5rem;
+  }
+  .deck {
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    font-style: italic;
+    text-wrap: pretty;
+    margin-bottom: 1.8rem;
+  }
+  .byline {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--faint);
+    display: flex;
+    gap: 1.1rem;
+    flex-wrap: wrap;
+  }
+
+  article { padding-bottom: 4rem; }
+  section { padding-block: clamp(1.6rem, 4vw, 2.6rem); }
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1.14;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin-bottom: 1.1rem;
+  }
+  h2 .kicker {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 400;
+    margin-bottom: 0.85rem;
+  }
+  h3 {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    line-height: 1.25;
+    font-weight: 600;
+    margin: 2rem 0 0.7rem;
+    text-wrap: balance;
+  }
+  p { margin-bottom: 1.2rem; text-wrap: pretty; }
+  p:last-child { margin-bottom: 0; }
+  strong { font-weight: 700; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:hover { color: var(--accent-lit); }
+
+  ul { margin: 0 0 1.3rem 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+  ul li { padding-left: 1.5rem; position: relative; }
+  ul li::before {
+    content: "";
+    position: absolute;
+    left: 0.15rem;
+    top: 0.7em;
+    width: 6px;
+    height: 6px;
+    background: var(--iron);
+  }
+
+  .lede::first-letter {
+    font-family: var(--font-display);
+    float: left;
+    font-size: 3.5em;
+    line-height: 0.84;
+    padding: 0.06em 0.11em 0 0;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  blockquote {
+    margin: 2.2rem 0;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1.3;
+    color: var(--iron);
+    font-style: italic;
+    text-wrap: balance;
+  }
+
+  .card {
+    background: var(--surface);
+    padding: clamp(1.3rem, 3.5vw, 1.9rem);
+    border-radius: 2px;
+    margin: 2rem 0;
+    box-shadow: 0 1px 3px rgb(var(--shadow) / 0.08);
+  }
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--iron);
+    display: block;
+    margin-bottom: 0.9rem;
+  }
+  .card p { font-size: var(--step--1); line-height: 1.65; margin-bottom: 0.85rem; }
+  .card p:last-child { margin-bottom: 0; }
+
+  .ledger {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1.4rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-variant-numeric: tabular-nums;
+    margin: 1.9rem 0;
+  }
+  .ledger dt { color: var(--accent); white-space: nowrap; }
+  .ledger dd { color: var(--ink-soft); }
+
+  .faq-q {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 1.8rem 0 0.5rem;
+  }
+
+  .endnote {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.65;
+    color: var(--faint);
+    padding-top: 1rem;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 1.6rem;
+    left: 50%;
+    transform: translate(-50%, 1.5rem);
+    background: var(--ink);
+    color: var(--ground);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.7rem 1.3rem;
+    border-radius: 1px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease, transform 220ms ease;
+    z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="bar">
+  <div class="bar-in">
+    <span class="stamp">Ready to publish</span>
+    <button class="btn-ghost" id="copySeo" type="button">SEO pack</button>
+    <button class="btn-ghost" id="copyArticle" type="button">Copy text only</button>
+    <button class="btn-primary" id="copyStyled" type="button">Copy with design</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Pennsylvania &middot; True Haunting</span>
+    <h1>Eastern State Penitentiary: The Prison That Drove Men Mad</h1>
+    <p class="deck">They didn't beat the prisoners. They did something the doctors of the day warned was worse — and the reports of what walks those cellblocks started decades before anyone was selling tickets.</p>
+    <div class="byline">
+      <span>Philadelphia, Pennsylvania</span>
+      <span>Est. 13 min read</span>
+    </div>
+  </header>
+
+  <article id="article">
+
+    <section>
+      <p class="lede">The thing that makes Eastern State Penitentiary different from every other haunted place in America is that the horror was the official policy.</p>
+
+      <p>Nobody snapped. There was no massacre, no fire, no single terrible night. What happened here was designed, funded, approved, admired, and copied by more than three hundred prisons around the world. Men went into those cells sane and came out of them broken, and for the better part of a century that was considered a success.</p>
+
+      <p>Stand in one of the cellblocks now and the first thing you notice is the light. Each cell has a single small skylight cut into the vaulted ceiling, and the men who built this place called it the Eye of God. It was the only thing a prisoner was permitted to look at. It was supposed to be a comfort.</p>
+
+      <p>The second thing you notice is that you can hear your own pulse.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The idea</span>A cure for crime, invented by Quakers</h2>
+
+      <p>Eastern State opened in <strong>1829</strong>, and it was built by reformers. That's the part people always get wrong.</p>
+
+      <p>In the early 1800s, American jails were pits — men, women, and children thrown into a single room, disease everywhere, violence constant. A group of Philadelphia reformers, many of them Quakers and including Benjamin Franklin among the movement's early figures, thought this was barbaric and pointless. They had a better idea.</p>
+
+      <p>Give every man his own cell. His own toilet, his own small exercise yard, his own skylight. Feed him, keep him clean, and above all keep him <em>alone</em> and <em>silent</em> — so that with nothing to distract him he would be forced to confront what he had done, feel genuine remorse, and reform himself from the inside.</p>
+
+      <p>They called it penitence. That's where the word <em>penitentiary</em> comes from. Eastern State is the reason the word exists.</p>
+
+      <p>The architect John Haviland gave it a radial plan — seven cellblocks fanning out from a central hub like spokes on a wheel, so a single guard standing at the center could see down every corridor at once. From the outside it looked like a medieval fortress, thirty-foot walls and Gothic towers, deliberately terrifying. From the inside it was the most advanced building in America. It had central heat and flush toilets before the White House did.</p>
+
+      <p>The first prisoner, <strong>Charles Williams</strong>, a farmer convicted of burglary, walked in on October 25, 1829. He was given a number instead of a name.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The silence</span>What total isolation actually did</h2>
+
+      <p>Here is what the system meant in practice.</p>
+
+      <p>You lived alone in a stone cell. Meals came through a feeding hole so you never saw a face. When you were moved anywhere in the building, a <strong>hood was placed over your head</strong> so that you could not see another prisoner and no other prisoner could see you. You were forbidden to speak. Guards wore socks over their boots so their footsteps wouldn't disturb the quiet.</p>
+
+      <p>Some men lived like that for two years. Some for longer.</p>
+
+      <p>And it did not produce penitence. It produced madness.</p>
+
+      <p>Prisoners started talking to the walls. They tapped on pipes for years to hold conversations with men they never saw. They hallucinated. The prison's own medical logs record the outcomes, and physicians of the era were already raising alarms about what the system was doing to the human mind. This was not a discovery made later by modern psychology. People knew at the time.</p>
+
+      <p>They kept doing it anyway, for eighty-four years.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">1842</span>The most famous visitor</h2>
+
+      <p>Charles Dickens came to America in 1842. He wanted to see two things: Niagara Falls, and Eastern State Penitentiary.</p>
+
+      <p>He was given the full tour, the one the administrators were proud of. He sat with the prisoners. And then he wrote what he thought, and it has followed the building for nearly two centuries.</p>
+
+      <blockquote>"I hold this slow and daily tampering with the mysteries of the brain to be immeasurably worse than any torture of the body."</blockquote>
+
+      <p>He called the system "rigid, strict and hopeless solitary confinement," and said plainly that he believed it to be "cruel and wrong." He said the men who designed it did not know what they were doing — that because the suffering left no marks, they could not see it.</p>
+
+      <p>That's the whole thing in one sentence. The suffering left no marks.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">Discipline</span>What happened when the silence didn't work</h2>
+
+      <p>Officially, Eastern State did not use corporal punishment. Unofficially, the guards had methods, and they are documented.</p>
+
+      <ul>
+        <li><strong>The Iron Gag.</strong> The prisoner's hands were crossed and chained behind his neck. An iron piece was clamped over his tongue and chained to those hands. Any movement of the arms tore at the tongue. This was reportedly the most common punishment in the prison's early years.</li>
+        <li><strong>The Mad Chair.</strong> A man was strapped into a chair so tightly he could not move at all, and left there for hours or days. Circulation failed. Limbs swelled and turned black. Some men were released from it unable to walk.</li>
+        <li><strong>The Water Bath.</strong> The prisoner was chained to a wall outdoors and doused with cold water. In winter this was done until ice formed on his skin.</li>
+        <li><strong>The Klondike.</strong> A set of small cells dug beneath Cellblock 14, with a ceiling barely six feet high, no light, and no ventilation to speak of. Men were kept down there in the dark.</li>
+      </ul>
+
+      <p>The Pennsylvania System was formally abandoned in <strong>1913</strong> — not because anyone decided it was wrong, but because it had become impossible. The prison was designed for about 250 men. By the mid-1920s it held roughly <strong>1,700</strong>. Cells built for solitude had two and three men in them.</p>
+
+      <p>Which means for its final sixty years, Eastern State was just an overcrowded prison inside a building engineered for silence.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">1929</span>Al Capone and the man he couldn't get rid of</h2>
+
+      <p>In 1929, Al Capone was arrested in Philadelphia on a concealed weapons charge and sent to Eastern State. He served roughly eight months, and he did not serve them like anyone else.</p>
+
+      <p>Capone's cell had oriental rugs, an antique desk, a cabinet radio, and oil paintings on the wall. Visitors described it as a decent hotel room. You can see a reconstruction of it on the tour today, and the contrast between his cell and the bare stone box next door is the most quietly damning thing in the building.</p>
+
+      <p>But the story that stuck is what the guards said happened at night.</p>
+
+      <p>According to accounts from his time there, Capone would wake screaming and beg someone to leave him alone. He called the man <strong>Jimmy</strong> — widely believed to be James Clark, one of the seven men killed in the St. Valentine's Day Massacre earlier that same year, a killing Capone was universally assumed to have ordered.</p>
+
+      <p>Capone was reportedly frightened enough that he asked for help. He kept insisting there was someone in the cell with him.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The end</span>Then the forest came in</h2>
+
+      <p>The state shut Eastern State down in <strong>1970</strong>, and the last prisoners were gone by 1971. After 142 years, the doors were locked and the building was simply left.</p>
+
+      <p>And then something strange and beautiful happened. Nature took it. Trees grew up through the cellblock floors. A forest developed inside the walls. Feral cats took over — hundreds of them, fed for years by one neighborhood man. Roofs collapsed. Paint peeled off in sheets the size of doors.</p>
+
+      <p>The city considered demolishing it and putting up a shopping complex. It was saved, barely, and it had been designated a <strong>National Historic Landmark</strong> back in 1965. In <strong>1994</strong> it opened to the public for hard hat tours — 10,000 visitors that first year.</p>
+
+      <p>Today it's preserved in a state its custodians call "stabilized ruin." They deliberately do not restore it. What you walk through is what 142 years of use and twenty years of abandonment actually left behind.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">Why this one holds up</span>The reports came before the tickets</h2>
+
+      <p>I get asked constantly which American hauntings are worth taking seriously. Eastern State is near the top of my list, and the reason is a matter of dates.</p>
+
+      <div class="card">
+        <span class="card-label">The credibility test</span>
+        <p>Reports of unexplained activity at Eastern State go back to the <strong>1940s</strong> — from guards and inmates, while it was a working prison.</p>
+        <p>The building did not open to the public until <strong>1994</strong>. Nobody was selling a ghost tour in 1947. There was no gift shop, no admission fee, and no possible commercial motive for a corrections officer to claim he saw a figure in a cellblock. Reporting it could only make him look unreliable to his supervisor.</p>
+        <p>That is the single most important thing to know about any haunted location: did the stories exist <em>before</em> there was money in them? Here, by roughly fifty years, they did.</p>
+      </div>
+
+      <p>The most repeated modern account belongs to a locksmith named <strong>Gary Johnson</strong>, who was hired in the 1990s to work on the prison's locks. He has described opening a cell in Cellblock 4 and being seized by something that held him in place so completely that he could not move, while he saw faces on the walls and one figure that seemed to be calling him in.</p>
+
+      <p>What makes that account carry weight isn't the drama of it. It's that Johnson was a tradesman doing a job. He was not a paranormal investigator, he was not there to find anything, and he had nothing to gain by saying it.</p>
+
+      <p>Eastern State's reputation is strong enough that NPR ran a segment asking straight out whether the place is really haunted. That is not the kind of attention most haunted attractions get.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">The reports</span>What people describe, block by block</h2>
+
+      <p>What's notable is how location-specific the accounts are. People don't just say "the prison is haunted." They report different things in different cellblocks, consistently, across decades.</p>
+
+      <h3>Cellblock 12</h3>
+      <p>Voices. Specifically, echoing voices and laughter with no source — described often enough that it's become the block's signature. Guides report it. Visitors report it without being told to expect it.</p>
+
+      <h3>Cellblock 6</h3>
+      <p>Shadow figures. Dark shapes that move along the walls and dart across the corridor, usually caught at the edge of vision.</p>
+
+      <h3>Cellblock 4</h3>
+      <p>Faces. This is Gary Johnson's block, and the reports here are the most disturbing — visitors describe faces appearing on the cell walls, and a feeling of being watched from inside empty cells.</p>
+
+      <h3>The guard towers</h3>
+      <p>A silhouette of a guard is repeatedly reported in one of the towers, standing and looking out. Nobody has been posted in those towers since 1970.</p>
+
+      <h3>Everywhere else</h3>
+      <p>Footsteps in empty corridors. Cell doors moving. Sudden cold. And the thing almost everyone mentions, believer or not — an unshakable sense of being watched from the cells as you walk past them.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">Plan your visit</span>How to visit Eastern State Penitentiary</h2>
+
+      <dl class="ledger">
+        <dt>Address</dt><dd>2027 Fairmount Avenue, Philadelphia, PA 19130</dd>
+        <dt>Opened</dt><dd>October 25, 1829</dd>
+        <dt>System ended</dt><dd>1913 &middot; prison closed 1970&ndash;71</dd>
+        <dt>Landmark</dt><dd>National Historic Landmark, 1965</dd>
+        <dt>Public tours</dt><dd>Since 1994</dd>
+      </dl>
+
+      <p><strong>The daytime tour is the one to take.</strong> Admission includes an audio tour narrated by Steve Buscemi, and it is genuinely excellent — serious history, no cheap scares. You'll see Al Capone's cell, Death Row, the collapsed cellblocks, and the hospital wing.</p>
+
+      <p><strong>Go slowly.</strong> Most people rush the ruined blocks. Don't. The stabilized-ruin sections, where the roof is gone and the trees came in, are the most affecting part of the site and the best photography in Philadelphia.</p>
+
+      <p><strong>Halloween season.</strong> Eastern State runs a large after-dark event in the fall. It's a produced entertainment experience, not a paranormal investigation, and it's very popular — book well ahead and check the official site for this year's format, since it has changed in recent years.</p>
+
+      <p><strong>Be ready for the real subject.</strong> The site does not shy away from what solitary confinement is, including a permanent exhibit connecting the Pennsylvania System to mass incarceration in America today. Plenty of visitors come for ghosts and leave thinking about something else entirely. That's by design, and it's why this place deserves your respect.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">Common questions</span>Eastern State, answered</h2>
+
+      <p class="faq-q">Is Eastern State Penitentiary really haunted?</p>
+      <p>It's one of the most credible haunted sites in America, for one specific reason: guards and inmates reported unexplained activity starting in the 1940s, while it was still an operating prison and more than fifty years before it opened to paying visitors. Whether that constitutes proof is your call, but the reports predate any commercial motive.</p>
+
+      <p class="faq-q">What was the Pennsylvania System?</p>
+      <p>A method of imprisonment based on total solitary confinement and enforced silence, intended to produce genuine penitence and reform. Prisoners lived alone, were hooded whenever moved so they couldn't see other inmates, and were forbidden to speak. It was used at Eastern State from 1829 until it was abandoned in 1913, and it was copied by more than 300 prisons worldwide.</p>
+
+      <p class="faq-q">What did Charles Dickens say about Eastern State Penitentiary?</p>
+      <p>After visiting in 1842, Dickens condemned it, writing that he held "this slow and daily tampering with the mysteries of the brain to be immeasurably worse than any torture of the body." He described the system as "rigid, strict and hopeless solitary confinement" and called it cruel and wrong.</p>
+
+      <p class="faq-q">Was Al Capone at Eastern State Penitentiary?</p>
+      <p>Yes. He served roughly eight months in 1929–1930 on a concealed weapons charge, in a cell furnished with rugs, oil paintings, a desk and a radio. Guards reported that he woke at night begging someone named Jimmy to leave him alone — believed to refer to James Clark, killed in the St. Valentine's Day Massacre that same year.</p>
+
+      <p class="faq-q">Can you go inside Eastern State Penitentiary?</p>
+      <p>Yes. It has been open to the public since 1994 and operates as a museum and historic site at 2027 Fairmount Avenue in Philadelphia. General admission includes an audio tour, and the site runs a separate large-scale event in the fall.</p>
+
+      <p class="faq-q">Why did Eastern State Penitentiary close?</p>
+      <p>The building was obsolete and badly overcrowded. Designed for about 250 men in solitary cells, it held roughly 1,700 by the mid-1920s. The state ceased operations in 1970 and the last inmates were transferred out by 1971, after 142 years.</p>
+    </section>
+
+    <section>
+      <h2><span class="kicker">Last word</span>The Eye of God</h2>
+
+      <p>I keep coming back to that skylight.</p>
+
+      <p>Somebody sat down and designed it on purpose. They put a small window in the ceiling of every cell so that a man in total isolation would have one thing to look at, and they named it after God, and they believed with complete sincerity that this was mercy.</p>
+
+      <p>They were wrong in a way that ruined thousands of people, and the worst part is that they were told. Dickens told them in 1842. Doctors told them. The men in the cells told them by losing their minds in front of them. And the answer was to keep going for another seventy years, because the suffering left no marks and so it did not count.</p>
+
+      <p>Now the roofs are falling in and the light comes through anyway, in shafts, all down those long stone corridors, into cells with nobody in them.</p>
+
+      <p>People say they hear voices in Cellblock 12. After a hundred and forty-two years of men being ordered not to speak, I'd find it stranger if it were quiet.</p>
+    </section>
+
+    <section>
+      <p class="endnote">Sources: Eastern State Penitentiary Historic Site; Charles Dickens, American Notes (1842); Historic American Buildings Survey, Library of Congress; Smithsonian Magazine; NPR; Encyclopedia of Greater Philadelphia. Paranormal accounts are reported experiences, presented as such.</p>
+    </section>
+
+  </article>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Copied</div>
+
+<script>
+(function () {
+  var TITLE = "Eastern State Penitentiary: The Prison That Drove Men Mad";
+
+  var SEO = [
+    "SEO PACK - Eastern State Penitentiary",
+    "",
+    "Language: American English. Written for a United States audience.",
+    "",
+    "SEO title (56 chars):",
+    "Eastern State Penitentiary: The Prison That Drove Men Mad",
+    "",
+    "Meta description (155 chars):",
+    "America's first penitentiary kept men in total silence for years. Dickens called it worse than torture. Guards started reporting things in the 1940s.",
+    "",
+    "URL slug:",
+    "/eastern-state-penitentiary-haunted",
+    "",
+    "Primary keyword: eastern state penitentiary haunted",
+    "Secondary keywords: eastern state penitentiary history, pennsylvania system solitary confinement, al capone cell eastern state, haunted places in philadelphia, most haunted prison in america, eastern state penitentiary tours, charles dickens eastern state",
+    "Long-tail targets: is eastern state penitentiary really haunted, what was the pennsylvania system, was al capone at eastern state penitentiary, can you go inside eastern state penitentiary, why did eastern state penitentiary close, what did dickens say about eastern state",
+    "",
+    "TAGS (comma separated, paste directly):",
+    "eastern state penitentiary, haunted prison, philadelphia haunted places, al capone, pennsylvania system, solitary confinement, charles dickens, haunted places usa, most haunted places in america, abandoned prison, paranormal, true haunting, philadelphia pennsylvania, national historic landmark, prison history, cellblock 12, ghost sightings, haunted museum, american history, unexplained",
+    "",
+    "Legal safety notes:",
+    "- All principals died decades ago. Al Capone died in 1947. No living person is named or accused.",
+    "- Eastern State Penitentiary is a nonprofit historic site and National Historic Landmark that welcomes press coverage.",
+    "- All source records are public. No proprietary or trademarked story is used.",
+    "- Paranormal claims are attributed and labeled as reported experiences, not stated as fact.",
+    "",
+    "Featured images - all public domain, no attribution required:",
+    "- Historic American Buildings Survey, Library of Congress, HABS PA-1729: https://www.loc.gov/item/pa1207/",
+    "  US Government work. No known restrictions. Photographer Jack E. Boucher. High resolution available.",
+    "- Wikimedia Commons category: https://commons.wikimedia.org/wiki/Category:Eastern_State_Penitentiary",
+    "  Check each file's license individually; many are LOC public domain, some are CC BY-SA and require credit.",
+    "",
+    "Suggested featured image alt text:",
+    "The vaulted stone cellblock corridor of Eastern State Penitentiary in Philadelphia, with skylights above rows of cell doors",
+    "",
+    "Publish timing:",
+    "Live in August. Haunted search climbs from late August and peaks the first week of October. October 25 is the anniversary of the first prisoner's admission in 1829 - good hook for a social push.",
+    "",
+    "JSON-LD schema:",
+    JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "Eastern State Penitentiary: The Prison That Drove Men Mad",
+          "description": "America's first penitentiary kept men in total silence for years. Dickens called it worse than torture. Guards started reporting things in the 1940s.",
+          "datePublished": "2026-08-07",
+          "about": {
+            "@type": "Place",
+            "name": "Eastern State Penitentiary",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "2027 Fairmount Avenue",
+              "addressLocality": "Philadelphia",
+              "addressRegion": "PA",
+              "postalCode": "19130",
+              "addressCountry": "US"
+            }
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is Eastern State Penitentiary really haunted?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It is one of the most credible haunted sites in America because guards and inmates reported unexplained activity starting in the 1940s, while it was still an operating prison and more than fifty years before it opened to paying visitors. The reports predate any commercial motive."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What was the Pennsylvania System?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A method of imprisonment based on total solitary confinement and enforced silence, intended to produce penitence and reform. Prisoners lived alone, were hooded whenever moved so they could not see other inmates, and were forbidden to speak. Used at Eastern State from 1829 until abandoned in 1913, it was copied by more than 300 prisons worldwide."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Was Al Capone at Eastern State Penitentiary?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. He served roughly eight months in 1929 and 1930 on a concealed weapons charge, in a cell furnished with rugs, oil paintings, a desk and a radio. Guards reported that he woke at night begging someone named Jimmy to leave him alone, believed to refer to James Clark, killed in the St. Valentine's Day Massacre that same year."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why did Eastern State Penitentiary close?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The building was obsolete and badly overcrowded. Designed for about 250 men in solitary cells, it held roughly 1,700 by the mid-1920s. The state ceased operations in 1970 and the last inmates were transferred out by 1971, after 142 years."
+              }
+            }
+          ]
+        }
+      ]
+    }, null, 2)
+  ].join("\n");
+
+  var toast = document.getElementById("toast");
+  var toastTimer;
+
+  function flash(msg, btn, original) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2000);
+    if (btn) {
+      btn.textContent = "Copied";
+      btn.classList.add("btn-done");
+      setTimeout(function () {
+        btn.textContent = original;
+        btn.classList.remove("btn-done");
+      }, 2000);
+    }
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function copyRich(html, text, btn, original, label) {
+    var done = function () { flash(label, btn, original); };
+    var fail = function () {
+      if (fallbackCopy(text)) { done(); }
+      else { flash("Copy failed - select manually", btn, original); }
+    };
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var item = new ClipboardItem({
+        "text/html": new Blob([html], { type: "text/html" }),
+        "text/plain": new Blob([text], { type: "text/plain" })
+      });
+      navigator.clipboard.write([item]).then(done).catch(fail);
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(fail);
+    } else {
+      fail();
+    }
+  }
+
+  function buildStandalone() {
+    var css = document.getElementById("pagecss").innerHTML;
+    var content = document.querySelector(".wrap").cloneNode(true);
+    var reset = "*,*::before,*::after{box-sizing:border-box}\n" +
+      "body,h1,h2,h3,p,dl,dd,ul,blockquote{margin:0}\n" +
+      "ul{list-style:none;padding:0}\n" +
+      "img{max-width:100%;display:block}\n" +
+      "html{-webkit-text-size-adjust:100%}\n";
+    return '<!doctype html>\n<html lang="en" data-theme="light">\n<head>\n' +
+      '<meta charset="utf-8">\n' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+      "<title>" + TITLE + "</title>\n" +
+      "<style>\n" + reset + css + "\n</style>\n" +
+      "</head>\n<body>\n" + content.outerHTML + "\n</body>\n</html>\n";
+  }
+
+  document.getElementById("copyArticle").addEventListener("click", function () {
+    var src = document.getElementById("article").cloneNode(true);
+    Array.prototype.forEach.call(src.querySelectorAll(".kicker"), function (k) {
+      k.parentNode.removeChild(k);
+    });
+    var html = "<h1>" + TITLE + "</h1>" + src.innerHTML;
+    var text = TITLE + "\n\n" + src.innerText.trim();
+    copyRich(html, text, this, "Copy text only", "Copied - paste into your post editor");
+  });
+
+  document.getElementById("copyStyled").addEventListener("click", function () {
+    var btn = this;
+    var out = buildStandalone();
+    var done = function () { flash("Full design copied", btn, "Copy with design"); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(out).then(done).catch(function () {
+        if (fallbackCopy(out)) done();
+        else flash("Copy failed", btn, "Copy with design");
+      });
+    } else if (fallbackCopy(out)) { done(); }
+    else { flash("Copy failed", btn, "Copy with design"); }
+  });
+
+  document.getElementById("copySeo").addEventListener("click", function () {
+    var btn = this;
+    var done = function () { flash("SEO pack copied", btn, "SEO pack"); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(SEO).then(done).catch(function () {
+        if (fallbackCopy(SEO)) done();
+        else flash("Copy failed", btn, "SEO pack");
+      });
+    } else if (fallbackCopy(SEO)) { done(); }
+    else { flash("Copy failed", btn, "SEO pack"); }
+  });
+})();
+</script>
