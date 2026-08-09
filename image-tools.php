@@ -110,315 +110,543 @@ $YEAR = date('Y');
 
 <style>
 /* ===========================================================================
-   1. Tokens + reset
+   1. Design tokens
    =========================================================================== */
 :root{
-  --brand:#1d4ed8;
-  --brand-dark:#1739a8;
-  --brand-soft:#eef3ff;
-  --ink:#0f172a;
+  --indigo:#6366f1;  --indigo-d:#4f46e5;
+  --violet:#8b5cf6;
+  --pink:#ec4899;
+  --sky:#0ea5e9;
+  --emerald:#10b981; --emerald-d:#059669;
+  --teal:#14b8a6;
+  --amber:#f59e0b;
+  --rose:#f43f5e;
+
+  --ink:#0f1729;
   --ink-2:#334155;
   --muted:#64748b;
-  --line:#e2e8f0;
-  --bg:#f1f5f9;
+  --faint:#94a3b8;
+  --line:#e6ebf3;
+  --line-2:#eff3f9;
   --card:#fff;
-  --ok:#15803d;
-  --ok-soft:#f0fdf4;
-  --warn:#b45309;
-  --warn-soft:#fffbeb;
-  --err:#dc2626;
-  --err-soft:#fef2f2;
-  --r:16px;
-  --shadow:0 1px 2px rgba(15,23,42,.04),0 8px 24px rgba(15,23,42,.06);
-  --shadow-lg:0 16px 44px rgba(15,23,42,.16);
+
+  --ok:#059669; --ok-bg:#ecfdf5; --ok-line:#a7f3d0;
+  --warn:#b45309; --warn-bg:#fffbeb; --warn-line:#fde68a;
+  --err:#e11d48; --err-bg:#fff1f2; --err-line:#fecdd3;
+
+  --r-sm:12px; --r:18px; --r-lg:24px;
+  --sh-1:0 1px 2px rgba(15,23,41,.05), 0 4px 12px rgba(15,23,41,.05);
+  --sh-2:0 4px 10px rgba(15,23,41,.06), 0 16px 40px rgba(15,23,41,.09);
+  --sh-glow:0 8px 24px rgba(99,102,241,.35);
+
+  /* Per-tool accent, swapped when a tab is chosen */
+  --accent:var(--indigo);
+  --accent-d:var(--indigo-d);
+  --accent-grad:linear-gradient(135deg,#6366f1,#8b5cf6 55%,#a855f7);
+  --accent-soft:#eef2ff;
+  --accent-line:#c7d2fe;
 }
+body[data-tool="signature"]{
+  --accent:var(--emerald);
+  --accent-d:var(--emerald-d);
+  --accent-grad:linear-gradient(135deg,#10b981,#14b8a6 55%,#06b6d4);
+  --accent-soft:#ecfdf5;
+  --accent-line:#a7f3d0;
+}
+
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{
-  margin:0;background:var(--bg);color:var(--ink);
+  margin:0;color:var(--ink);
   font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  font-size:15.5px;line-height:1.55;-webkit-font-smoothing:antialiased;
   overflow-x:hidden;
+  background:
+    radial-gradient(900px 500px at 8% -8%, #e0e7ff 0%, transparent 60%),
+    radial-gradient(800px 460px at 96% 2%, #fce7f3 0%, transparent 58%),
+    radial-gradient(700px 500px at 50% 108%, #cffafe 0%, transparent 60%),
+    #f7f9fd;
+  background-attachment:fixed;
 }
 img{max-width:100%;display:block}
 button{font:inherit;color:inherit}
-:focus-visible{outline:3px solid rgba(29,78,216,.4);outline-offset:2px}
+:focus-visible{outline:3px solid color-mix(in srgb, var(--accent) 45%, transparent);outline-offset:2px}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .hidden{display:none!important}
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
 
 /* ===========================================================================
-   2. Shell
+   2. Header
    =========================================================================== */
-.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
-.site-head{background:#fff;border-bottom:1px solid var(--line)}
-.site-head-in{display:flex;align-items:center;gap:12px;padding:14px 0}
+.site-head{
+  position:sticky;top:0;z-index:60;
+  background:rgba(255,255,255,.82);backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid rgba(226,232,240,.9);
+}
+.site-head-in{display:flex;align-items:center;gap:12px;padding:12px 0}
 .logo{
-  width:40px;height:40px;border-radius:12px;flex:0 0 40px;display:grid;place-items:center;
-  background:linear-gradient(135deg,var(--brand),#4f83ff);color:#fff;
-  box-shadow:0 6px 16px rgba(29,78,216,.3);
+  width:42px;height:42px;border-radius:13px;flex:0 0 42px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6 50%,#ec4899);color:#fff;
+  box-shadow:0 6px 18px rgba(139,92,246,.4);
 }
-.logo svg{width:22px;height:22px}
-.brand b{display:block;font-size:16px;font-weight:700;letter-spacing:-.2px;line-height:1.2}
-.brand span{display:block;font-size:12px;color:var(--muted)}
-.site-head-in .home{margin-left:auto;font-size:14px;font-weight:600;color:var(--brand);text-decoration:none}
-
-.hero{text-align:center;padding:34px 0 22px}
-.hero h1{margin:0 0 8px;font-size:30px;font-weight:800;letter-spacing:-.6px}
-.hero p{margin:0 auto;max-width:640px;color:var(--muted);font-size:15.5px}
+.logo svg{width:23px;height:23px}
+.brand b{
+  display:block;font-size:17px;font-weight:800;letter-spacing:-.35px;line-height:1.15;
+  background:linear-gradient(90deg,#4f46e5,#8b5cf6 55%,#ec4899);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.brand span{display:block;font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.02em}
+.site-head-in .home{
+  margin-left:auto;font-size:14px;font-weight:700;color:var(--ink-2);text-decoration:none;
+  padding:9px 14px;border-radius:99px;background:#fff;border:1px solid var(--line);
+}
+.site-head-in .home:hover{border-color:var(--accent-line);color:var(--accent-d)}
 
 /* ===========================================================================
-   3. Tool chooser
+   3. Hero
    =========================================================================== */
-.chooser{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0 26px}
-.tool-card{
-  display:flex;gap:14px;align-items:flex-start;text-align:left;
-  background:var(--card);border:2px solid var(--line);border-radius:var(--r);
-  padding:18px;cursor:pointer;transition:.18s;box-shadow:var(--shadow);width:100%;
+.hero{text-align:center;padding:40px 0 8px}
+.hero .pill{
+  display:inline-flex;align-items:center;gap:7px;
+  background:#fff;border:1px solid var(--line);border-radius:99px;
+  padding:6px 15px;font-size:12.5px;font-weight:700;color:var(--ink-2);
+  box-shadow:var(--sh-1);margin-bottom:16px;
 }
-.tool-card:hover{border-color:#c3d4ff;transform:translateY(-2px)}
-.tool-card[aria-selected="true"]{border-color:var(--brand);background:var(--brand-soft)}
-.tool-card .ic{
-  width:46px;height:46px;flex:0 0 46px;border-radius:13px;display:grid;place-items:center;
-  background:var(--brand);color:#fff;
+.hero .pill i{width:7px;height:7px;border-radius:50%;background:var(--emerald);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.82)}}
+.hero h1{
+  margin:0 0 12px;font-size:clamp(28px,5.4vw,46px);font-weight:900;letter-spacing:-1.4px;line-height:1.08;
 }
-.tool-card[aria-selected="true"] .ic{background:var(--brand-dark)}
-.tool-card .ic svg{width:24px;height:24px}
-.tool-card h2{margin:0 0 3px;font-size:16.5px;font-weight:700}
-.tool-card p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.45}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(100deg,#4f46e5,#8b5cf6 40%,#ec4899 75%,#f59e0b);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero p{margin:0 auto;max-width:620px;color:var(--muted);font-size:16px}
+
+/* 3-step ribbon */
+.howto{
+  display:flex;justify-content:center;gap:8px;flex-wrap:wrap;
+  margin:22px auto 0;max-width:660px;
+}
+.howto li{
+  list-style:none;display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:99px;
+  padding:7px 14px 7px 8px;font-size:13px;font-weight:700;color:var(--ink-2);
+}
+.howto li b{
+  width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+  font-size:11.5px;color:#fff;background:var(--accent-grad);
+}
+.howto .arw{display:grid;place-items:center;color:var(--faint);font-weight:800}
+@media (max-width:520px){.howto .arw{display:none}.howto li{flex:1 1 100%;justify-content:center}}
 
 /* ===========================================================================
-   4. Panels / cards
+   4. Tool chooser
+   =========================================================================== */
+.chooser{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:26px 0 22px}
+.tool-card{
+  position:relative;overflow:hidden;
+  display:flex;gap:15px;align-items:flex-start;text-align:left;width:100%;
+  background:#fff;border:2px solid var(--line);border-radius:var(--r-lg);
+  padding:20px;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;
+  box-shadow:var(--sh-1);
+}
+.tool-card::after{
+  content:"";position:absolute;inset:0;opacity:0;transition:.25s;pointer-events:none;
+  background:radial-gradient(420px 160px at 88% 8%, rgba(255,255,255,.6), transparent 70%);
+}
+.tool-card:hover{transform:translateY(-3px);box-shadow:var(--sh-2)}
+.tool-card .ic{
+  width:52px;height:52px;flex:0 0 52px;border-radius:16px;display:grid;place-items:center;color:#fff;
+  box-shadow:0 8px 20px rgba(15,23,41,.16);
+}
+.tool-card .ic svg{width:26px;height:26px}
+#tab-resizer .ic{background:linear-gradient(135deg,#6366f1,#8b5cf6 60%,#a855f7)}
+#tab-signature .ic{background:linear-gradient(135deg,#10b981,#14b8a6 60%,#06b6d4)}
+.tool-card h2{margin:0 0 4px;font-size:18px;font-weight:800;letter-spacing:-.3px}
+.tool-card p{margin:0;font-size:13.8px;color:var(--muted);line-height:1.45}
+.tool-card .tick{
+  position:absolute;top:14px;right:14px;width:24px;height:24px;border-radius:50%;
+  display:grid;place-items:center;background:var(--line-2);color:transparent;transition:.2s;
+}
+.tool-card .tick svg{width:14px;height:14px}
+#tab-resizer[aria-selected="true"]{border-color:var(--indigo);background:linear-gradient(180deg,#f5f3ff,#fff 60%)}
+#tab-signature[aria-selected="true"]{border-color:var(--emerald);background:linear-gradient(180deg,#ecfdf5,#fff 60%)}
+.tool-card[aria-selected="true"]{box-shadow:var(--sh-2)}
+.tool-card[aria-selected="true"] .tick{background:var(--accent);color:#fff}
+.tool-card[aria-selected="true"]::after{opacity:1}
+
+/* ===========================================================================
+   5. Privacy banner
+   =========================================================================== */
+.privacy{
+  display:flex;gap:13px;align-items:flex-start;
+  background:linear-gradient(100deg,#ecfdf5,#f0fdfa 60%,#fff);
+  border:1px solid var(--ok-line);border-radius:var(--r);
+  padding:15px 18px;margin:0 0 22px;box-shadow:var(--sh-1);
+}
+.privacy .pi{
+  width:38px;height:38px;flex:0 0 38px;border-radius:12px;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 6px 16px rgba(16,185,129,.35);
+}
+.privacy .pi svg{width:20px;height:20px}
+.privacy b{display:block;font-size:14.5px;margin-bottom:2px;color:#065f46}
+.privacy p{margin:0;font-size:13.2px;color:#047857;line-height:1.5}
+
+/* ===========================================================================
+   6. Panels + cards
    =========================================================================== */
 .panel{display:none}
-.panel.active{display:block;animation:fade .22s ease}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.panel.active{display:block;animation:rise .28s cubic-bezier(.2,.7,.3,1)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:16px}
-.card-h{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.card-h .n{
-  width:26px;height:26px;flex:0 0 26px;border-radius:8px;background:var(--brand-soft);color:var(--brand);
-  display:grid;place-items:center;font-size:12.5px;font-weight:800;
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);
+  box-shadow:var(--sh-1);margin-bottom:18px;overflow:hidden;
 }
-.card-h h3{margin:0;font-size:15.5px;font-weight:700}
-.card-h .sub{margin:0;font-size:12.5px;color:var(--muted);flex:1 1 100%}
-.card-b{padding:18px}
+.card-h{display:flex;align-items:center;gap:13px;padding:17px 20px;background:linear-gradient(180deg,#fcfdff,#fff);border-bottom:1px solid var(--line-2);flex-wrap:wrap}
+.card-h .n{
+  width:32px;height:32px;flex:0 0 32px;border-radius:11px;color:#fff;
+  display:grid;place-items:center;font-size:14px;font-weight:800;
+  background:var(--accent-grad);box-shadow:0 5px 14px rgba(99,102,241,.3);
+}
+body[data-tool="signature"] .card-h .n{box-shadow:0 5px 14px rgba(16,185,129,.32)}
+.card-h h3{margin:0;font-size:17px;font-weight:800;letter-spacing:-.25px}
+.card-h .sub{margin:0;font-size:13px;color:var(--muted);flex:1 1 100%}
+.card-b{padding:20px}
 
 /* ===========================================================================
-   5. Dropzone
+   7. Dropzone
    =========================================================================== */
 .drop{
-  border:2px dashed #c3cfe2;border-radius:14px;background:#fafcff;
-  padding:30px 18px;text-align:center;cursor:pointer;transition:.18s;
+  position:relative;overflow:hidden;
+  border:2.5px dashed var(--accent-line);border-radius:var(--r);
+  background:linear-gradient(180deg,var(--accent-soft),#fff 70%);
+  padding:34px 18px;text-align:center;cursor:pointer;transition:.2s;
 }
-.drop:hover,.drop.over{border-color:var(--brand);background:var(--brand-soft)}
+.drop:hover{border-color:var(--accent);transform:translateY(-2px)}
+.drop.over{border-color:var(--accent);background:var(--accent-soft);transform:scale(1.01)}
 .drop .di{
-  width:54px;height:54px;margin:0 auto 10px;border-radius:15px;display:grid;place-items:center;
-  background:var(--brand-soft);color:var(--brand);
+  width:66px;height:66px;margin:0 auto 14px;border-radius:20px;display:grid;place-items:center;
+  color:#fff;background:var(--accent-grad);box-shadow:0 10px 26px rgba(99,102,241,.34);
 }
-.drop .di svg{width:28px;height:28px}
-.drop b{display:block;font-size:16px;margin-bottom:3px}
-/* Scoped to .dsub on purpose: a bare `.drop span` also matches the button
-   span inside the dropzone and would override .btn-p's white text and
-   inline-flex layout, leaving grey-on-blue text. */
-.drop .dsub{display:block;font-size:13.5px;color:var(--muted)}
-.drop .or{margin:10px 0 8px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
-.drop .fmts{margin-top:12px;font-size:12px;color:var(--muted)}
+body[data-tool="signature"] .drop .di{box-shadow:0 10px 26px rgba(16,185,129,.34)}
+.drop .di svg{width:32px;height:32px}
+.drop b{display:block;font-size:18px;font-weight:800;margin-bottom:4px;letter-spacing:-.3px}
+.drop .dsub{display:block;font-size:14px;color:var(--muted)}
+.drop .or{
+  margin:14px auto 12px;font-size:11px;color:var(--faint);font-weight:800;letter-spacing:.14em;
+  display:flex;align-items:center;gap:10px;max-width:220px;
+}
+.drop .or::before,.drop .or::after{content:"";flex:1;height:1px;background:var(--line)}
+/* display:flex, not inline-flex: as an inline box it would sit on the same
+   line as the Choose button instead of below it. */
+.drop .fmts{
+  margin-top:16px;font-size:12.2px;color:var(--muted);font-weight:600;
+  display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:7px 10px;
+}
+.drop .fmts kbd{
+  font:inherit;background:#fff;border:1px solid var(--line);border-radius:7px;padding:2px 8px;
+  font-size:11.5px;font-weight:700;color:var(--ink-2);
+}
 
 /* ===========================================================================
-   6. Buttons
+   8. Buttons
    =========================================================================== */
 .btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  border:1px solid var(--line);background:#fff;color:var(--ink-2);
-  border-radius:11px;padding:11px 16px;font-size:14.5px;font-weight:600;
-  cursor:pointer;transition:.15s;text-decoration:none;min-height:44px;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  border:1.5px solid var(--line);background:#fff;color:var(--ink-2);
+  border-radius:13px;padding:12px 18px;font-size:15px;font-weight:700;
+  cursor:pointer;transition:.16s;text-decoration:none;min-height:48px;
 }
-.btn:hover{background:#f8fafc;border-color:#cbd5e1}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.btn svg{width:17px;height:17px;flex:0 0 17px}
-.btn-p{background:var(--brand);border-color:var(--brand);color:#fff}
-.btn-p:hover{background:var(--brand-dark);border-color:var(--brand-dark)}
-.btn-s{background:var(--brand-soft);border-color:transparent;color:var(--brand-dark)}
-.btn-s:hover{background:#e2ebff}
-.btn-d{color:var(--err);border-color:#fecaca;background:var(--err-soft)}
-.btn-d:hover{background:#fee2e2}
-.btn-lg{width:100%;padding:15px 20px;font-size:16px;border-radius:13px;min-height:52px}
-.btn-row{display:flex;gap:9px;flex-wrap:wrap}
+.btn:hover{background:#fbfcfe;border-color:#cdd7e5;transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn svg{width:18px;height:18px;flex:0 0 18px}
+.btn-p{
+  background:var(--accent-grad);border-color:transparent;color:#fff;
+  box-shadow:var(--sh-glow);
+}
+body[data-tool="signature"] .btn-p{box-shadow:0 8px 24px rgba(16,185,129,.35)}
+.btn-p:hover{filter:brightness(1.07);color:#fff;border-color:transparent}
+.btn-s{background:var(--accent-soft);border-color:transparent;color:var(--accent-d)}
+.btn-s:hover{background:color-mix(in srgb,var(--accent) 14%, #fff);color:var(--accent-d)}
+.btn-d{color:var(--err);border-color:var(--err-line);background:var(--err-bg)}
+.btn-d:hover{background:#ffe4e6;border-color:#fda4af}
+.btn-lg{width:100%;padding:17px 22px;font-size:17px;border-radius:15px;min-height:58px;letter-spacing:-.2px}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
 .btn-row .btn{flex:1 1 auto}
 
+/* Sticky primary action on phones so the CTA is always reachable */
+.cta{position:sticky;bottom:12px;z-index:20}
+@media (min-width:641px){.cta{position:static}}
+
 /* ===========================================================================
-   7. Form controls
+   9. Quick presets ("one tap" setup)
    =========================================================================== */
-.f-label{display:block;font-size:13px;font-weight:700;color:var(--ink-2);margin-bottom:6px}
-.f-help{font-size:12.2px;color:var(--muted);margin-top:5px;line-height:1.45}
-.inp,select.inp{
-  width:100%;border:1px solid #d7dfea;border-radius:10px;padding:11px 12px;
-  font-size:15px;background:#fdfeff;color:var(--ink);min-height:44px;
+.qp{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px}
+.qp button{
+  position:relative;text-align:left;cursor:pointer;
+  border:1.5px solid var(--line);border-radius:var(--r);background:#fff;
+  padding:14px 14px 13px;transition:.17s;box-shadow:var(--sh-1);
 }
-.inp:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(29,78,216,.12);background:#fff}
-select.inp{appearance:none;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2364748b'%3E%3Cpath d='M4 6l4 4 4-4z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:16px;padding-right:32px}
+.qp button:hover{transform:translateY(-3px);border-color:var(--accent-line);box-shadow:var(--sh-2)}
+.qp button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.qp .qi{
+  width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
+  color:#fff;margin-bottom:10px;
+}
+.qp .qi svg{width:19px;height:19px}
+.qp .q1 .qi{background:linear-gradient(135deg,#6366f1,#818cf8)}
+.qp .q2 .qi{background:linear-gradient(135deg,#0ea5e9,#38bdf8)}
+.qp .q3 .qi{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
+.qp .q4 .qi{background:linear-gradient(135deg,#ec4899,#f472b6)}
+.qp .q5 .qi{background:linear-gradient(135deg,#10b981,#34d399)}
+.qp strong{display:block;font-size:14.5px;font-weight:800;letter-spacing:-.2px;margin-bottom:2px}
+.qp em{display:block;font-style:normal;font-size:12.2px;color:var(--muted);font-weight:600}
+
+/* ===========================================================================
+   10. Option cards (signature cleaning modes)
+   =========================================================================== */
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:11px}
+.opts button{
+  text-align:left;cursor:pointer;background:#fff;
+  border:1.5px solid var(--line);border-radius:var(--r);padding:15px;transition:.17s;
+  box-shadow:var(--sh-1);position:relative;
+}
+.opts button:hover{transform:translateY(-2px);border-color:var(--accent-line)}
+.opts button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.opts .oi{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:#fff;margin-bottom:9px;background:var(--accent-grad)}
+.opts .oi svg{width:18px;height:18px}
+.opts strong{display:block;font-size:14.5px;font-weight:800;margin-bottom:3px}
+.opts em{display:block;font-style:normal;font-size:12.3px;color:var(--muted);line-height:1.42;font-weight:500}
+.opts .badge{
+  position:absolute;top:12px;right:12px;font-size:9.5px;font-weight:800;letter-spacing:.06em;
+  background:var(--amber);color:#fff;padding:3px 8px;border-radius:99px;
+}
+
+/* ===========================================================================
+   11. Form controls
+   =========================================================================== */
+.f-label{display:block;font-size:13.2px;font-weight:800;color:var(--ink-2);margin-bottom:7px}
+.inp,select.inp{
+  width:100%;border:1.5px solid #dde4ee;border-radius:13px;padding:13px 14px;
+  font-size:16px;font-weight:600;background:#fcfdff;color:var(--ink);min-height:50px;
+  transition:.15s;
+}
+.inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent);background:#fff}
+select.inp{
+  appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2364748b'%3E%3Cpath d='M4 6l4 4 4-4z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;background-size:17px;padding-right:38px;
+}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.field{margin-bottom:16px}
+.field{margin-bottom:18px}
 .field:last-child{margin-bottom:0}
+.f-help{font-size:12.6px;color:var(--muted);margin-top:7px;line-height:1.5}
 .suffix{position:relative}
-.suffix .inp{padding-right:38px}
-.suffix i{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-style:normal;font-size:12.5px;color:var(--muted);pointer-events:none}
+.suffix .inp{padding-right:44px}
+.suffix i{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-style:normal;font-size:13px;color:var(--faint);font-weight:700;pointer-events:none}
 
 /* toggle */
-.tgl{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;padding:6px 0;min-height:44px}
+.tgl{display:flex;align-items:center;gap:13px;cursor:pointer;user-select:none;min-height:48px;
+  background:#fcfdff;border:1.5px solid var(--line);border-radius:14px;padding:11px 14px;transition:.15s}
+.tgl:hover{border-color:var(--accent-line)}
 .tgl input{position:absolute;opacity:0;width:0;height:0}
-.tgl .track{
-  width:44px;height:26px;flex:0 0 44px;border-radius:99px;background:#cbd5e1;position:relative;transition:.2s;
-}
-.tgl .track::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
-.tgl input:checked+.track{background:var(--brand)}
-.tgl input:checked+.track::after{transform:translateX(18px)}
-.tgl input:focus-visible+.track{box-shadow:0 0 0 3px rgba(29,78,216,.35)}
-.tgl .tl{font-size:14px;font-weight:600}
-.tgl .td{font-size:12.2px;color:var(--muted);font-weight:400}
+.tgl .track{width:48px;height:28px;flex:0 0 48px;border-radius:99px;background:#cbd5e1;position:relative;transition:.22s}
+.tgl .track::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.22s;box-shadow:0 2px 5px rgba(0,0,0,.22)}
+.tgl input:checked+.track{background:var(--accent)}
+.tgl input:checked+.track::after{transform:translateX(20px)}
+.tgl input:focus-visible+.track{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 30%,transparent)}
+.tgl .tl{font-size:14.5px;font-weight:700}
+.tgl .td{font-size:12.4px;color:var(--muted);font-weight:500}
+.tgl input:checked~span .tl{color:var(--accent-d)}
 
 /* range */
 input[type=range]{
-  -webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:99px;
-  background:#dbe3ee;outline:none;margin:12px 0;
+  -webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:99px;
+  background:linear-gradient(90deg,var(--accent) 0%,#dbe3ee 0%);outline:none;margin:14px 0;cursor:pointer;
 }
 input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;
-  background:var(--brand);cursor:pointer;border:3px solid #fff;box-shadow:0 2px 6px rgba(15,23,42,.3);
+  -webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;
+  background:#fff;cursor:pointer;border:4px solid var(--accent);box-shadow:0 3px 10px rgba(15,23,41,.28);
 }
 input[type=range]::-moz-range-thumb{
-  width:24px;height:24px;border-radius:50%;background:var(--brand);cursor:pointer;
-  border:3px solid #fff;box-shadow:0 2px 6px rgba(15,23,42,.3);
+  width:28px;height:28px;border-radius:50%;background:#fff;cursor:pointer;
+  border:4px solid var(--accent);box-shadow:0 3px 10px rgba(15,23,41,.28);
 }
-.rng-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.rng-val{font-size:13.5px;font-weight:800;color:var(--brand)}
+input[type=range]:disabled{opacity:.45;cursor:not-allowed}
+.rng-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.rng-val{
+  font-size:13.5px;font-weight:800;color:#fff;background:var(--accent);
+  padding:4px 12px;border-radius:99px;white-space:nowrap;
+}
 
 /* chips */
-.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:9px}
 .chip{
-  border:1px solid var(--line);background:#fff;color:var(--ink-2);
-  border-radius:99px;padding:9px 14px;font-size:13.5px;font-weight:600;cursor:pointer;transition:.15s;min-height:40px;
+  border:1.5px solid var(--line);background:#fff;color:var(--ink-2);
+  border-radius:99px;padding:11px 17px;font-size:14px;font-weight:700;cursor:pointer;
+  transition:.15s;min-height:44px;box-shadow:var(--sh-1);
 }
-.chip:hover{border-color:#c3d4ff;color:var(--brand-dark)}
-.chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+.chip:hover{border-color:var(--accent-line);color:var(--accent-d);transform:translateY(-2px)}
+.chip[aria-pressed="true"]{background:var(--accent-grad);border-color:transparent;color:#fff;box-shadow:var(--sh-glow)}
+body[data-tool="signature"] .chip[aria-pressed="true"]{box-shadow:0 6px 18px rgba(16,185,129,.32)}
 
 /* segmented */
-.seg{display:flex;gap:6px;background:#f1f5f9;padding:5px;border-radius:12px;flex-wrap:wrap}
+.seg{display:flex;gap:6px;background:#f1f5f9;padding:6px;border-radius:15px;flex-wrap:wrap}
 .seg button{
-  flex:1 1 90px;border:0;background:transparent;border-radius:9px;padding:10px 8px;
-  font-size:14px;font-weight:600;color:var(--ink-2);cursor:pointer;transition:.15s;min-height:42px;
+  flex:1 1 92px;border:0;background:transparent;border-radius:11px;padding:12px 10px;
+  font-size:14.5px;font-weight:700;color:var(--ink-2);cursor:pointer;transition:.15s;min-height:46px;
 }
 .seg button:hover{background:#e6ecf5}
-.seg button[aria-pressed="true"]{background:#fff;color:var(--brand);box-shadow:0 1px 3px rgba(15,23,42,.14)}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--accent-d);box-shadow:0 2px 8px rgba(15,23,41,.14)}
+
+/* Advanced disclosure */
+.adv{border:1.5px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fcfdff}
+.adv-t{
+  width:100%;display:flex;align-items:center;gap:11px;background:none;border:0;cursor:pointer;
+  padding:15px 17px;font-size:15px;font-weight:800;color:var(--ink-2);text-align:left;
+}
+.adv-t:hover{background:#f6f9ff}
+.adv-t .ai{
+  width:30px;height:30px;flex:0 0 30px;border-radius:10px;display:grid;place-items:center;
+  background:var(--accent-soft);color:var(--accent-d);
+}
+.adv-t .ai svg{width:16px;height:16px}
+.adv-t .chev{margin-left:auto;transition:transform .22s;color:var(--faint)}
+.adv-t .chev svg{width:18px;height:18px}
+.adv-t[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.adv-t small{display:block;font-size:12.3px;color:var(--muted);font-weight:500}
+.adv-b{padding:0 17px 18px;border-top:1px solid var(--line-2)}
+.adv-b.closed{display:none}
 
 /* ===========================================================================
-   8. Previews
+   12. Previews
    =========================================================================== */
-.previews{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.pv{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.previews{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.pv{border:1.5px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff;display:flex;flex-direction:column;box-shadow:var(--sh-1)}
 .pv-h{
-  padding:9px 13px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--muted);background:#f8fafc;border-bottom:1px solid var(--line);
-  display:flex;align-items:center;gap:7px;
+  padding:11px 15px;font-size:11.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);background:#f8fafc;border-bottom:1px solid var(--line-2);
+  display:flex;align-items:center;gap:8px;
 }
-.pv-h .dot{width:7px;height:7px;border-radius:50%;background:var(--muted)}
-.pv-out .pv-h .dot{background:var(--ok)}
-.pv-stage{
-  flex:1;min-height:190px;display:grid;place-items:center;padding:14px;
-  background:#f8fafc;
-}
-.pv-stage img{max-height:280px;width:auto;object-fit:contain;border-radius:6px}
+.pv-h .dot{width:8px;height:8px;border-radius:50%;background:var(--faint)}
+.pv-out .pv-h{background:var(--accent-soft);color:var(--accent-d)}
+.pv-out .pv-h .dot{background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent)}
+.pv-stage{flex:1;min-height:200px;display:grid;place-items:center;padding:16px;background:#f8fafc}
+.pv-stage img,.pv-stage canvas{max-height:290px;width:auto;max-width:100%;border-radius:8px;box-shadow:0 3px 12px rgba(15,23,41,.14)}
 .pv-stage.checker{
   background-color:#fff;
-  background-image:linear-gradient(45deg,#e2e8f0 25%,transparent 25%),linear-gradient(-45deg,#e2e8f0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e2e8f0 75%),linear-gradient(-45deg,transparent 75%,#e2e8f0 75%);
+  background-image:linear-gradient(45deg,#e6ebf3 25%,transparent 25%),linear-gradient(-45deg,#e6ebf3 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e6ebf3 75%),linear-gradient(-45deg,transparent 75%,#e6ebf3 75%);
   background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0;
 }
-.pv-empty{color:#94a3b8;font-size:13.5px;text-align:center;padding:20px}
-.pv-f{padding:10px 13px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);background:#fff}
-.pv-f b{color:var(--ink);font-weight:700}
+.pv-empty{color:var(--faint);font-size:13.8px;text-align:center;padding:24px 14px;line-height:1.6}
+.pv-f{padding:11px 15px;border-top:1px solid var(--line-2);font-size:12.8px;color:var(--muted);background:#fff;font-weight:600}
+.pv-f b{color:var(--ink);font-weight:800}
 
-/* meta strip */
-.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+/* meta chips */
+.meta{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
 .meta span{
-  background:#f1f5f9;border-radius:8px;padding:6px 11px;font-size:12.5px;color:var(--ink-2);font-weight:600;
+  background:#fff;border:1px solid var(--line);border-radius:11px;padding:8px 13px;
+  font-size:12.8px;color:var(--muted);font-weight:700;box-shadow:var(--sh-1);
 }
 .meta span b{color:var(--ink);font-weight:800}
 
 /* notes */
-.note{
-  display:flex;gap:9px;align-items:flex-start;border-radius:11px;padding:11px 13px;
-  font-size:13px;line-height:1.5;margin-top:12px;
-}
-.note svg{width:17px;height:17px;flex:0 0 17px;margin-top:1px}
-.note-i{background:var(--brand-soft);color:#1e3a8a}
-.note-w{background:var(--warn-soft);color:#92400e}
-.note-e{background:var(--err-soft);color:#991b1b}
-.note-o{background:var(--ok-soft);color:#166534}
+.note{display:flex;gap:11px;align-items:flex-start;border-radius:14px;padding:13px 15px;font-size:13.4px;line-height:1.55;margin-top:14px;border:1px solid transparent}
+.note svg{width:18px;height:18px;flex:0 0 18px;margin-top:1px}
+.note-i{background:#eef2ff;border-color:#c7d2fe;color:#3730a3}
+.note-w{background:var(--warn-bg);border-color:var(--warn-line);color:#92400e}
+.note-e{background:var(--err-bg);border-color:var(--err-line);color:#9f1239}
+.note-o{background:var(--ok-bg);border-color:var(--ok-line);color:#065f46}
 
 /* result */
-.result{border:1px solid #bbf7d0;background:var(--ok-soft);border-radius:13px;padding:15px;margin-top:14px}
-.result h4{margin:0 0 9px;font-size:14.5px;font-weight:800;color:#166534;display:flex;align-items:center;gap:7px}
-.result h4 svg{width:18px;height:18px}
+.result{
+  border:2px solid var(--ok-line);
+  background:linear-gradient(160deg,#ecfdf5,#f0fdfa 55%,#fff);
+  border-radius:var(--r);padding:18px;margin-top:16px;
+}
+.result h4{margin:0 0 11px;font-size:16px;font-weight:800;color:#065f46;display:flex;align-items:center;gap:10px}
+.result h4 .rk{
+  width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 12px rgba(16,185,129,.4);
+}
+.result h4 svg{width:17px;height:17px}
 
 /* busy */
-.busy{display:flex;align-items:center;justify-content:center;gap:11px;padding:16px;color:var(--muted);font-size:14px;font-weight:600}
-.spin{width:20px;height:20px;border:3px solid #dbe3ee;border-top-color:var(--brand);border-radius:50%;animation:sp .7s linear infinite}
+.busy{display:flex;align-items:center;justify-content:center;gap:13px;padding:20px;color:var(--accent-d);font-size:15px;font-weight:700}
+.spin{width:24px;height:24px;border:3.5px solid var(--accent-soft);border-top-color:var(--accent);border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.spin{animation-duration:2s}.panel.active{animation:none}}
-
-/* privacy + footer */
-.privacy{
-  display:flex;gap:11px;align-items:flex-start;background:#fff;border:1px solid var(--line);
-  border-left:4px solid var(--ok);border-radius:12px;padding:14px 16px;margin:6px 0 20px;box-shadow:var(--shadow);
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .spin{animation-duration:1.2s!important}
 }
-.privacy svg{width:20px;height:20px;flex:0 0 20px;color:var(--ok);margin-top:2px}
-.privacy b{display:block;font-size:14px;margin-bottom:2px}
-.privacy p{margin:0;font-size:13px;color:var(--muted);line-height:1.5}
-.site-foot{text-align:center;padding:22px 0 34px;color:var(--muted);font-size:12.5px}
-.site-foot code{background:#e8edf5;padding:2px 6px;border-radius:5px;font-size:11.5px}
+
+/* footer */
+.site-foot{text-align:center;padding:26px 0 40px;color:var(--muted);font-size:12.8px}
+.site-foot code{background:#eef2f8;padding:3px 8px;border-radius:7px;font-size:11.8px}
 
 /* toast */
 .toast{
-  position:fixed;left:50%;bottom:22px;transform:translate(-50%,18px);
-  background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:600;
-  box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:.24s;z-index:99;max-width:92vw;text-align:center;
+  position:fixed;left:50%;bottom:24px;transform:translate(-50%,22px);
+  background:var(--ink);color:#fff;padding:14px 20px;border-radius:15px;font-size:14.5px;font-weight:700;
+  box-shadow:0 18px 44px rgba(15,23,41,.35);opacity:0;pointer-events:none;transition:.26s;
+  z-index:200;max-width:92vw;text-align:center;
 }
 .toast.show{opacity:1;transform:translate(-50%,0)}
-.toast.err{background:var(--err)}
-.toast.ok{background:var(--ok)}
+.toast.err{background:linear-gradient(135deg,#e11d48,#be123c)}
+.toast.ok{background:linear-gradient(135deg,#059669,#047857)}
 
 /* ===========================================================================
-   9. Responsive
+   13. Responsive
    =========================================================================== */
-@media (max-width:860px){
+@media (max-width:900px){
   .previews{grid-template-columns:1fr}
-  .grid3{grid-template-columns:1fr}
+}
+@media (max-width:700px){
+  .chooser{grid-template-columns:1fr;gap:12px;margin:18px 0}
+  .tool-card{padding:16px;gap:13px;border-radius:var(--r)}
+  .tool-card .ic{width:46px;height:46px;flex:0 0 46px;border-radius:14px}
+  .tool-card h2{font-size:16.5px}
 }
 @media (max-width:640px){
-  .wrap{padding:0 12px}
-  .hero{padding:24px 0 16px}
-  .hero h1{font-size:24px}
-  .hero p{font-size:14.5px}
-  .chooser{grid-template-columns:1fr;gap:11px;margin:14px 0 20px}
-  .tool-card{padding:15px;gap:12px}
-  .card-b{padding:15px}
-  .card-h{padding:13px 15px}
-  .grid2{grid-template-columns:1fr;gap:12px}
-  .drop{padding:24px 14px}
+  .wrap{padding:0 13px}
+  .hero{padding:26px 0 4px}
+  .hero p{font-size:15px}
+  .card-b{padding:16px}
+  .card-h{padding:15px 16px}
+  .card-h h3{font-size:16px}
+  .grid2{grid-template-columns:1fr;gap:13px}
+  .drop{padding:26px 15px}
+  .drop .di{width:58px;height:58px;border-radius:17px}
+  .drop b{font-size:16.5px}
   .btn-row .btn{flex:1 1 100%}
-  .pv-stage img{max-height:220px}
+  .qp{grid-template-columns:1fr 1fr;gap:9px}
+  .qp button{padding:12px}
+  .qp .qi{width:34px;height:34px;margin-bottom:8px}
+  .qp strong{font-size:13.5px}
+  .qp em{font-size:11.5px}
+  .opts{grid-template-columns:1fr}
+  .pv-stage img,.pv-stage canvas{max-height:230px}
+  .privacy{padding:13px 14px;gap:11px}
+  .privacy .pi{width:34px;height:34px;flex:0 0 34px}
 }
+@media (max-width:380px){
+  .qp{grid-template-columns:1fr}
+}
+
 </style>
 </head>
-<body>
+<body data-tool="resizer">
 
 <!-- ======================================================================= -->
 <header class="site-head">
   <div class="wrap site-head-in">
     <span class="logo" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/>
       </svg>
     </span>
     <span class="brand">
@@ -432,8 +660,16 @@ input[type=range]::-moz-range-thumb{
 <main class="wrap">
 
   <div class="hero">
-    <h1><?= e($TOOL_NAME) ?></h1>
+    <span class="pill"><i></i> 100% free &middot; No sign-up &middot; Works offline</span>
+    <h1>Resize photos &amp; clean your <em>signature</em> in seconds</h1>
     <p><?= e($TOOL_SUB) ?></p>
+    <ul class="howto">
+      <li><b>1</b> Upload</li>
+      <span class="arw">&rarr;</span>
+      <li><b>2</b> Pick a size</li>
+      <span class="arw">&rarr;</span>
+      <li><b>3</b> Download</li>
+    </ul>
   </div>
 
   <!-- ============================ TOOL CHOOSER ============================ -->
@@ -441,20 +677,23 @@ input[type=range]::-moz-range-thumb{
     <button type="button" class="tool-card" role="tab" id="tab-resizer"
             aria-selected="true" aria-controls="panel-resizer" data-tool="resizer">
       <span class="ic" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/>
         </svg>
       </span>
       <span>
         <h2>Image Resizer</h2>
         <p>Resize your image to the exact width, height and file size you need.</p>
       </span>
+      <span class="tick" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </span>
     </button>
 
     <button type="button" class="tool-card" role="tab" id="tab-signature"
             aria-selected="false" aria-controls="panel-signature" data-tool="signature">
       <span class="ic" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 17c3.5 0 3.5-9 7-9s3.5 9 7 9c1.7 0 2.7-1 3.5-2"/><path d="M3 21h18"/>
         </svg>
       </span>
@@ -462,18 +701,23 @@ input[type=range]::-moz-range-thumb{
         <h2>Signature Scanner</h2>
         <p>Clean, resize and prepare your signature for online applications.</p>
       </span>
+      <span class="tick" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </span>
     </button>
   </div>
 
   <div class="privacy">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>
-    </svg>
+    <span class="pi" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>
+      </svg>
+    </span>
     <div>
-      <b>Your files are processed securely and are not publicly displayed.</b>
+      <b>Your files never leave your phone or computer.</b>
       <p>
-        Everything happens inside your own browser. Your image is never uploaded to our server,
-        never stored, and never sent to any third-party or AI service. Closing this page erases it.
+        Everything is done inside your own browser. Nothing is uploaded to our server, nothing is
+        stored, and nothing is sent to any other website or AI service.
       </p>
     </div>
   </div>
@@ -485,30 +729,33 @@ input[type=range]::-moz-range-thumb{
 
   <!-- STEP 1 : UPLOAD -->
   <div class="card">
-    <div class="card-h"><span class="n">1</span><h3>Upload Your Image</h3></div>
+    <div class="card-h"><span class="n">1</span><h3>Choose your image</h3></div>
     <div class="card-b">
       <div class="drop" id="r-drop" tabindex="0" role="button" aria-label="Upload your image">
         <span class="di" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v13"/>
           </svg>
         </span>
-        <b>Drag &amp; Drop your image here</b>
-        <span class="dsub">Tap or click to browse your device</span>
-        <div class="or">or</div>
+        <b>Tap to choose a photo</b>
+        <span class="dsub">or drag &amp; drop it here</span>
+        <div class="or">OR</div>
         <span class="btn btn-p" id="r-choose-fake">Choose Image</span>
-        <div class="fmts">JPG &middot; JPEG &middot; PNG &middot; WEBP &nbsp;|&nbsp; Maximum recommended file size: <?= (int) $MAX_MB ?> MB</div>
+        <div class="fmts">
+          <kbd>JPG</kbd><kbd>JPEG</kbd><kbd>PNG</kbd><kbd>WEBP</kbd>
+          <span>up to <?= (int) $MAX_MB ?> MB</span>
+        </div>
       </div>
-      <input type="file" id="r-file" class="sr" accept="image/jpeg,image/png,image/webp">
       <div id="r-src-meta" class="meta hidden"></div>
       <div id="r-upload-note"></div>
     </div>
   </div>
+  <input type="file" id="r-file" class="sr" accept="image/jpeg,image/png,image/webp">
 
   <!-- STEP 2 : PREVIEW -->
   <div class="card hidden" id="r-work">
-    <div class="card-h"><span class="n">2</span><h3>Preview</h3>
-      <p class="sub">Output preview updates automatically as you change the settings.</p>
+    <div class="card-h"><span class="n">2</span><h3>Before &amp; after</h3>
+      <p class="sub">The result updates by itself as you change anything below.</p>
     </div>
     <div class="card-b">
       <div class="previews">
@@ -518,118 +765,104 @@ input[type=range]::-moz-range-thumb{
           <div class="pv-f" id="r-pv-src-f">&nbsp;</div>
         </div>
         <div class="pv pv-out">
-          <div class="pv-h"><span class="dot"></span> Output</div>
-          <div class="pv-stage" id="r-pv-out"><div class="pv-empty">Adjust the settings below</div></div>
+          <div class="pv-h"><span class="dot"></span> Your new image</div>
+          <div class="pv-stage" id="r-pv-out"><div class="pv-empty">Pick a size below</div></div>
           <div class="pv-f" id="r-pv-out-f">&nbsp;</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- STEP 3-4 : DIMENSIONS -->
+  <!-- STEP 3 : SIZE (simple) -->
   <div class="card hidden" id="r-dims-card">
-    <div class="card-h"><span class="n">3</span><h3>Width &amp; Height</h3></div>
+    <div class="card-h"><span class="n">3</span><h3>What do you need?</h3>
+      <p class="sub">Tap one option — it sets the size, the file size and the format for you.</p>
+    </div>
     <div class="card-b">
-      <div class="grid2 field">
-        <div>
-          <label class="f-label" for="r-w">Width</label>
-          <div class="suffix"><input class="inp" type="number" id="r-w" min="1" max="12000" inputmode="numeric"><i>px</i></div>
+
+      <div class="field">
+        <div class="qp" id="r-quick">
+          <button type="button" class="q1" aria-pressed="false" data-w="350" data-h="450" data-kb="100" data-fmt="jpg">
+            <span class="qi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+            <strong>Passport Photo</strong><em>350 &times; 450 px &middot; 100 KB</em>
+          </button>
+          <button type="button" class="q2" aria-pressed="false" data-w="200" data-h="230" data-kb="50" data-fmt="jpg">
+            <span class="qi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
+            <strong>Form Photo</strong><em>200 &times; 230 px &middot; 50 KB</em>
+          </button>
+          <button type="button" class="q3" aria-pressed="false" data-w="200" data-h="200" data-kb="20" data-fmt="jpg">
+            <span class="qi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/></svg></span>
+            <strong>Very Small</strong><em>200 &times; 200 px &middot; 20 KB</em>
+          </button>
+          <button type="button" class="q4" aria-pressed="false" data-w="400" data-h="400" data-kb="100" data-fmt="jpg">
+            <span class="qi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.5 19a6 6 0 0111 0"/></svg></span>
+            <strong>Profile Picture</strong><em>400 &times; 400 px &middot; 100 KB</em>
+          </button>
+          <button type="button" class="q5" aria-pressed="false" data-orig="1" data-kb="200" data-fmt="jpg">
+            <span class="qi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 001 1h4"/><path d="M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z"/></svg></span>
+            <strong>Just Compress</strong><em>Same size &middot; 200 KB</em>
+          </button>
         </div>
-        <div>
-          <label class="f-label" for="r-h">Height</label>
-          <div class="suffix"><input class="inp" type="number" id="r-h" min="1" max="12000" inputmode="numeric"><i>px</i></div>
+        <div class="note note-i">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <span>These are common sizes. <b>Always check what your own form asks for</b> — you can set any size you like below.</span>
         </div>
       </div>
 
-      <label class="tgl field">
-        <input type="checkbox" id="r-lock" checked>
-        <span class="track"></span>
-        <span><span class="tl">Lock Aspect Ratio</span><br><span class="td">Changing width adjusts height automatically</span></span>
-      </label>
-
       <div class="field">
-        <button type="button" class="btn btn-s" id="r-orig-dims">Keep Original Dimensions</button>
+        <span class="f-label">Or set the size yourself</span>
+        <div class="grid2">
+          <div>
+            <label class="f-label" for="r-w" style="font-weight:600;color:var(--muted)">Width</label>
+            <div class="suffix"><input class="inp" type="number" id="r-w" min="1" max="12000" inputmode="numeric"><i>px</i></div>
+          </div>
+          <div>
+            <label class="f-label" for="r-h" style="font-weight:600;color:var(--muted)">Height</label>
+            <div class="suffix"><input class="inp" type="number" id="r-h" min="1" max="12000" inputmode="numeric"><i>px</i></div>
+          </div>
+        </div>
       </div>
 
       <div class="field">
-        <span class="f-label">Quick Size Presets</span>
+        <span class="f-label">Common sizes</span>
         <div class="chips" id="r-presets">
           <?php foreach ($IMG_PRESETS as $p): ?>
             <button type="button" class="chip" data-w="<?= (int) $p[0] ?>" data-h="<?= (int) $p[1] ?>" aria-pressed="false"><?= (int) $p[0] ?> &times; <?= (int) $p[1] ?></button>
           <?php endforeach; ?>
-          <button type="button" class="chip" data-custom="1" aria-pressed="true">Custom Size</button>
+          <button type="button" class="chip" data-custom="1" aria-pressed="true">My own size</button>
         </div>
       </div>
 
       <div class="field">
-        <span class="f-label">Resize Method</span>
-        <div class="seg" id="r-method">
-          <button type="button" data-v="fit" aria-pressed="true">Fit</button>
-          <button type="button" data-v="fill" aria-pressed="false">Fill</button>
-          <button type="button" data-v="stretch" aria-pressed="false">Stretch</button>
-        </div>
-        <p class="f-help" id="r-method-help"></p>
+        <label class="tgl">
+          <input type="checkbox" id="r-lock" checked>
+          <span class="track"></span>
+          <span><span class="tl">Keep the photo's shape</span><br><span class="td">Stops the picture looking stretched</span></span>
+        </label>
       </div>
 
       <div class="field">
-        <span class="f-label">Background</span>
-        <div class="seg" id="r-bg">
-          <button type="button" data-v="original" aria-pressed="true">Original</button>
-          <button type="button" data-v="white" aria-pressed="false">White</button>
-          <button type="button" data-v="black" aria-pressed="false">Black</button>
-          <button type="button" data-v="custom" aria-pressed="false">Custom</button>
-        </div>
-        <div class="grid2" style="margin-top:10px">
-          <div><input type="color" class="inp" id="r-bg-color" value="#ffffff" style="padding:5px;height:44px"></div>
-          <div></div>
-        </div>
-        <p class="f-help">Used for transparent areas and for any empty space left by <b>Fit</b>. JPG has no transparency, so transparent areas become the background colour.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 5-7 : SIZE / QUALITY / FORMAT -->
-  <div class="card hidden" id="r-out-card">
-    <div class="card-h"><span class="n">4</span><h3>File Size, Quality &amp; Format</h3></div>
-    <div class="card-b">
-
-      <div class="field">
-        <label class="f-label" for="r-target">Target File Size</label>
+        <label class="f-label" for="r-target">How big should the file be?</label>
         <select class="inp" id="r-target">
-          <option value="0" selected>No limit — use the quality slider</option>
+          <option value="0" selected>Best quality (no size limit)</option>
           <?php foreach ($SIZE_PRESETS as $kb): ?>
-            <option value="<?= (int) $kb ?>"><?= $kb >= 1024 ? rtrim(rtrim(number_format($kb / 1024, 1), '0'), '.') . ' MB' : $kb . ' KB' ?></option>
+            <option value="<?= (int) $kb ?>"><?= $kb >= 1024 ? rtrim(rtrim(number_format($kb / 1024, 1), '0'), '.') . ' MB' : $kb . ' KB' ?> or less</option>
           <?php endforeach; ?>
-          <option value="-1">Custom…</option>
+          <option value="-1">Choose exactly…</option>
         </select>
 
-        <div id="r-target-slider" class="hidden" style="margin-top:12px">
+        <div id="r-target-slider" class="hidden" style="margin-top:14px">
           <div class="rng-head">
-            <span class="f-label" style="margin:0">Target Size</span>
+            <span class="f-label" style="margin:0">Target size</span>
             <span class="rng-val" id="r-target-val">100 KB</span>
           </div>
           <input type="range" id="r-target-range" min="10" max="2048" step="5" value="100">
-          <p class="f-help">Range: 10 KB &rarr; 2 MB</p>
         </div>
-
-        <p class="f-help">
-          The tool compresses towards your target and gets as close as it can while keeping the image valid.
-          Very small targets at large dimensions will visibly reduce quality — you will be told if the target
-          cannot be reached.
-        </p>
+        <p class="f-help">We compress as close to your target as possible. If a size is impossible without wrecking the picture, we tell you instead of giving you a ruined file.</p>
       </div>
 
       <div class="field">
-        <div class="rng-head">
-          <label class="f-label" for="r-quality" style="margin:0">Image Quality</label>
-          <span class="rng-val" id="r-quality-val">Quality: 85%</span>
-        </div>
-        <input type="range" id="r-quality" min="10" max="100" value="85">
-        <p class="f-help" id="r-quality-help">Applies to JPG/JPEG. When a target file size is set, quality is adjusted automatically to reach it.</p>
-      </div>
-
-      <div class="field">
-        <span class="f-label">Download Format</span>
+        <span class="f-label">File type</span>
         <div class="seg" id="r-format">
           <button type="button" data-v="jpg" aria-pressed="true">JPG</button>
           <button type="button" data-v="jpeg" aria-pressed="false">JPEG</button>
@@ -638,35 +871,93 @@ input[type=range]::-moz-range-thumb{
         <p class="f-help" id="r-format-help"></p>
       </div>
 
-      <div class="btn-row" style="margin-top:6px">
-        <button type="button" class="btn btn-p btn-lg" id="r-run">Resize Image</button>
-      </div>
-      <div class="btn-row" style="margin-top:9px">
-        <button type="button" class="btn btn-d" id="r-reset">Reset</button>
+      <!-- ADVANCED -->
+      <div class="field">
+        <div class="adv">
+          <button type="button" class="adv-t" data-adv="r-adv" aria-expanded="false">
+            <span class="ai" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></span>
+            <span>Advanced settings<small>Quality, cropping and background — most people can skip this</small></span>
+            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+          </button>
+          <div class="adv-b closed" id="r-adv">
+            <div class="field" style="padding-top:16px">
+              <div class="rng-head">
+                <label class="f-label" for="r-quality" style="margin:0">Picture quality</label>
+                <span class="rng-val" id="r-quality-val">Quality: 85%</span>
+              </div>
+              <input type="range" id="r-quality" min="10" max="100" value="85">
+              <p class="f-help" id="r-quality-help"></p>
+            </div>
+
+            <div class="field">
+              <span class="f-label">If the shape doesn't match</span>
+              <div class="seg" id="r-method">
+                <button type="button" data-v="fit" aria-pressed="true">Fit inside</button>
+                <button type="button" data-v="fill" aria-pressed="false">Fill &amp; crop</button>
+                <button type="button" data-v="stretch" aria-pressed="false">Stretch</button>
+              </div>
+              <p class="f-help" id="r-method-help"></p>
+            </div>
+
+            <div class="field">
+              <span class="f-label">Background colour</span>
+              <div class="seg" id="r-bg">
+                <button type="button" data-v="original" aria-pressed="true">Original</button>
+                <button type="button" data-v="white" aria-pressed="false">White</button>
+                <button type="button" data-v="black" aria-pressed="false">Black</button>
+                <button type="button" data-v="custom" aria-pressed="false">Pick</button>
+              </div>
+              <div style="margin-top:11px;max-width:180px">
+                <input type="color" class="inp" id="r-bg-color" value="#ffffff" style="padding:6px;height:50px;cursor:pointer">
+              </div>
+              <p class="f-help">Used for see-through areas and for any empty space left by <b>Fit inside</b>.</p>
+            </div>
+
+            <div class="field">
+              <button type="button" class="btn btn-s" id="r-orig-dims">Back to original size</button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div id="r-busy" class="busy hidden"><span class="spin"></span> Processing your image…</div>
+      <div class="cta">
+        <button type="button" class="btn btn-p btn-lg" id="r-run">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+          Resize My Image
+        </button>
+      </div>
+      <div class="btn-row" style="margin-top:10px">
+        <button type="button" class="btn btn-d" id="r-reset">Start over</button>
+      </div>
+
+      <div id="r-busy" class="busy hidden"><span class="spin"></span> Working on your image…</div>
       <div id="r-msg"></div>
 
       <div class="result hidden" id="r-result">
         <h4>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-          Output ready
+          <span class="rk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+          Done! Your image is ready
         </h4>
         <div class="meta" id="r-result-meta"></div>
-        <div class="btn-row" style="margin-top:13px">
-          <button type="button" class="btn btn-p" id="r-dl">Download Image</button>
+        <div class="btn-row" style="margin-top:15px">
+          <button type="button" class="btn btn-p" id="r-dl">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+            Download
+          </button>
           <button type="button" class="btn" id="r-share">Share</button>
-          <button type="button" class="btn" id="r-copy">Copy Image</button>
+          <button type="button" class="btn" id="r-copy">Copy</button>
         </div>
-        <div class="btn-row" style="margin-top:9px">
-          <button type="button" class="btn btn-s" data-dl="jpg">Download JPG</button>
-          <button type="button" class="btn btn-s" data-dl="jpeg">Download JPEG</button>
-          <button type="button" class="btn btn-s" data-dl="png">Download PNG</button>
+        <div class="btn-row" style="margin-top:10px">
+          <button type="button" class="btn btn-s" data-dl="jpg">Save as JPG</button>
+          <button type="button" class="btn btn-s" data-dl="jpeg">Save as JPEG</button>
+          <button type="button" class="btn btn-s" data-dl="png">Save as PNG</button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- kept for JS compatibility: the settings now live in card 3 -->
+  <div class="hidden" id="r-out-card"></div>
 </section>
 
 <!-- ======================================================================= -->
@@ -675,154 +966,192 @@ input[type=range]::-moz-range-thumb{
 <section class="panel" id="panel-signature" role="tabpanel" aria-labelledby="tab-signature">
 
   <div class="card">
-    <div class="card-h"><span class="n">1</span><h3>Upload Your Signature</h3>
-      <p class="sub">Sign on plain white paper, photograph or scan it, then upload here.</p>
+    <div class="card-h"><span class="n">1</span><h3>Choose your signature</h3>
+      <p class="sub">Sign on plain white paper, take a photo of it, and upload that photo.</p>
     </div>
     <div class="card-b">
       <div class="drop" id="s-drop" tabindex="0" role="button" aria-label="Upload your signature">
         <span class="di" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 17c3.5 0 3.5-9 7-9s3.5 9 7 9c1.7 0 2.7-1 3.5-2"/><path d="M3 21h18"/>
           </svg>
         </span>
-        <b>Drag &amp; Drop your signature here</b>
-        <span class="dsub">Tap or click to browse your device</span>
-        <div class="or">or</div>
+        <b>Tap to choose your signature</b>
+        <span class="dsub">or drag &amp; drop it here</span>
+        <div class="or">OR</div>
         <span class="btn btn-p">Choose Signature</span>
-        <div class="fmts">JPG &middot; JPEG &middot; PNG &middot; WEBP &nbsp;|&nbsp; Maximum recommended file size: <?= (int) $MAX_MB ?> MB</div>
+        <div class="fmts">
+          <kbd>JPG</kbd><kbd>JPEG</kbd><kbd>PNG</kbd><kbd>WEBP</kbd>
+          <span>up to <?= (int) $MAX_MB ?> MB</span>
+        </div>
       </div>
-      <input type="file" id="s-file" class="sr" accept="image/jpeg,image/png,image/webp">
       <div id="s-src-meta" class="meta hidden"></div>
       <div id="s-upload-note"></div>
     </div>
   </div>
+  <input type="file" id="s-file" class="sr" accept="image/jpeg,image/png,image/webp">
 
   <div class="card hidden" id="s-work">
-    <div class="card-h"><span class="n">2</span><h3>Preview</h3></div>
+    <div class="card-h"><span class="n">2</span><h3>Before &amp; after</h3></div>
     <div class="card-b">
       <div class="previews">
         <div class="pv">
-          <div class="pv-h"><span class="dot"></span> Original Signature</div>
+          <div class="pv-h"><span class="dot"></span> Your photo</div>
           <div class="pv-stage" id="s-pv-src"></div>
           <div class="pv-f" id="s-pv-src-f">&nbsp;</div>
         </div>
         <div class="pv pv-out">
-          <div class="pv-h"><span class="dot"></span> Clean Signature</div>
-          <div class="pv-stage" id="s-pv-out"><div class="pv-empty">Adjust the settings below</div></div>
+          <div class="pv-h"><span class="dot"></span> Cleaned signature</div>
+          <div class="pv-stage" id="s-pv-out"><div class="pv-empty">Choose a cleaning style below</div></div>
           <div class="pv-f" id="s-pv-out-f">&nbsp;</div>
         </div>
-      </div>
-      <div class="note note-i">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        <span>A checkerboard pattern behind the result means those areas are <b>transparent</b> (PNG only).</span>
       </div>
     </div>
   </div>
 
   <!-- CLEANING -->
   <div class="card hidden" id="s-clean-card">
-    <div class="card-h"><span class="n">3</span><h3>Clean Signature</h3></div>
+    <div class="card-h"><span class="n">3</span><h3>Clean it up</h3>
+      <p class="sub">Machine Scan is the best choice for a photo taken with a phone.</p>
+    </div>
     <div class="card-b">
-
       <div class="field">
-        <span class="f-label">Clean Signature Background</span>
-        <div class="seg" id="s-mode">
-          <button type="button" data-v="original" aria-pressed="false">Original</button>
-          <button type="button" data-v="white" aria-pressed="false">White Background</button>
-          <button type="button" data-v="scan" aria-pressed="true">Machine Scan</button>
+        <div class="opts" id="s-mode">
+          <button type="button" data-v="scan" aria-pressed="true">
+            <span class="badge">BEST</span>
+            <span class="oi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><path d="M3 12h18"/></svg></span>
+            <strong>Machine Scan</strong>
+            <em>Removes shadows, grey paper and dust. Looks like a proper scanner copy.</em>
+          </button>
+          <button type="button" data-v="white" aria-pressed="false">
+            <span class="oi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v3M12 20v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1 12h3M20 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></span>
+            <strong>White Background</strong>
+            <em>Makes the paper pure white but keeps your natural pen strokes.</em>
+          </button>
+          <button type="button" data-v="original" aria-pressed="false">
+            <span class="oi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg></span>
+            <strong>No Cleaning</strong>
+            <em>Leaves the photo exactly as it is, only resized.</em>
+          </button>
         </div>
         <p class="f-help" id="s-mode-help"></p>
       </div>
 
       <div class="field" id="s-thr-wrap">
         <div class="rng-head">
-          <label class="f-label" for="s-thr" style="margin:0">Signature Detection</label>
+          <label class="f-label" for="s-thr" style="margin:0">How much to pick up</label>
           <span class="rng-val" id="s-thr-val">Balanced</span>
         </div>
         <input type="range" id="s-thr" min="0" max="100" value="50">
-        <p class="f-help">Low picks up only the darkest strokes. High picks up lighter strokes but may keep more background. Adjust until your signature looks complete and the paper looks clean.</p>
+        <p class="f-help">Slide right if parts of your signature are missing. Slide left if grey patches from the paper are still showing.</p>
       </div>
 
-      <label class="tgl field" id="s-noise-wrap">
-        <input type="checkbox" id="s-noise" checked>
-        <span class="track"></span>
-        <span><span class="tl">Remove Shadows / Noise</span><br><span class="td">Deletes small specks and scanner dust, keeps the signature</span></span>
-      </label>
+      <div class="field" id="s-noise-wrap">
+        <label class="tgl">
+          <input type="checkbox" id="s-noise" checked>
+          <span class="track"></span>
+          <span><span class="tl">Remove dust &amp; shadows</span><br><span class="td">Deletes tiny specks, keeps your signature</span></span>
+        </label>
+      </div>
 
-      <label class="tgl field" id="s-rembg-wrap">
-        <input type="checkbox" id="s-rembg">
-        <span class="track"></span>
-        <span><span class="tl">Remove Background (transparent)</span><br><span class="td">PNG only — JPG cannot store transparency and will use white</span></span>
-      </label>
+      <div class="field" id="s-white-wrap">
+        <label class="tgl">
+          <input type="checkbox" id="s-white" checked>
+          <span class="track"></span>
+          <span><span class="tl">Pure white background</span><br><span class="td">Exactly white — what most forms expect</span></span>
+        </label>
+      </div>
 
-      <label class="tgl field" id="s-white-wrap">
-        <input type="checkbox" id="s-white" checked>
-        <span class="track"></span>
-        <span><span class="tl">Pure White Background</span><br><span class="td">Forces the paper to exact RGB 255,255,255</span></span>
-      </label>
+      <div class="field" id="s-rembg-wrap">
+        <label class="tgl">
+          <input type="checkbox" id="s-rembg">
+          <span class="track"></span>
+          <span><span class="tl">See-through background</span><br><span class="td">Needs PNG. A checkerboard means see-through.</span></span>
+        </label>
+      </div>
     </div>
   </div>
 
   <!-- SIZE -->
   <div class="card hidden" id="s-dims-card">
-    <div class="card-h"><span class="n">4</span><h3>Size, Quality &amp; Format</h3></div>
+    <div class="card-h"><span class="n">4</span><h3>Size &amp; file type</h3>
+      <p class="sub">Tap an option — it fills everything in for you.</p>
+    </div>
     <div class="card-b">
-      <div class="grid2 field">
-        <div>
-          <label class="f-label" for="s-w">Width</label>
-          <div class="suffix"><input class="inp" type="number" id="s-w" min="1" max="12000" inputmode="numeric"><i>px</i></div>
-        </div>
-        <div>
-          <label class="f-label" for="s-h">Height</label>
-          <div class="suffix"><input class="inp" type="number" id="s-h" min="1" max="12000" inputmode="numeric"><i>px</i></div>
+
+      <div class="field">
+        <div class="qp" id="s-quick">
+          <button type="button" class="q5" aria-pressed="false" data-w="300" data-h="80" data-kb="20" data-fmt="jpg">
+            <span class="qi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17c3.5 0 3.5-9 7-9s3.5 9 7 9c1.7 0 2.7-1 3.5-2"/></svg></span>
+            <strong>Form Signature</strong><em>300 &times; 80 px &middot; 20 KB</em>
+          </button>
+          <button type="button" class="q2" aria-pressed="false" data-w="400" data-h="100" data-kb="30" data-fmt="jpg">
+            <span class="qi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20M6 8v8M18 8v8"/></svg></span>
+            <strong>Wide Signature</strong><em>400 &times; 100 px &middot; 30 KB</em>
+          </button>
+          <button type="button" class="q3" aria-pressed="false" data-w="200" data-h="60" data-kb="10" data-fmt="jpg">
+            <span class="qi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg></span>
+            <strong>Very Small</strong><em>200 &times; 60 px &middot; 10 KB</em>
+          </button>
+          <button type="button" class="q4" aria-pressed="false" data-w="400" data-h="150" data-kb="0" data-fmt="png" data-transparent="1">
+            <span class="qi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18M12 3v18"/></svg></span>
+            <strong>See-through PNG</strong><em>400 &times; 150 px &middot; no background</em>
+          </button>
         </div>
       </div>
 
-      <label class="tgl field">
-        <input type="checkbox" id="s-lock" checked>
-        <span class="track"></span>
-        <span><span class="tl">Lock Aspect Ratio</span></span>
-      </label>
+      <div class="field">
+        <span class="f-label">Or set the size yourself</span>
+        <div class="grid2">
+          <div>
+            <label class="f-label" for="s-w" style="font-weight:600;color:var(--muted)">Width</label>
+            <div class="suffix"><input class="inp" type="number" id="s-w" min="1" max="12000" inputmode="numeric"><i>px</i></div>
+          </div>
+          <div>
+            <label class="f-label" for="s-h" style="font-weight:600;color:var(--muted)">Height</label>
+            <div class="suffix"><input class="inp" type="number" id="s-h" min="1" max="12000" inputmode="numeric"><i>px</i></div>
+          </div>
+        </div>
+      </div>
 
       <div class="field">
-        <span class="f-label">Size Presets</span>
+        <span class="f-label">Common sizes</span>
         <div class="chips" id="s-presets">
           <?php foreach ($SIGN_PRESETS as $p): ?>
             <button type="button" class="chip" data-w="<?= (int) $p[0] ?>" data-h="<?= (int) $p[1] ?>" aria-pressed="false"><?= (int) $p[0] ?> &times; <?= (int) $p[1] ?></button>
           <?php endforeach; ?>
-          <button type="button" class="chip" data-custom="1" aria-pressed="true">Custom</button>
+          <button type="button" class="chip" data-custom="1" aria-pressed="true">My own size</button>
         </div>
       </div>
 
       <div class="field">
-        <label class="f-label" for="s-target">Target File Size</label>
+        <label class="tgl">
+          <input type="checkbox" id="s-lock" checked>
+          <span class="track"></span>
+          <span><span class="tl">Keep the shape</span><br><span class="td">Stops the signature looking squashed</span></span>
+        </label>
+      </div>
+
+      <div class="field">
+        <label class="f-label" for="s-target">How big should the file be?</label>
         <select class="inp" id="s-target">
-          <option value="0" selected>No limit — use the quality slider</option>
+          <option value="0" selected>Best quality (no size limit)</option>
           <?php foreach ($SIZE_PRESETS as $kb): ?>
-            <option value="<?= (int) $kb ?>"><?= $kb >= 1024 ? rtrim(rtrim(number_format($kb / 1024, 1), '0'), '.') . ' MB' : $kb . ' KB' ?></option>
+            <option value="<?= (int) $kb ?>"><?= $kb >= 1024 ? rtrim(rtrim(number_format($kb / 1024, 1), '0'), '.') . ' MB' : $kb . ' KB' ?> or less</option>
           <?php endforeach; ?>
-          <option value="-1">Custom…</option>
+          <option value="-1">Choose exactly…</option>
         </select>
-        <div id="s-target-slider" class="hidden" style="margin-top:12px">
+        <div id="s-target-slider" class="hidden" style="margin-top:14px">
           <div class="rng-head">
-            <span class="f-label" style="margin:0">Target Size</span>
+            <span class="f-label" style="margin:0">Target size</span>
             <span class="rng-val" id="s-target-val">50 KB</span>
           </div>
           <input type="range" id="s-target-range" min="10" max="2048" step="5" value="50">
-          <p class="f-help">Range: 10 KB &rarr; 2 MB</p>
         </div>
       </div>
 
       <div class="field">
-        <div class="rng-head">
-          <label class="f-label" for="s-quality" style="margin:0">Signature Quality</label>
-          <span class="rng-val" id="s-quality-val">Quality: 90%</span>
-        </div>
-        <input type="range" id="s-quality" min="10" max="100" value="90">
-      </div>
-
-      <div class="field">
-        <span class="f-label">Signature Format</span>
+        <span class="f-label">File type</span>
         <div class="seg" id="s-format">
           <button type="button" data-v="jpg" aria-pressed="true">JPG</button>
           <button type="button" data-v="jpeg" aria-pressed="false">JPEG</button>
@@ -831,11 +1160,33 @@ input[type=range]::-moz-range-thumb{
         <p class="f-help" id="s-format-help"></p>
       </div>
 
-      <div class="btn-row" style="margin-top:6px">
-        <button type="button" class="btn btn-p btn-lg" id="s-run">Scan &amp; Prepare Signature</button>
+      <div class="field">
+        <div class="adv">
+          <button type="button" class="adv-t" data-adv="s-adv" aria-expanded="false">
+            <span class="ai" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></span>
+            <span>Advanced settings<small>Quality — most people can skip this</small></span>
+            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+          </button>
+          <div class="adv-b closed" id="s-adv">
+            <div class="field" style="padding-top:16px">
+              <div class="rng-head">
+                <label class="f-label" for="s-quality" style="margin:0">Picture quality</label>
+                <span class="rng-val" id="s-quality-val">Quality: 90%</span>
+              </div>
+              <input type="range" id="s-quality" min="10" max="100" value="90">
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="btn-row" style="margin-top:9px">
-        <button type="button" class="btn btn-d" id="s-reset">Clear Signature</button>
+
+      <div class="cta">
+        <button type="button" class="btn btn-p btn-lg" id="s-run">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><path d="M3 12h18"/></svg>
+          Clean My Signature
+        </button>
+      </div>
+      <div class="btn-row" style="margin-top:10px">
+        <button type="button" class="btn btn-d" id="s-reset">Start over</button>
       </div>
 
       <div id="s-busy" class="busy hidden"><span class="spin"></span> Scanning your signature…</div>
@@ -843,19 +1194,22 @@ input[type=range]::-moz-range-thumb{
 
       <div class="result hidden" id="s-result">
         <h4>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-          Clean Signature ready
+          <span class="rk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+          Done! Your signature is ready
         </h4>
         <div class="meta" id="s-result-meta"></div>
-        <div class="btn-row" style="margin-top:13px">
-          <button type="button" class="btn btn-p" id="s-dl">Download Signature</button>
-          <button type="button" class="btn" id="s-share">Share Signature</button>
-          <button type="button" class="btn" id="s-copy">Copy Image</button>
+        <div class="btn-row" style="margin-top:15px">
+          <button type="button" class="btn btn-p" id="s-dl">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+            Download
+          </button>
+          <button type="button" class="btn" id="s-share">Share</button>
+          <button type="button" class="btn" id="s-copy">Copy</button>
         </div>
-        <div class="btn-row" style="margin-top:9px">
-          <button type="button" class="btn btn-s" data-sdl="jpg">Download JPG</button>
-          <button type="button" class="btn btn-s" data-sdl="jpeg">Download JPEG</button>
-          <button type="button" class="btn btn-s" data-sdl="png">Download PNG</button>
+        <div class="btn-row" style="margin-top:10px">
+          <button type="button" class="btn btn-s" data-sdl="jpg">Save as JPG</button>
+          <button type="button" class="btn btn-s" data-sdl="jpeg">Save as JPEG</button>
+          <button type="button" class="btn btn-s" data-sdl="png">Save as PNG</button>
         </div>
       </div>
     </div>
@@ -866,12 +1220,13 @@ input[type=range]::-moz-range-thumb{
 
 <footer class="site-foot">
   <div class="wrap">
-    &copy; <?= e($YEAR) ?> <?= e($SITE_NAME) ?> Image Tools — all processing happens in your browser.<br>
-    <code><?= e($gdSummary) ?></code> &nbsp;·&nbsp; server-side image processing is not used by this tool.
+    &copy; <?= e($YEAR) ?> <?= e($SITE_NAME) ?> Image Tools — everything happens in your browser.<br>
+    <code><?= e($gdSummary) ?></code>
   </div>
 </footer>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 
 <script>
 /* ===========================================================================
@@ -1543,7 +1898,7 @@ input[type=range]::-moz-range-thumb{
     $('#r-src-meta').classList.add('hidden');
     $('#r-src-meta').innerHTML = '';
     $('#r-pv-src').innerHTML = '';
-    $('#r-pv-out').innerHTML = '<div class="pv-empty">Adjust the settings below</div>';
+    $('#r-pv-out').innerHTML = '<div class="pv-empty">Pick a size below</div>';
     $('#r-pv-src-f').innerHTML = '&nbsp;'; $('#r-pv-out-f').innerHTML = '&nbsp;';
     $('#r-w').value = ''; $('#r-h').value = '';
     $('#r-lock').checked = true;
@@ -2003,7 +2358,7 @@ input[type=range]::-moz-range-thumb{
     $('#s-file').value = '';
     $('#s-src-meta').classList.add('hidden'); $('#s-src-meta').innerHTML = '';
     $('#s-pv-src').innerHTML = '';
-    $('#s-pv-out').innerHTML = '<div class="pv-empty">Adjust the settings below</div>';
+    $('#s-pv-out').innerHTML = '<div class="pv-empty">Choose a cleaning style below</div>';
     $('#s-pv-out').classList.remove('checker');
     $('#s-pv-src-f').innerHTML = '&nbsp;'; $('#s-pv-out-f').innerHTML = '&nbsp;';
     $('#s-w').value = ''; $('#s-h').value = '';
@@ -2020,6 +2375,112 @@ input[type=range]::-moz-range-thumb{
     sShowCards(false);
     sSetHelp();
     toast('Signature cleared.');
+  });
+
+  /* =======================================================================
+     ONE-TAP PRESETS + ADVANCED DISCLOSURE
+
+     These exist so somebody who just needs "a photo for a form" never has to
+     understand resize methods or quality curves: one tap fills in the size,
+     the target file size and the format.
+     ======================================================================= */
+
+  /** Pick the <option> matching a KB value, else drive the custom slider. */
+  function setTargetKb(selectEl, sliderWrap, rangeEl, valEl, kb) {
+    if (!kb) { selectEl.value = '0'; sliderWrap.classList.add('hidden'); return; }
+    var found = Array.prototype.some.call(selectEl.options, function (o) {
+      return parseInt(o.value, 10) === kb;
+    });
+    if (found) {
+      selectEl.value = String(kb);
+      sliderWrap.classList.add('hidden');
+    } else {
+      selectEl.value = '-1';
+      sliderWrap.classList.remove('hidden');
+      rangeEl.value = String(kb);
+      valEl.textContent = kb >= 1024 ? (kb / 1024).toFixed(kb % 1024 ? 1 : 0) + ' MB' : kb + ' KB';
+    }
+  }
+  function pressOnly(root, btn) {
+    $$('button', root).forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+  }
+  function setSeg(root, value) {
+    $$('button[data-v]', root).forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-v') === value));
+    });
+  }
+
+  $('#r-quick').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button');
+    if (!b || !R.img) {
+      if (!R.img) { toast('Please choose an image first.', 'err'); }
+      return;
+    }
+    pressOnly(this, b);
+    if (b.getAttribute('data-orig')) {
+      $('#r-w').value = R.w; $('#r-h').value = R.h;
+    } else {
+      $('#r-w').value = b.getAttribute('data-w');
+      $('#r-h').value = b.getAttribute('data-h');
+    }
+    rMarkCustom($('#r-presets'));
+    setSeg($('#r-format'), b.getAttribute('data-fmt') || 'jpg');
+    setTargetKb($('#r-target'), $('#r-target-slider'), $('#r-target-range'),
+                $('#r-target-val'), parseInt(b.getAttribute('data-kb'), 10) || 0);
+    rSetHelp();
+    rPreview();
+    toast('Settings applied — now press Resize My Image.', 'ok');
+  });
+
+  $('#s-quick').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button');
+    if (!b || !S.img) {
+      if (!S.img) { toast('Please choose your signature first.', 'err'); }
+      return;
+    }
+    pressOnly(this, b);
+    $('#s-w').value = b.getAttribute('data-w');
+    $('#s-h').value = b.getAttribute('data-h');
+    rMarkCustom($('#s-presets'));
+    var fmt = b.getAttribute('data-fmt') || 'jpg';
+    setSeg($('#s-format'), fmt);
+    var wantsTransparent = !!b.getAttribute('data-transparent');
+    if (wantsTransparent) { setSeg($('#s-mode'), 'scan'); }
+    $('#s-rembg').checked = wantsTransparent;
+    $('#s-white').checked = !wantsTransparent;
+    setTargetKb($('#s-target'), $('#s-target-slider'), $('#s-target-range'),
+                $('#s-target-val'), parseInt(b.getAttribute('data-kb'), 10) || 0);
+    sSetHelp();
+    sPreview();
+    toast('Settings applied — now press Clean My Signature.', 'ok');
+  });
+
+  $$('.adv-t').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var body = $('#' + btn.getAttribute('data-adv'));
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      body.classList.toggle('closed', open);
+    });
+  });
+
+  /* Colour the filled part of every slider as it moves. */
+  function paintRange(el) {
+    var min = parseFloat(el.min || 0), max = parseFloat(el.max || 100);
+    var pct = ((parseFloat(el.value) - min) / (max - min)) * 100;
+    el.style.background = 'linear-gradient(90deg, var(--accent) ' + pct + '%, #dbe3ee ' + pct + '%)';
+  }
+  $$('input[type=range]').forEach(function (el) {
+    paintRange(el);
+    el.addEventListener('input', function () { paintRange(el); });
+  });
+
+  /* Swap the page accent when the tool changes. */
+  $$('.tool-card').forEach(function (card) {
+    card.addEventListener('click', function () {
+      document.body.setAttribute('data-tool', card.getAttribute('data-tool'));
+      $$('input[type=range]').forEach(paintRange);
+    });
   });
 
   /* =======================================================================
