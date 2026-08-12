@@ -27,7 +27,7 @@ $flashes = npr_take_flashes();
       <a href="<?php echo e(npr_url()); ?>" target="_blank" rel="noopener">View Site</a>
     </nav>
     <div class="admin-bar__user">
-      <span><?php echo e(isset($admin['username']) ? $admin['username'] : ''); ?></span>
+      <a href="<?php echo e(npr_url('admin/account.php')); ?>"><?php echo e(isset($admin['username']) ? $admin['username'] : ''); ?></a>
       <a href="<?php echo e(npr_url('admin/logout.php')); ?>">Log out</a>
     </div>
   </div>

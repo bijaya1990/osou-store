@@ -133,6 +133,19 @@ No WordPress? Include `result/ticker-widget.php` from your theme instead, and
 add `public/assets/css/ticker.css` + `public/assets/js/ticker.js` to your
 `<head>`. A JSON feed is also available at `/result/ticker.json`.
 
+## 5a. Admin passwords
+
+* **Change your password:** sign in, click your username in the top-right bar
+  (`/result/admin/account.php`), enter the current and new password. Minimum
+  10 characters.
+* **Resetting a forgotten password:** `tools/reset-password.php` is locked by
+  default and refuses to run. To unlock it, create an empty file named
+  `reset-allowed.txt` inside `result/` with your hosting File Manager or FTP,
+  open `https://your-site.com/result/tools/reset-password.php`, set a new
+  password for your username, then **delete `reset-allowed.txt`**. Requiring
+  that file proves you control the server, so the tool cannot be abused by a
+  visitor who simply finds the URL.
+
 ## 6. Security notes
 
 * All queries use PDO prepared statements; all output is escaped.
