@@ -1,0 +1,510 @@
+/* NaukriPatra Result System — public styles.
+   Deliberately restrained: one accent colour, academic typography, print-first
+   marksheet layout. */
+
+:root {
+  --ink: #16202c;
+  --ink-soft: #5a6673;
+  --line: #dfe4ea;
+  --line-strong: #c4ccd6;
+  --paper: #ffffff;
+  --canvas: #f4f6f8;
+  --accent: #0b3d75;
+  --accent-dark: #082c55;
+  --pass: #12683c;
+  --pass-bg: #e8f5ee;
+  --fail: #a4232b;
+  --fail-bg: #fbeaeb;
+  --warn: #8a5a00;
+  --warn-bg: #fdf3e0;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+a { color: var(--accent); }
+
+/* ---------- site chrome ---------- */
+
+.site-bar {
+  background: var(--accent);
+  color: #fff;
+}
+.site-bar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  gap: 12px;
+}
+.site-bar__brand {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: .02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.site-bar__dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #ff4d4f;
+  display: inline-block;
+}
+.site-bar__nav a {
+  color: #dce8f5;
+  text-decoration: none;
+  font-size: 14px;
+}
+.site-bar__nav a:hover { color: #fff; text-decoration: underline; }
+
+.page { padding: 24px 16px 48px; }
+
+.site-foot {
+  border-top: 1px solid var(--line);
+  background: #fff;
+  padding: 20px 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+.site-foot p { margin: 0 0 4px; }
+.site-foot__note { color: #8a949f; }
+
+/* ---------- landing ---------- */
+
+.page-head { margin-bottom: 20px; }
+.page-head h1 { font-size: 24px; margin: 0 0 4px; }
+.page-head p { margin: 0; color: var(--ink-soft); }
+
+.result-list { list-style: none; margin: 0; padding: 0; }
+.result-list__item {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.result-list__title { font-size: 17px; margin: 0 0 4px; }
+.result-list__meta {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+
+.empty-state {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--ink-soft);
+}
+.empty-state__title { font-size: 18px; font-weight: 600; color: var(--ink); margin: 0 0 6px; }
+
+/* ---------- examination header ---------- */
+
+.exam-head {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--accent);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+.exam-head__top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  text-align: left;
+}
+.exam-head__logo {
+  width: 68px; height: 68px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+.exam-head__institution {
+  font-size: 22px;
+  line-height: 1.25;
+  margin: 0;
+  letter-spacing: .01em;
+}
+.exam-head__address, .exam-head__board {
+  margin: 3px 0 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+.exam-head__bar {
+  border-top: 1px solid var(--line);
+  background: #fafbfc;
+  padding: 14px 20px;
+  text-align: center;
+}
+.exam-head__exam {
+  margin: 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: 15px;
+}
+.exam-head__title { margin: 2px 0 0; color: var(--ink-soft); font-size: 14px; }
+.exam-head__meta {
+  margin: 8px 0 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.notice {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  font-size: 14.5px;
+  color: var(--ink-soft);
+}
+
+/* ---------- search ---------- */
+
+.search-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px 20px 26px;
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+.search-card__title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.search-card__hint { margin: 0 0 18px; color: var(--ink-soft); font-size: 14px; }
+
+.search-form { text-align: left; }
+.search-form__label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+.search-form__input {
+  width: 100%;
+  font-size: 20px;
+  letter-spacing: .06em;
+  text-align: center;
+  padding: 14px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.search-form__input:focus {
+  outline: 3px solid rgba(11, 61, 117, .18);
+  border-color: var(--accent);
+}
+
+.alert {
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  text-align: left;
+  font-size: 14.5px;
+}
+.alert strong { display: block; margin-bottom: 2px; }
+.alert--error { background: var(--fail-bg); border: 1px solid #f0c5c8; color: #7c1a21; }
+
+/* ---------- buttons ---------- */
+
+.btn {
+  display: inline-block;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  min-height: 44px;
+  font-family: inherit;
+}
+.btn--primary { background: var(--accent); color: #fff; }
+.btn--primary:hover { background: var(--accent-dark); }
+.btn--ghost { background: #fff; color: var(--accent); border-color: var(--line-strong); }
+.btn--ghost:hover { border-color: var(--accent); }
+.btn--block { display: block; width: 100%; }
+
+/* ---------- marksheet ---------- */
+
+.marksheet {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 4px 0 0;
+  overflow: hidden;
+}
+
+.panel { border-top: 1px solid var(--line); padding: 18px 20px 20px; }
+.panel:first-of-type { border-top: 0; }
+.panel__title {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: var(--accent);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.candidate { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+.candidate__row {
+  display: flex;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px dotted var(--line);
+  font-size: 14.5px;
+}
+.candidate dt { flex: 0 0 45%; color: var(--ink-soft); margin: 0; }
+.candidate dd { flex: 1; margin: 0; font-weight: 600; word-break: break-word; }
+
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+.marks-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14.5px;
+}
+.marks-table th, .marks-table td {
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+  text-align: left;
+}
+.marks-table thead th {
+  background: #f2f5f8;
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.marks-table .num { text-align: right; white-space: nowrap; }
+.marks-table thead th.num { text-align: right; }
+.marks-table tbody tr:nth-child(even) { background: #fafbfc; }
+.marks-table tfoot th, .marks-table tfoot td {
+  background: #eef2f6;
+  font-weight: 700;
+}
+.marks-table__subject { width: 45%; }
+
+.summary {
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+.summary__figures {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1 1 280px;
+}
+.summary__figures li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px dotted var(--line);
+  font-size: 15px;
+}
+.summary__figures span { color: var(--ink-soft); }
+.summary__figures strong { font-weight: 700; }
+.summary__remarks { margin: 14px 0 0; font-size: 14px; color: var(--ink-soft); }
+
+.verdict {
+  flex: 0 0 220px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.verdict__label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-soft);
+}
+.verdict__value {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  line-height: 1.2;
+}
+.verdict__division {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--ink-soft);
+}
+.verdict--is-pass { background: var(--pass-bg); border-color: #b9dfc9; }
+.verdict--is-pass .verdict__value { color: var(--pass); }
+.verdict--is-fail { background: var(--fail-bg); border-color: #f0c5c8; }
+.verdict--is-fail .verdict__value { color: var(--fail); }
+.verdict--is-absent, .verdict--is-withheld, .verdict--is-compartment, .verdict--is-other {
+  background: var(--warn-bg); border-color: #e8d3a8;
+}
+.verdict--is-absent .verdict__value,
+.verdict--is-withheld .verdict__value,
+.verdict--is-compartment .verdict__value,
+.verdict--is-other .verdict__value { color: var(--warn); font-size: 24px; }
+
+.marksheet__disclaimer {
+  margin: 0;
+  padding: 14px 20px 18px;
+  border-top: 1px solid var(--line);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+
+.marksheet-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 18px 0 8px;
+  flex-wrap: wrap;
+}
+.after-result { text-align: center; }
+
+.print-only { display: none; }
+
+/* ---------- mobile ---------- */
+
+@media (max-width: 700px) {
+  .candidate { grid-template-columns: 1fr; }
+  .exam-head__top { flex-direction: column; text-align: center; gap: 10px; }
+  .exam-head__institution { font-size: 19px; }
+  .result-list__item { flex-direction: column; align-items: stretch; }
+  .result-list__item .btn { text-align: center; }
+  .verdict { flex: 1 1 100%; }
+}
+
+@media (max-width: 560px) {
+  /* A narrow marks table (subject + max + secured) still reads best as a real
+     table, so it only gets tighter spacing. */
+  .marks-table { font-size: 13.5px; }
+  .marks-table th, .marks-table td { padding: 9px 8px; }
+  .marks-table thead th { font-size: 11px; letter-spacing: .03em; white-space: normal; }
+  .marks-table__subject { width: auto; }
+
+  /* Wider tables (when the data also carries grades) stack into labelled
+     blocks instead, so the page never scrolls sideways. */
+  .marks-table--wide thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .marks-table--wide,
+  .marks-table--wide tbody,
+  .marks-table--wide tfoot,
+  .marks-table--wide tr,
+  .marks-table--wide td,
+  .marks-table--wide th {
+    display: block;
+    width: 100%;
+  }
+  .marks-table--wide tr {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .marks-table--wide td, .marks-table--wide th { border: 0; border-bottom: 1px solid var(--line); }
+  .marks-table--wide tr td:last-child, .marks-table--wide tr th:last-child { border-bottom: 0; }
+  .marks-table--wide td[data-label] {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    text-align: right;
+  }
+  .marks-table--wide td[data-label]::before {
+    content: attr(data-label);
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    text-align: left;
+  }
+  .marks-table--wide .marks-table__subject { font-weight: 700; background: #f7f9fb; }
+  .marks-table--wide tbody tr:nth-child(even) { background: transparent; }
+  .marks-table--wide tfoot tr { background: #eef2f6; }
+}
+
+/* ---------- print ---------- */
+
+@media print {
+  body { background: #fff; font-size: 12pt; }
+  .site-bar, .site-foot, .no-print, .exam-head, .notice, .search-card { display: none !important; }
+  .print-only { display: block; }
+  .page { padding: 0; }
+  .wrap { max-width: none; padding: 0; }
+  .marksheet {
+    border: 1px solid #000;
+    border-radius: 0;
+    page-break-inside: avoid;
+  }
+  .marksheet__print-head {
+    text-align: center;
+    padding: 16px 16px 10px;
+    border-bottom: 1px solid #000;
+  }
+  .marksheet__print-logo { max-height: 60px; margin-bottom: 6px; }
+  .marksheet__print-head h2 { margin: 0; font-size: 17pt; }
+  .marksheet__print-head p { margin: 2px 0 0; font-size: 10.5pt; }
+  .marksheet__print-exam { font-weight: 700; text-transform: uppercase; margin-top: 8px !important; }
+  .panel { border-color: #000; }
+  .panel__title { color: #000; }
+  .marks-table th, .marks-table td { border-color: #000; }
+  .marks-table thead th, .marks-table tfoot th, .marks-table tfoot td { background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .verdict { border: 1px solid #000; }
+  a { text-decoration: none; color: #000; }
+}

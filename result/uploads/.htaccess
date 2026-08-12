@@ -1,0 +1,24 @@
+# Uploaded files are data, never code.
+Options -Indexes -ExecCGI
+AddType text/plain .php .php3 .php4 .php5 .php7 .php8 .phtml .phar .inc .cgi .pl .py .sh .html .htm
+
+<IfModule mod_php.c>
+  php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+  php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+  php_flag engine off
+</IfModule>
+
+# Nothing under uploads/ may be executed as a script.
+<FilesMatch "\.(php\d?|phtml|phar|inc|cgi|pl|py|sh)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>

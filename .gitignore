@@ -1,0 +1,12 @@
+# Result system: never commit live credentials or uploaded data
+result/config.php
+result/uploads/logos/*
+!result/uploads/logos/.gitkeep
+result/uploads/tmp/*
+!result/uploads/tmp/.gitkeep
+!result/uploads/tmp/.htaccess
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp

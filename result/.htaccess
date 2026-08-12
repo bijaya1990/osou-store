@@ -1,0 +1,39 @@
+# NaukriPatra Result Management System
+
+Options -Indexes
+
+# --- Protect sensitive files ------------------------------------------------
+<FilesMatch "^(config\.php|config\.sample\.php|schema\.sql|composer\.(json|lock)|.*\.md)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# --- Pretty URLs ------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Adjust if the system lives somewhere other than /result/
+  RewriteBase /result/
+
+  # Never rewrite requests for files or directories that really exist.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # /result/ticker.json and /result/<slug>/ are handled by the front controller.
+  RewriteRule ^([A-Za-z0-9._-]+)/?$ index.php?npr_route=$1 [QSA,L]
+</IfModule>
+
+# --- Basic hardening --------------------------------------------------------
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+</IfModule>
+
+<IfModule mod_php.c>
+  php_flag display_errors off
+</IfModule>

@@ -1,0 +1,140 @@
+/* Live results ticker — used on the WordPress homepage.
+   Scoped under .npr-ticker so it cannot disturb the theme. */
+
+.npr-ticker {
+  --npr-ticker-bg: #0b3d75;
+  --npr-ticker-fg: #ffffff;
+  --npr-ticker-label: #d7262d;
+  display: flex;
+  align-items: stretch;
+  background: var(--npr-ticker-bg);
+  color: var(--npr-ticker-fg);
+  border-radius: 4px;
+  overflow: hidden;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.4;
+  min-height: 44px;
+  position: relative;
+  max-width: 100%;
+}
+
+.npr-ticker__label {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--npr-ticker-label);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-size: 13px;
+  padding: 0 14px;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.npr-ticker__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fff;
+  flex: 0 0 auto;
+  animation: npr-blink 1.6s ease-in-out infinite;
+}
+
+@keyframes npr-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .25; }
+}
+
+.npr-ticker__viewport {
+  flex: 1 1 auto;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.npr-ticker__track {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  will-change: transform;
+  animation: npr-scroll var(--npr-duration, 40s) linear infinite;
+  padding-left: 100%;
+}
+
+/* Filled by JS once the content is duplicated for a seamless loop. */
+.npr-ticker--seamless .npr-ticker__track {
+  padding-left: 0;
+  animation-name: npr-scroll-seamless;
+}
+
+@keyframes npr-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+@keyframes npr-scroll-seamless {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.npr-ticker__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  color: #fff;
+  text-decoration: none;
+}
+.npr-ticker__item:hover,
+.npr-ticker__item:focus { color: #fff; text-decoration: none; }
+.npr-ticker__item:hover .npr-ticker__text { text-decoration: underline; }
+
+.npr-ticker__text { font-weight: 600; }
+
+.npr-ticker__cta {
+  border: 1px solid rgba(255, 255, 255, .55);
+  border-radius: 3px;
+  padding: 2px 9px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.npr-ticker__item:hover .npr-ticker__cta { background: #fff; color: var(--npr-ticker-bg); }
+
+.npr-ticker__sep {
+  opacity: .45;
+  padding: 0 4px;
+}
+
+.npr-ticker__empty {
+  padding: 0 14px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+/* Pause on hover / focus, desktop only. */
+@media (hover: hover) and (pointer: fine) {
+  .npr-ticker:hover .npr-ticker__track,
+  .npr-ticker:focus-within .npr-ticker__track { animation-play-state: paused; }
+}
+
+@media (max-width: 600px) {
+  .npr-ticker { font-size: 14px; }
+  .npr-ticker__label { font-size: 11.5px; padding: 0 10px; }
+  .npr-ticker__cta { font-size: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .npr-ticker__track { animation: none; padding-left: 0; }
+  .npr-ticker__viewport { overflow-x: auto; }
+  .npr-ticker__dot { animation: none; }
+}
