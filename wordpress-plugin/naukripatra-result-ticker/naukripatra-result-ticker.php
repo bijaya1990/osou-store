@@ -2,7 +2,7 @@
 /**
  * Plugin Name: NaukriPatra Live Results Ticker
  * Description: Shows published results from the NaukriPatra Result Management System as a breaking-news style ticker. Use the shortcode [naukripatra_results_ticker] or the block/widget. Shows "LIVE RESULTS → Coming Soon" while nothing is published.
- * Version:     1.0.0
+ * Version:     1.1.1
  * Requires PHP: 7.0
  * License:     GPL-2.0-or-later
  * Text Domain: naukripatra-result-ticker
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('NPRT_VERSION', '1.1.0');
+define('NPRT_VERSION', '1.1.1');
 define('NPRT_OPTION', 'nprt_settings');
 define('NPRT_CACHE_KEY', 'nprt_ticker_items');
 
@@ -20,6 +20,9 @@ define('NPRT_CACHE_KEY', 'nprt_ticker_items');
 // homepage: an empty list, and a failed database lookup.
 define('NPRT_TTL_EMPTY', 30);
 define('NPRT_TTL_ERROR', 15);
+// Ceiling used when the result system cannot write its revision stamp, so a
+// deleted or unpublished result still disappears quickly.
+define('NPRT_TTL_UNSTAMPED', 60);
 
 /* -------------------------------------------------------------------------
  * Settings
@@ -393,6 +396,10 @@ function nprt_get_items(array $settings)
             $store = min($ttl, NPRT_TTL_ERROR);   // never pin a failure
         } elseif (!$items) {
             $store = min($ttl, NPRT_TTL_EMPTY);   // never pin "Coming Soon"
+        } elseif (nprt_revision($settings) === 0) {
+            // No revision stamp, so publishing/deleting cannot invalidate this
+            // entry. Keep the full TTL only when instant invalidation works.
+            $store = min($ttl, NPRT_TTL_UNSTAMPED);
         } else {
             $store = $ttl;
         }

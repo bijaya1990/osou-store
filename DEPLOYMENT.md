@@ -319,6 +319,10 @@ Settings → Live Results Ticker shows when the result system last signalled a
 change, and has a **Clear ticker cache now** button for the rare case you want
 to force it.
 
+Deleting a result, unpublishing it (back to Draft), or setting *Show on
+Homepage Ticker* to No removes it from the homepage the same way and just as
+quickly — the stamp is rewritten on all of those actions too.
+
 If the ticker is ever stuck, check in this order:
 
 * Does `result/uploads/` exist and is it writable? (The settings page warns if

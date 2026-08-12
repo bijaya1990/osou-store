@@ -67,6 +67,62 @@
   padding-left: 100%;
 }
 
+/* The ticker lives inside someone else's theme, so the properties that decide
+   its layout are pinned here. Without this, a single theme rule such as
+   "span { position: absolute }" or a flex-shrink inherited from a parent grid
+   makes the CHECK RESULT badge ride on top of the result title. Only layout is
+   forced — colours, fonts and spacing stay overridable. */
+.npr-ticker,
+.npr-ticker * {
+  box-sizing: border-box;
+}
+
+.npr-ticker__track {
+  flex-wrap: nowrap !important;
+  width: -moz-max-content !important;
+  width: max-content !important;
+  max-width: none !important;
+  min-width: 0;
+  float: none !important;
+}
+
+.npr-ticker__item,
+.npr-ticker__sep,
+.npr-ticker__empty {
+  position: static !important;
+  float: none !important;
+  flex: 0 0 auto !important;
+  max-width: none !important;
+  min-width: 0;
+  transform: none !important;
+  inset: auto !important;
+}
+
+.npr-ticker__text,
+.npr-ticker__cta {
+  position: static !important;
+  float: none !important;
+  flex: 0 0 auto !important;
+  max-width: none !important;
+  transform: none !important;
+  white-space: nowrap;
+  overflow: visible;
+  text-indent: 0 !important;
+}
+
+/* Content narrower than the viewport does not scroll at all: showing one
+   result four times over looks like a bug, not a ticker. */
+.npr-ticker--static .npr-ticker__track {
+  animation: none !important;
+  padding-left: 0 !important;
+  transform: none !important;
+}
+
+/* Nothing follows the last item when the ticker stands still. */
+.npr-ticker--static .npr-ticker__sep:last-child {
+  display: none;
+}
+
 /* Filled by JS once the content is duplicated for a seamless loop. */
 .npr-ticker--seamless .npr-ticker__track {
   padding-left: 0;

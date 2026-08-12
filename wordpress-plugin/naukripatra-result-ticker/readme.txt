@@ -1,6 +1,6 @@
 === NaukriPatra Live Results Ticker ===
 Requires PHP: 7.0
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 
 Shows results published in the NaukriPatra Result Management System as a
@@ -50,6 +50,19 @@ Features:
 Example: [naukripatra_results_ticker label="RESULTS OUT" limit="5"]
 
 == Changelog ==
+
+= 1.1.1 =
+* Fixed: a single short result was repeated across the width of the screen.
+  The ticker now scrolls only when the content is wider than the screen, and
+  duplicates the content exactly once instead of as many times as it fits.
+* Fixed: the CHECK RESULT badge could overlap the result title. Layout-critical
+  properties are now pinned so theme CSS cannot shift the ticker's contents.
+* Fixed: deleting or unpublishing a result now clears the ticker without any
+  manual cache clearing, including behind a page cache.
+* Falls back to /result/index.php?npr_route=ticker.json when mod_rewrite is
+  unavailable, and warns in the browser console if the feed cannot be read.
+* Populated lists are cached for 60s at most while the result system cannot
+  write its revision stamp.
 
 = 1.1.0 =
 * Fixed: a newly published result could stay invisible because an empty result
