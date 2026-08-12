@@ -283,7 +283,7 @@ Your existing theme and homepage are **not** modified by this.
 | Text when nothing is published | `Coming Soon` |
 | Button text | `CHECK RESULT` |
 | Maximum results shown | `10` |
-| Cache (seconds) | `300` — set `0` while testing so changes show instantly |
+| Cache (seconds) | `300` — leave it there; publishing now clears the cache automatically |
 
 The path is usually pre-filled correctly. If you are unsure of your exact
 server path, cPanel → File Manager shows it at the top, or check
@@ -294,6 +294,39 @@ server path, cPanel → File Manager shows it at the top, or check
    A red box means the path or the database is wrong — fix it before continuing.
 
 ---
+
+## 5a. How the ticker stays up to date (v1.1.0+)
+
+You never need to clear a cache by hand after publishing. Three mechanisms work
+together:
+
+1. **Instant invalidation.** Publishing, unpublishing, editing, toggling the
+   ticker setting or deleting a result rewrites
+   `result/uploads/.ticker-revision`. The plugin includes that file's timestamp
+   in its cache key, so the very next page view fetches fresh data.
+2. **Short fallback lifetimes.** A ticker showing "Coming Soon" is cached for
+   only 30 seconds, and a database error for 15 seconds — so the empty state
+   can never stick, even if the stamp file cannot be written. A ticker that is
+   showing results keeps the full 5-minute cache, so performance is unchanged.
+3. **Page-cache bypass.** If a caching plugin (LiteSpeed, WP Rocket, W3 Total
+   Cache, Cloudflare…) serves a saved copy of your homepage, the saved HTML
+   would still say "Coming Soon". The ticker therefore re-reads
+   `/result/ticker.json` in the browser — that address is served by the result
+   system, not WordPress, so no WordPress or CDN page cache applies — and
+   updates itself in place if the saved HTML is out of date.
+
+Settings → Live Results Ticker shows when the result system last signalled a
+change, and has a **Clear ticker cache now** button for the rare case you want
+to force it.
+
+If the ticker is ever stuck, check in this order:
+
+* Does `result/uploads/` exist and is it writable? (The settings page warns if
+  the stamp file is missing.)
+* Does `https://naukripatra.in/result/ticker.json` list your result? If not,
+  the result is not Published, or "Show on Homepage Ticker" is set to No.
+* Is the result system URL in the plugin settings correct? The browser refresh
+  uses it to reach the feed.
 
 ## 6. Adding the ticker to your existing homepage
 
@@ -519,6 +552,11 @@ Rules to follow:
 
 **Security notes**
 
+* The ticker's self-refresh needs the result system and WordPress on the same
+  domain, or the feed reachable from the browser; it is served with
+  `Access-Control-Allow-Origin: *` so a subdomain works too. Without
+  JavaScript the ticker still renders server-side (just subject to your page
+  cache).
 * Serve the site over **HTTPS** — admin passwords are typed into these forms.
 * **Delete `install.php`** after installing.
 * Results are public by design: anyone who knows a roll number can view that

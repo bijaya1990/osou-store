@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               WHERE id = ?',
             array($status, $status === 'published' ? npr_now() : null, npr_now(), $id)
         );
+        npr_touch_ticker_revision();
         npr_flash('success', $status === 'published'
             ? 'Result published. It is now live and appears in the homepage ticker (if enabled).'
             : 'Result unpublished. It is no longer visible to students.');
@@ -48,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'UPDATE `' . npr_table('results') . '` SET show_on_ticker = ?, updated_at = ? WHERE id = ?',
             array($new, npr_now(), $id)
         );
+        npr_touch_ticker_revision();
         npr_flash('success', $new ? 'This result will appear in the homepage ticker.' : 'This result was removed from the homepage ticker.');
         npr_redirect(npr_url('admin/edit-result.php?id=' . $id));
     }
@@ -78,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         npr_update_result($id, $form, $result);
+        npr_touch_ticker_revision();
         npr_flash('success', 'Result updated.');
         npr_redirect(npr_url('admin/edit-result.php?id=' . $id));
     } elseif ($logo['file'] !== '') {

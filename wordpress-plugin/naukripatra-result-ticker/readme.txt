@@ -1,6 +1,6 @@
 === NaukriPatra Live Results Ticker ===
 Requires PHP: 7.0
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 
 Shows results published in the NaukriPatra Result Management System as a
@@ -23,6 +23,13 @@ Features:
 * Smooth right-to-left scroll, pauses on hover, responsive, mobile friendly
 * Respects prefers-reduced-motion
 * Cached in a transient (default 5 minutes, configurable)
+* Cache is invalidated automatically when a result is published: the cache key
+  follows the result system's revision stamp (result/uploads/.ticker-revision)
+* "Coming Soon" is cached for 30 seconds only, and a database error for 15, so
+  the empty state can never get stuck on the homepage
+* Refreshes itself from /result/ticker.json in the browser, so a WordPress page
+  cache or CDN cannot keep serving a stale ticker
+* "Clear ticker cache now" button on the settings page
 
 == Installation ==
 
@@ -43,6 +50,18 @@ Features:
 Example: [naukripatra_results_ticker label="RESULTS OUT" limit="5"]
 
 == Changelog ==
+
+= 1.1.0 =
+* Fixed: a newly published result could stay invisible because an empty result
+  list was cached for the full TTL, and a failed database connection was cached
+  as "nothing published".
+* Cache key now follows the result system's revision stamp (instant refresh).
+* Short cache lifetimes for the empty and error states.
+* Browser-side refresh from the result system's JSON feed, which bypasses
+  WordPress page caches and CDNs.
+* Added a "Clear ticker cache now" button and a status line on the settings page.
+* Stylesheet/script now also load when the shortcode runs from header.php or
+  front-page.php after wp_head() has already been printed.
 
 = 1.0.0 =
 * First release: internal and external results, settings page, caching.

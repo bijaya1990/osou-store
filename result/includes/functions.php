@@ -342,6 +342,53 @@ function npr_result_button_text($result)
 }
 
 /**
+ * Path of the stamp file that records when the ticker's contents last changed.
+ */
+function npr_ticker_revision_file()
+{
+    return NPR_UPLOAD_PATH . '/.ticker-revision';
+}
+
+/**
+ * Bump the ticker revision stamp.
+ *
+ * Called whenever something changes what the homepage ticker should show
+ * (publish, unpublish, ticker toggle, save, delete). Readers — the WordPress
+ * plugin in particular — only need a filemtime() call to notice, which costs
+ * nothing, so a newly published result can invalidate their cache instantly
+ * instead of waiting for a timeout.
+ */
+function npr_touch_ticker_revision()
+{
+    $file = npr_ticker_revision_file();
+    $dir = dirname($file);
+
+    if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
+        return false;
+    }
+
+    // The contents double as a human-readable audit line; the mtime is what
+    // readers actually compare.
+    $written = @file_put_contents($file, (string) time() . ' ' . gmdate('c') . "\n", LOCK_EX);
+    if ($written === false) {
+        return false;
+    }
+    @chmod($file, 0644);
+    @touch($file);
+
+    return true;
+}
+
+/**
+ * Current ticker revision (the stamp file's modification time), or 0.
+ */
+function npr_ticker_revision()
+{
+    $file = npr_ticker_revision_file();
+    return is_file($file) ? (int) filemtime($file) : 0;
+}
+
+/**
  * Published results for the homepage ticker, newest first.
  */
 function npr_ticker_results($limit = 12)

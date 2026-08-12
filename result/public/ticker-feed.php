@@ -8,7 +8,9 @@ if (!defined('NPR_BOOTSTRAPPED')) {
 }
 
 header('Content-Type: application/json; charset=utf-8');
-header('Cache-Control: public, max-age=60');
+// Kept short on purpose: this feed is what lets a homepage sitting behind a
+// page cache notice a newly published result quickly.
+header('Cache-Control: public, max-age=15');
 header('Access-Control-Allow-Origin: *');
 
 $items = array();
@@ -26,8 +28,9 @@ foreach (npr_ticker_results(12) as $row) {
 }
 
 echo json_encode(array(
-    'label'   => 'LIVE RESULTS',
-    'empty'   => count($items) === 0,
-    'message' => count($items) === 0 ? 'Coming Soon' : '',
-    'items'   => $items,
+    'label'    => 'LIVE RESULTS',
+    'empty'    => count($items) === 0,
+    'message'  => count($items) === 0 ? 'Coming Soon' : '',
+    'revision' => npr_ticker_revision(),
+    'items'    => $items,
 ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

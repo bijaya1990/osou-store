@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     npr_delete_logo($result['institution_logo']);
+    npr_touch_ticker_revision();
     npr_flash('success', 'Result deleted.');
     npr_redirect(npr_url('admin/dashboard.php'));
 }

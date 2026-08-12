@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $id = npr_create_result($form);
+        npr_touch_ticker_revision();
 
         if ($wantedPublish) {
             npr_flash('error', 'The result was saved as a draft: import the student data first, then publish it.');

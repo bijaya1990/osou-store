@@ -12,9 +12,14 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('NPRT_VERSION', '1.0.0');
+define('NPRT_VERSION', '1.1.0');
 define('NPRT_OPTION', 'nprt_settings');
 define('NPRT_CACHE_KEY', 'nprt_ticker_items');
+
+// Short lifetimes for the two states that must never get stuck on the
+// homepage: an empty list, and a failed database lookup.
+define('NPRT_TTL_EMPTY', 30);
+define('NPRT_TTL_ERROR', 15);
 
 /* -------------------------------------------------------------------------
  * Settings
@@ -68,9 +73,47 @@ function nprt_sanitise_settings($input)
     $clean['limit']       = isset($input['limit']) ? max(1, min(30, (int) $input['limit'])) : $defaults['limit'];
     $clean['cache_ttl']   = isset($input['cache_ttl']) ? max(0, min(3600, (int) $input['cache_ttl'])) : $defaults['cache_ttl'];
 
-    delete_transient(NPRT_CACHE_KEY);
+    nprt_purge_cache();
 
     return $clean;
+}
+
+/**
+ * Drop every cached ticker payload, whatever key it was stored under.
+ *
+ * Cache keys carry a revision hash, so stale entries are normally never read
+ * again and simply expire; this clears them out immediately for the button on
+ * the settings page, for setting changes and on deactivation.
+ */
+function nprt_purge_cache()
+{
+    global $wpdb;
+
+    delete_transient(NPRT_CACHE_KEY);
+
+    $like = $wpdb->esc_like('_transient_' . NPRT_CACHE_KEY) . '%';
+    $timeoutLike = $wpdb->esc_like('_transient_timeout_' . NPRT_CACHE_KEY) . '%';
+
+    $names = $wpdb->get_col(
+        $wpdb->prepare(
+            "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+            $like,
+            $timeoutLike
+        )
+    );
+
+    foreach ((array) $names as $name) {
+        if (strpos($name, '_transient_timeout_') === 0) {
+            delete_transient(substr($name, strlen('_transient_timeout_')));
+        } else {
+            delete_transient(substr($name, strlen('_transient_')));
+        }
+    }
+
+    // External object caches keep transients out of the options table.
+    if (function_exists('wp_cache_flush_group')) {
+        wp_cache_flush_group('transient');
+    }
 }
 
 function nprt_render_settings_page()
@@ -78,14 +121,44 @@ function nprt_render_settings_page()
     if (!current_user_can('manage_options')) {
         return;
     }
+    $purged = false;
+    if (isset($_POST['nprt_purge']) && check_admin_referer('nprt_purge_cache')) {
+        nprt_purge_cache();
+        $purged = true;
+    }
+
     $settings = nprt_settings();
     $status = nprt_connection_status($settings);
+    $revision = nprt_revision($settings);
     ?>
     <div class="wrap">
       <h1>Live Results Ticker</h1>
 
+      <?php if ($purged): ?>
+        <div class="notice notice-success"><p><strong>Ticker cache cleared.</strong></p></div>
+      <?php endif; ?>
+
       <div class="notice notice-<?php echo $status['ok'] ? 'success' : 'error'; ?>">
         <p><strong><?php echo esc_html($status['message']); ?></strong></p>
+      </div>
+
+      <div class="notice notice-info">
+        <p>
+          <?php if ($revision > 0): ?>
+            Automatic refresh is <strong>active</strong>: the result system last signalled a change on
+            <?php echo esc_html(date_i18n('d M Y H:i:s', $revision)); ?>. Publishing a result clears this
+            cache immediately — no manual action needed.
+          <?php else: ?>
+            The result system has not signalled a change yet (no
+            <code>uploads/.ticker-revision</code> file). The ticker still refreshes on its own within
+            about 30 seconds of a result being published. If this message stays after you publish,
+            check that <code>result/uploads/</code> is writable.
+          <?php endif; ?>
+        </p>
+        <form method="post" style="margin-bottom:8px">
+          <?php wp_nonce_field('nprt_purge_cache'); ?>
+          <button class="button" type="submit" name="nprt_purge" value="1">Clear ticker cache now</button>
+        </form>
       </div>
 
       <form method="post" action="options.php">
@@ -207,23 +280,76 @@ function nprt_connection_status(array $settings)
 }
 
 /**
+ * Revision stamp of the result system.
+ *
+ * The result system rewrites uploads/.ticker-revision whenever a result is
+ * published, unpublished, edited, toggled or deleted. Reading its mtime is a
+ * single filesystem stat — far cheaper than a database round trip — and it
+ * goes into the cache key, so a newly published result invalidates the cached
+ * copy at once instead of waiting for the TTL to lapse.
+ *
+ * Returns 0 when the file does not exist (older result system, or uploads/ not
+ * readable); the short TTLs below then keep the ticker fresh anyway.
+ */
+function nprt_revision(array $settings)
+{
+    $configPath = $settings['config_path'];
+    if ($configPath === '') {
+        return 0;
+    }
+
+    $stamp = dirname($configPath) . '/uploads/.ticker-revision';
+
+    // clearstatcache so a stamp written moments ago is not missed.
+    clearstatcache(true, $stamp);
+
+    return is_file($stamp) ? (int) filemtime($stamp) : 0;
+}
+
+/**
+ * Cache key for the current settings and revision. Changing the revision, the
+ * limit or the result URL yields a different key, so stale entries are simply
+ * never read again (they expire on their own).
+ */
+function nprt_cache_key(array $settings)
+{
+    return NPRT_CACHE_KEY . '_' . substr(md5(
+        nprt_revision($settings) . '|' .
+        $settings['base_url'] . '|' .
+        (int) $settings['limit'] . '|' .
+        $settings['button_text']
+    ), 0, 20);
+}
+
+/**
  * Published, ticker-enabled results — cached in a transient.
+ *
+ * Three different lifetimes are used on purpose:
+ *   - a populated list is cached for the full configured TTL;
+ *   - an empty list is cached only briefly, so "Coming Soon" can never be
+ *     pinned to the homepage for minutes after the first result goes live;
+ *   - a connection failure is barely cached at all, because an unreachable
+ *     database must not be mistaken for "nothing published".
  */
 function nprt_get_items(array $settings)
 {
     $ttl = (int) $settings['cache_ttl'];
+    $key = nprt_cache_key($settings);
 
     if ($ttl > 0) {
-        $cached = get_transient(NPRT_CACHE_KEY);
+        $cached = get_transient($key);
         if (is_array($cached)) {
             return $cached;
         }
     }
 
     $items = array();
+    $failed = false;
     $connection = nprt_connect($settings);
 
-    if (!is_wp_error($connection)) {
+    if (is_wp_error($connection)) {
+        $failed = true;
+    } else {
         $limit = max(1, min(30, (int) $settings['limit']));
         try {
             $sql = 'SELECT result_title, institution_name, examination_name, academic_session, slug,
@@ -235,6 +361,7 @@ function nprt_get_items(array $settings)
             $rows = $connection['pdo']->query($sql)->fetchAll();
         } catch (Exception $e) {
             $rows = array();
+            $failed = true;
         }
 
         $base = rtrim($settings['base_url'], '/');
@@ -262,7 +389,14 @@ function nprt_get_items(array $settings)
     }
 
     if ($ttl > 0) {
-        set_transient(NPRT_CACHE_KEY, $items, $ttl);
+        if ($failed) {
+            $store = min($ttl, NPRT_TTL_ERROR);   // never pin a failure
+        } elseif (!$items) {
+            $store = min($ttl, NPRT_TTL_EMPTY);   // never pin "Coming Soon"
+        } else {
+            $store = $ttl;
+        }
+        set_transient($key, $items, $store);
     }
 
     return $items;
@@ -297,14 +431,40 @@ function nprt_render_ticker($atts = array())
 
     $items = nprt_get_items($settings);
 
+    // Styles and script are registered on wp_enqueue_scripts. When the ticker
+    // is printed from header.php / front-page.php that hook has already fired
+    // and wp_head() may already be flushed, in which case enqueuing silently
+    // does nothing — so fall back to printing the tag inline, once.
     wp_enqueue_style('nprt-ticker');
-    if ($items) {
-        wp_enqueue_script('nprt-ticker');
+    wp_enqueue_script('nprt-ticker');
+
+    $lateAssets = '';
+    if (did_action('wp_head') && !wp_style_is('nprt-ticker', 'done')) {
+        static $printedLate = false;
+        if (!$printedLate) {
+            $printedLate = true;
+            $base = rtrim($settings['base_url'], '/');
+            $lateAssets =
+                '<link rel="stylesheet" href="' . esc_url($base . '/public/assets/css/ticker.css?ver=' . NPRT_VERSION) . '">' .
+                '<script src="' . esc_url($base . '/public/assets/js/ticker.js?ver=' . NPRT_VERSION) . '" defer></script>';
+        }
     }
 
+    // The JSON feed is served by the result system itself, so it is never held
+    // by a WordPress page cache. The script below re-reads it and updates the
+    // ticker in place when the cached HTML turns out to be out of date.
+    $feedUrl = rtrim($settings['base_url'], '/') . '/ticker.json';
+
     ob_start();
+    echo $lateAssets;
     ?>
-    <div class="npr-ticker" <?php echo $items ? 'data-npr-scroll="1"' : ''; ?> role="region" aria-label="<?php echo esc_attr($settings['label']); ?>">
+    <div class="npr-ticker" <?php echo $items ? 'data-npr-scroll="1"' : ''; ?>
+         data-npr-feed="<?php echo esc_url($feedUrl); ?>"
+         data-npr-empty="<?php echo esc_attr($settings['empty_text']); ?>"
+         data-npr-button="<?php echo esc_attr($settings['button_text']); ?>"
+         data-npr-limit="<?php echo (int) $settings['limit']; ?>"
+         data-npr-count="<?php echo count($items); ?>"
+         role="region" aria-label="<?php echo esc_attr($settings['label']); ?>">
       <div class="npr-ticker__label"><span class="npr-ticker__dot" aria-hidden="true"></span><?php echo esc_html($settings['label']); ?></div>
       <div class="npr-ticker__viewport">
         <?php if (!$items): ?>
@@ -335,7 +495,5 @@ add_shortcode('naukripatra_result_ticker', 'nprt_render_ticker');
 // Allow the shortcode inside text widgets.
 add_filter('widget_text', 'do_shortcode');
 
-// Clear the cache from the admin bar action or on plugin deactivation.
-register_deactivation_hook(__FILE__, function () {
-    delete_transient(NPRT_CACHE_KEY);
-});
+register_deactivation_hook(__FILE__, 'nprt_purge_cache');
+register_activation_hook(__FILE__, 'nprt_purge_cache');
