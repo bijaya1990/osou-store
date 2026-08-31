@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520">
+<defs><linearGradient id="gg13" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a7f3d0"/><stop offset="1" stop-color="#065f46"/></linearGradient></defs>
+<rect width="800" height="520" fill="url(#gg13)"/><ellipse cx="400" cy="420" rx="330" ry="80" fill="#22c55e" opacity=".7"/><circle cx="400" cy="250" r="60" fill="#fff" stroke="#0f172a" stroke-width="6"/><path d="M400 200 l30 40 -18 50 h-24 l-18-50z" fill="#0f172a" opacity=".8"/>
+<rect x="0" y="452" width="800" height="68" fill="#0f172a" opacity=".62"/>
+<text x="400" y="494" text-anchor="middle" font-family="Poppins,Arial" font-size="26" font-weight="600" fill="#ffffff">Football Tournament</text>
+</svg>

@@ -1,0 +1,98 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+define( 'KC_VERSION', '1.0.0' );
+define( 'KC_DIR', get_template_directory() );
+define( 'KC_URI', get_template_directory_uri() );
+
+/* ---------------------------- theme setup ------------------------------ */
+function kc_setup() {
+	add_theme_support( 'title-tag' );
+	add_theme_support( 'post-thumbnails' );
+	add_theme_support( 'html5', array( 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script' ) );
+	add_theme_support( 'custom-logo', array( 'height' => 120, 'width' => 120, 'flex-height' => true, 'flex-width' => true ) );
+	add_theme_support( 'automatic-feed-links' );
+	add_theme_support( 'responsive-embeds' );
+
+	register_nav_menus( array(
+		'primary' => __( 'Primary Menu', 'katapali-college' ),
+		'footer'  => __( 'Footer Menu', 'katapali-college' ),
+	) );
+}
+add_action( 'after_setup_theme', 'kc_setup' );
+
+/* our demo content already ships as clean, valid HTML (tables, lists, etc.)
+   so we skip wpautop's automatic <p> wrapping, which would otherwise mangle it */
+remove_filter( 'the_content', 'wpautop' );
+add_filter( 'the_content', 'wpautop', 99 ); // still available for plain paragraphs typed by the admin
+function kc_smart_wpautop( $content ) {
+	if ( strpos( $content, '<table' ) !== false || strpos( $content, '<ul' ) !== false || strpos( $content, '<ol' ) !== false ) {
+		return $content; // already block-level HTML, leave as-is
+	}
+	return wpautop( $content );
+}
+remove_filter( 'the_content', 'wpautop', 99 );
+add_filter( 'the_content', 'kc_smart_wpautop', 10 );
+
+/* ------------------------------- assets --------------------------------- */
+function kc_assets() {
+	wp_enqueue_style( 'kc-google-fonts', 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap', array(), null );
+	wp_enqueue_style( 'kc-fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css', array(), '6.5.1' );
+	wp_enqueue_style( 'kc-style', KC_URI . '/assets/css/style.css', array(), KC_VERSION );
+	wp_enqueue_style( 'kc-style-main', get_stylesheet_uri(), array( 'kc-style' ), KC_VERSION );
+	wp_enqueue_script( 'kc-theme', KC_URI . '/assets/js/theme.js', array(), KC_VERSION, true );
+
+	wp_localize_script( 'kc-theme', 'KC_DATA', array(
+		'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+	) );
+}
+add_action( 'wp_enqueue_scripts', 'kc_assets' );
+
+/* Theme colours -> CSS custom properties, driven by the Customizer */
+function kc_theme_color_vars() {
+	$primary   = get_theme_mod( 'kc_color_primary', '#1e40af' );
+	$secondary = get_theme_mod( 'kc_color_secondary', '#0f766e' );
+	$accent    = get_theme_mod( 'kc_color_accent', '#f59e0b' );
+	$dark      = get_theme_mod( 'kc_color_dark', '#0b1e4f' );
+	echo "<style id='kc-theme-vars'>:root{--primary:{$primary};--secondary:{$secondary};--accent:{$accent};--dark:{$dark};}</style>\n";
+}
+add_action( 'wp_head', 'kc_theme_color_vars' );
+
+/* ------------------------------- includes -------------------------------- */
+require KC_DIR . '/inc/nav-walker.php';
+require KC_DIR . '/inc/cpt.php';
+require KC_DIR . '/inc/metaboxes.php';
+require KC_DIR . '/inc/customizer.php';
+require KC_DIR . '/inc/template-tags.php';
+require KC_DIR . '/inc/demo-importer.php';
+
+/* --------------------------- footer widget area --------------------------- */
+function kc_widgets_init() {
+	register_sidebar( array(
+		'name'          => __( 'Footer Column', 'katapali-college' ),
+		'id'            => 'footer-1',
+		'before_widget' => '<div class="widget %2$s">',
+		'after_widget'  => '</div>',
+		'before_title'  => '<h4>',
+		'after_title'   => '</h4>',
+	) );
+}
+add_action( 'widgets_init', 'kc_widgets_init' );
+
+/* excerpt length for card previews */
+add_filter( 'excerpt_length', function () { return 24; } );
+add_filter( 'excerpt_more', function () { return '&hellip;'; } );
+
+/* our demo photos/logo/banners ship as SVG illustrations; allow them through
+   the media uploader (used both by admins and by the Demo Content Importer) */
+add_filter( 'upload_mimes', function ( $mimes ) {
+	$mimes['svg'] = 'image/svg+xml';
+	return $mimes;
+} );
+add_filter( 'wp_check_filetype_and_ext', function ( $data, $file, $filename ) {
+	if ( substr( $filename, -4 ) === '.svg' ) {
+		$data['ext'] = 'svg';
+		$data['type'] = 'image/svg+xml';
+	}
+	return $data;
+}, 10, 3 );
