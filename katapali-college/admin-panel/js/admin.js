@@ -5,8 +5,9 @@
   var SESSION_KEY = 'kc_admin_session';
 
   function isLoggedIn() { return sessionStorage.getItem(SESSION_KEY) === '1'; }
+  function isLoginPage() { return /(^|\/)index\.html$/.test(location.pathname) || /\/admin-panel\/?$/.test(location.pathname); }
   function requireAuth() {
-    if (!isLoggedIn() && !/login\.html$/.test(location.pathname)) {
+    if (!isLoggedIn() && !isLoginPage()) {
       location.href = 'index.html';
     }
   }

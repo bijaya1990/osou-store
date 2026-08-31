@@ -36,5 +36,30 @@
 <script src="js/data.js"></script>
 <script src="js/site.js"></script>
 
+<script>
+window.KCPageInit = function() {
+  
+  
+var jobs = KC.Store.get('recruitment');
+var params = new URLSearchParams(location.search); var openId = params.get('id');
+function jcard(r){
+  return '<div class="card"><div class="card-body"><span class="tag '+(r.status==="Open"?"tag-green":"tag-red")+'">'+r.status+'</span>'+
+  '<h4 style="margin-top:10px;">'+r.title+'</h4><p style="color:var(--muted);font-size:.85rem;">'+r.dept+' Dept. &bull; '+r.type+' &bull; '+r.vacancies+' post(s)</p>'+
+  '<div class="card-date"><i class="fa-regular fa-calendar"></i>Last Date: '+KCU.fmtDate(r.lastDate)+'</div>'+
+  '<a href="recruitment.html?id='+r.id+'" class="btn btn-line btn-sm">View Details</a></div></div>';
+}
+document.getElementById('rec-list').innerHTML = jobs.map(jcard).join('') || '<div class="empty-msg">No openings currently.</div>';
+function showJob(r){
+  document.getElementById('rec-list-wrap').style.display='none';
+  var d=document.getElementById('rec-detail'); d.style.display='block';
+  d.innerHTML='<a href="recruitment.html" class="btn btn-line btn-sm" style="margin-bottom:18px;"><i class="fa-solid fa-arrow-left"></i> Back to Recruitment</a>'+
+  '<span class="tag '+(r.status==="Open"?"tag-green":"tag-red")+'">'+r.status+'</span><h2 style="margin-top:12px;">'+r.title+'</h2>'+
+  '<table class="kc-table"><tbody><tr><th>Department</th><td>'+r.dept+'</td></tr><tr><th>Type</th><td>'+r.type+'</td></tr><tr><th>Vacancies</th><td>'+r.vacancies+'</td></tr><tr><th>Salary</th><td>'+r.salary+'</td></tr><tr><th>Qualification</th><td>'+r.qualification+'</td></tr><tr><th>Published</th><td>'+KCU.fmtDate(r.date)+'</td></tr><tr><th>Last Date</th><td>'+KCU.fmtDate(r.lastDate)+'</td></tr></tbody></table>'+
+  r.content + (r.file? '<p style="margin-top:20px;"><a href="'+r.file+'" target="_blank" class="btn btn-accent"><i class="fa-solid fa-download"></i> Download Notification</a></p>':'');
+}
+if(openId){ var f=jobs.find(function(j){return j.id===openId;}); if(f) showJob(f); }
+
+};
+</script>
 </body>
 </html>

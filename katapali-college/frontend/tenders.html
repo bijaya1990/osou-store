@@ -36,5 +36,30 @@
 <script src="js/data.js"></script>
 <script src="js/site.js"></script>
 
+<script>
+window.KCPageInit = function() {
+  
+  
+var tnds = KC.Store.get('tenders');
+var params = new URLSearchParams(location.search); var openId = params.get('id');
+function tcard(t){
+  return '<div class="card"><div class="card-body"><span class="tag '+(t.status==="Open"?"tag-green":"tag-red")+'">'+t.status+'</span>'+
+  '<h4 style="margin-top:10px;">'+t.tenderId+'</h4><p>'+t.title+'</p>'+
+  '<div class="card-date"><i class="fa-regular fa-calendar"></i>Last Date: '+KCU.fmtDate(t.lastDate)+'</div>'+
+  '<a href="tenders.html?id='+t.id+'" class="btn btn-line btn-sm">View Details</a></div></div>';
+}
+document.getElementById('tnd-list').innerHTML = tnds.map(tcard).join('') || '<div class="empty-msg">No tenders currently.</div>';
+function showTnd(t){
+  document.getElementById('tnd-list-wrap').style.display='none';
+  var d=document.getElementById('tnd-detail'); d.style.display='block';
+  d.innerHTML='<a href="tenders.html" class="btn btn-line btn-sm" style="margin-bottom:18px;"><i class="fa-solid fa-arrow-left"></i> Back to Tenders</a>'+
+  '<span class="tag '+(t.status==="Open"?"tag-green":"tag-red")+'">'+t.status+'</span><h2 style="margin-top:12px;">'+t.tenderId+' — '+t.title+'</h2>'+
+  '<table class="kc-table"><tbody><tr><th>Published</th><td>'+KCU.fmtDate(t.date)+'</td></tr><tr><th>Last Date of Submission</th><td>'+KCU.fmtDate(t.lastDate)+'</td></tr><tr><th>Date of Opening</th><td>'+KCU.fmtDate(t.openDate)+'</td></tr><tr><th>EMD</th><td>'+t.emd+'</td></tr><tr><th>Estimated Value</th><td>'+t.value+'</td></tr></tbody></table>'+
+  t.content + (t.file? '<p style="margin-top:20px;"><a href="'+t.file+'" target="_blank" class="btn btn-accent"><i class="fa-solid fa-download"></i> Download Tender Document</a></p>':'');
+}
+if(openId){ var f=tnds.find(function(x){return x.id===openId;}); if(f) showTnd(f); }
+
+};
+</script>
 </body>
 </html>

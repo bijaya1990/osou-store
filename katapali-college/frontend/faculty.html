@@ -34,5 +34,26 @@
 <script src="js/data.js"></script>
 <script src="js/site.js"></script>
 
+<script>
+window.KCPageInit = function() {
+  
+  
+var faculty = KC.Store.get('faculty').sort(function(a,b){return a.order-b.order;});
+var depts = ['All'].concat(Array.from(new Set(faculty.map(function(f){return f.department;}))));
+var filtersEl = document.getElementById('fac-filters');
+filtersEl.innerHTML = depts.map(function(d,i){ return '<button class="gf-btn'+(i===0?' active':'')+'" data-d="'+d+'">'+d+'</button>'; }).join('');
+function renderFac(dept){
+  var list = dept==='All'? faculty : faculty.filter(function(f){return f.department===dept;});
+  document.getElementById('fac-list').innerHTML = list.map(function(f){
+    return '<div class="faculty-full-card"><img src="'+f.image+'" alt="'+f.name+'"><h4>'+f.name+'</h4><div class="desig">'+f.designation+'</div><div class="dept">'+f.department+' Dept. &bull; '+f.experience+'</div></div>';
+  }).join('') || '<div class="empty-msg">No faculty found.</div>';
+}
+filtersEl.querySelectorAll('.gf-btn').forEach(function(b){
+  b.onclick = function(){ filtersEl.querySelectorAll('.gf-btn').forEach(function(x){x.classList.remove('active');}); b.classList.add('active'); renderFac(b.dataset.d); };
+});
+renderFac('All');
+
+};
+</script>
 </body>
 </html>

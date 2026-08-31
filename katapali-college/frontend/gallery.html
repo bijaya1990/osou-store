@@ -41,5 +41,41 @@
 <script src="js/data.js"></script>
 <script src="js/site.js"></script>
 
+<script>
+window.KCPageInit = function() {
+  
+  
+var photos = KC.Store.get('gallery').sort(function(a,b){return a.order-b.order;});
+var cats = ['All'].concat(Array.from(new Set(photos.map(function(p){return p.category;}))));
+document.getElementById('gal-filters').innerHTML = cats.map(function(c,i){return '<button class="gf-btn'+(i===0?' active':'')+'" data-c="'+c+'">'+c+'</button>';}).join('');
+function renderGal(cat){
+  var list = cat==='All'? photos : photos.filter(function(p){return p.category===cat;});
+  document.getElementById('gal-grid').innerHTML = list.map(function(p){
+    return '<div class="gallery-item" data-img="'+p.image+'" data-cap="'+p.title+'"><img src="'+p.image+'" loading="lazy"><div class="gi-cap">'+p.title+'</div></div>';
+  }).join('') || '<div class="empty-msg">No images in this category.</div>';
+  bindLightbox();
+}
+document.getElementById('gal-filters').querySelectorAll('.gf-btn').forEach(function(b){
+  b.onclick=function(){document.querySelectorAll('#gal-filters .gf-btn').forEach(function(x){x.classList.remove('active');});b.classList.add('active');renderGal(b.dataset.c);};
+});
+function bindLightbox(){
+  document.querySelectorAll('.gallery-item').forEach(function(g){
+    g.onclick=function(){
+      document.getElementById('lb-img').src=g.dataset.img;
+      document.getElementById('lb-cap').textContent=g.dataset.cap;
+      document.getElementById('lightbox').classList.add('open');
+    };
+  });
+}
+document.getElementById('lb-close').onclick=function(){document.getElementById('lightbox').classList.remove('open');};
+document.getElementById('lightbox').onclick=function(e){if(e.target.id==='lightbox')e.target.classList.remove('open');};
+renderGal('All');
+var videos = KC.Store.get('videos');
+document.getElementById('video-grid').innerHTML = videos.map(function(v){
+  return '<div class="video-card"><iframe src="'+v.embed+'" title="'+v.title+'" allowfullscreen></iframe><div class="vc-title">'+v.title+'</div></div>';
+}).join('') || '<div class="empty-msg">No videos yet.</div>';
+
+};
+</script>
 </body>
 </html>
