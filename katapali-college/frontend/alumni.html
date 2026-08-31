@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<title>Alumni | KATAPALI +3 COLLEGE, KATAPALI</title>
+</head>
+<body data-page="alumni">
+<div id="kc-topbar" class="topbar"></div>
+<header class="site-header" id="kc-header"></header>
+
+<section class="page-banner">
+  <div class="container">
+    <h1>Alumni</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Alumni</div>
+  </div>
+</section>
+<section class="section" id="alumni-association"><div class="container"><div class="content-block fade-in" id="sec-alumni-association"></div></div></section>
+<section class="section section-alt" id="notable-alumni">
+  <div class="container">
+    <div class="section-head fade-in"><span class="eyebrow">Our Pride</span><h2>Notable Alumni</h2></div>
+    <div class="grid grid-3 fade-in" id="alumni-photos"></div>
+    <div class="content-block fade-in" id="sec-notable-alumni" style="margin-top:34px;"></div>
+  </div>
+</section>
+
+
+<footer class="site-footer" id="kc-footer"></footer>
+
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+
+<script>
+window.KCPageInit = function() {
+  [
+    ['alumni-association', '#sec-alumni-association'],
+    ['notable-alumni', '#sec-notable-alumni']
+  ].forEach(function(p) { KCU.injectPageContent(p[0], p[1]); });
+  
+var names = ['Demo Alumnus 1','Demo Alumnus 2','Demo Alumnus 3','Demo Alumnus 4','Demo Alumnus 5','Demo Alumnus 6'];
+var roles = ['OAS Officer','Professor','Medical Officer','Assistant Engineer','Advocate','Entrepreneur'];
+document.getElementById('alumni-photos').innerHTML = names.map(function(n,i){
+  return '<div class="faculty-full-card"><img src="../images/alumni'+(i+1)+'.svg" alt="'+n+'"><h4>'+n+'</h4><div class="desig">'+roles[i]+'</div></div>';
+}).join('');
+
+};
+</script>
+</body>
+</html>

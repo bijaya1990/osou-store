@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/admin.css">
+<title>Menu Content Editor | Admin Panel</title>
+</head>
+<body data-title="Menu Content Editor">
+<div class="admin-shell">
+  <aside class="sidebar" id="kc-sidebar"></aside>
+  <div class="main">
+    <div class="topbar-admin" id="kc-topbar-admin"></div>
+    <div class="content">
+
+<div class="section-title-row"><div><h2><i class="fa-solid fa-file-lines" style="color:var(--acc);"></i> Menu Content Editor</h2><p style="color:var(--muted);font-size:.85rem;margin:0;">Edit the text content of every menu / sub-menu page on the website.</p></div></div>
+<div class="panel">
+  <div class="form-group"><label>Select Page Section to Edit</label><select id="pgSelect"></select></div>
+  <div class="form-group"><label>Section Title</label><input type="text" id="pgTitle"></div>
+  <div class="form-group"><label>Content (HTML allowed — headings, paragraphs, lists, tables)</label><textarea id="pgHtml" rows="16" style="font-family:monospace;font-size:.82rem;"></textarea></div>
+  <button class="btn btn-primary" id="pgSave"><i class="fa-solid fa-floppy-disk"></i> Save Page Content</button>
+  <span class="small-note">Tip: use &lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;&lt;li&gt;, &lt;table class="kc-table"&gt; tags for consistent styling.</span>
+</div>
+<div class="panel">
+  <h3>Live Preview</h3>
+  <div class="content-block" id="pgPreview" style="border:1px solid var(--border);border-radius:10px;padding:20px;"></div>
+</div>
+
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="kc-modal-overlay"><div class="modal" id="kc-modal"></div></div>
+
+<script src="../frontend/js/data.js"></script>
+<script src="js/admin.js"></script>
+<script>
+
+var pages = KC.Store.get('pages');
+var sel = document.getElementById('pgSelect');
+sel.innerHTML = pages.map(function(p){ return '<option value="'+p.id+'">'+p.page.toUpperCase()+' — '+p.title+'</option>'; }).join('');
+function load(id){
+  var p = pages.find(function(x){return x.id===id;});
+  document.getElementById('pgTitle').value = p.title;
+  document.getElementById('pgHtml').value = p.html;
+  document.getElementById('pgPreview').innerHTML = p.html;
+}
+sel.onchange = function(){ load(sel.value); };
+load(sel.value);
+document.getElementById('pgHtml').addEventListener('input', function(){ document.getElementById('pgPreview').innerHTML = this.value; });
+document.getElementById('pgSave').onclick = function(){
+  var id = sel.value;
+  var title = document.getElementById('pgTitle').value;
+  var html = document.getElementById('pgHtml').value;
+  var idx = pages.findIndex(function(p){return p.id===id;});
+  pages[idx].title = title; pages[idx].html = html;
+  KC.Store.set('pages', pages);
+  KCAdmin.toast('Page content saved.');
+};
+
+</script>
+</body>
+</html>

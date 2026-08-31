@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<title>Student Corner | KATAPALI +3 COLLEGE, KATAPALI</title>
+</head>
+<body data-page="student-corner">
+<div id="kc-topbar" class="topbar"></div>
+<header class="site-header" id="kc-header"></header>
+
+<section class="page-banner">
+  <div class="container">
+    <h1>Student Corner</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Student Corner</div>
+  </div>
+</section>
+<section class="section" id="scholarships"><div class="container"><div class="content-block fade-in" id="sec-scholarships"></div></div></section>
+<section class="section section-alt" id="student-union"><div class="container"><div class="content-block fade-in" id="sec-student-union"></div></div></section>
+<section class="section" id="sports-nss"><div class="container"><div class="content-block fade-in" id="sec-sports-nss"></div></div></section>
+<section class="section section-alt" id="library"><div class="container">
+  <div class="grid grid-2" style="align-items:center;gap:40px;">
+    <div class="content-block fade-in" id="sec-library"></div>
+    <div class="fade-in"><img src="../images/library.svg" alt="Central Library" style="border-radius:16px;box-shadow:var(--shadow);"></div>
+  </div>
+</div></section>
+
+
+<footer class="site-footer" id="kc-footer"></footer>
+
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+
+<script>
+window.KCPageInit = function() {
+  [
+    ['scholarships', '#sec-scholarships'],
+    ['student-union', '#sec-student-union'],
+    ['sports-nss', '#sec-sports-nss'],
+    ['library', '#sec-library']
+  ].forEach(function(p) { KCU.injectPageContent(p[0], p[1]); });
+  
+};
+</script>
+</body>
+</html>

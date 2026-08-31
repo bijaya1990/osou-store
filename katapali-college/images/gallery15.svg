@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520">
+<defs><linearGradient id="gg15" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bbf7d0"/><stop offset="1" stop-color="#166534"/></linearGradient></defs>
+<rect width="800" height="520" fill="url(#gg15)"/><rect x="380" y="300" width="30" height="180" fill="#7c4a21"/><circle cx="395" cy="270" r="110" fill="#16a34a"/><circle cx="300" cy="310" r="70" fill="#15803d"/><circle cx="490" cy="310" r="70" fill="#22c55e"/>
+<rect x="0" y="452" width="800" height="68" fill="#0f172a" opacity=".62"/>
+<text x="400" y="494" text-anchor="middle" font-family="Poppins,Arial" font-size="26" font-weight="600" fill="#ffffff">Botanical Garden</text>
+</svg>

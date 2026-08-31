@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<title>Academics | KATAPALI +3 COLLEGE, KATAPALI</title>
+</head>
+<body data-page="academics">
+<div id="kc-topbar" class="topbar"></div>
+<header class="site-header" id="kc-header"></header>
+
+<section class="page-banner">
+  <div class="container">
+    <h1>Academics</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Academics</div>
+  </div>
+</section>
+<section class="section" id="departments"><div class="container"><div class="content-block fade-in" id="sec-departments"></div></div></section>
+<section class="section section-alt" id="courses"><div class="container"><div class="content-block fade-in" id="sec-courses"></div></div></section>
+<section class="section" id="syllabus"><div class="container"><div class="content-block fade-in" id="sec-syllabus"></div></div></section>
+<section class="section section-alt" id="academic-calendar"><div class="container"><div class="content-block fade-in" id="sec-academic-calendar"></div></div></section>
+
+
+<footer class="site-footer" id="kc-footer"></footer>
+
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+
+<script>
+window.KCPageInit = function() {
+  [
+    ['departments', '#sec-departments'],
+    ['courses', '#sec-courses'],
+    ['syllabus', '#sec-syllabus'],
+    ['academic-calendar', '#sec-academic-calendar']
+  ].forEach(function(p) { KCU.injectPageContent(p[0], p[1]); });
+  
+};
+</script>
+</body>
+</html>

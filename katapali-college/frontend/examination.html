@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<title>Examination | KATAPALI +3 COLLEGE, KATAPALI</title>
+</head>
+<body data-page="examination">
+<div id="kc-topbar" class="topbar"></div>
+<header class="site-header" id="kc-header"></header>
+
+<section class="page-banner">
+  <div class="container">
+    <h1>Examination</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Examination</div>
+  </div>
+</section>
+<section class="section" id="exam-routine"><div class="container"><div class="content-block fade-in" id="sec-exam-routine"></div></div></section>
+<section class="section section-alt" id="results"><div class="container"><div class="content-block fade-in" id="sec-results"></div></div></section>
+<section class="section" id="exam-rules"><div class="container"><div class="content-block fade-in" id="sec-exam-rules"></div></div></section>
+
+
+<footer class="site-footer" id="kc-footer"></footer>
+
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+
+<script>
+window.KCPageInit = function() {
+  [
+    ['exam-routine', '#sec-exam-routine'],
+    ['results', '#sec-results'],
+    ['exam-rules', '#sec-exam-rules']
+  ].forEach(function(p) { KCU.injectPageContent(p[0], p[1]); });
+  
+};
+</script>
+</body>
+</html>

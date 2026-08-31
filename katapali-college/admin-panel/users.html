@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/admin.css">
+<title>User Management | Admin Panel</title>
+</head>
+<body data-title="User Management">
+<div class="admin-shell">
+  <aside class="sidebar" id="kc-sidebar"></aside>
+  <div class="main">
+    <div class="topbar-admin" id="kc-topbar-admin"></div>
+    <div class="content">
+
+<div class="section-title-row">
+  <div><h2 style="margin-bottom:2px;"><i class="fa-solid fa-users-gear" style="color:var(--acc);"></i> User Management</h2><p style="color:var(--muted);font-size:.85rem;margin:0;">Add, edit, delete and search user management records.</p></div>
+  <button class="btn btn-primary" id="modAdd"><i class="fa-solid fa-plus"></i> Add Admin User</button>
+</div>
+<div class="toolbar">
+  <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="modSearch" placeholder="Search user management..."></div>
+  <select id="modFilter"><option>All</option><option>Active</option><option>Inactive</option></select>
+</div>
+<div class="table-wrap">
+<table class="data-table">
+<thead><tr><th style="width:90px;">Actions</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Created</th></tr></thead>
+<tbody id="modBody"></tbody>
+</table>
+</div>
+
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="kc-modal-overlay"><div class="modal" id="kc-modal"></div></div>
+
+<script src="../frontend/js/data.js"></script>
+<script src="js/admin.js"></script>
+<script>
+
+KCAdmin.crud({
+  key: 'users', itemName: 'User',
+  tableBodyId: 'modBody', searchId: 'modSearch', filterId: 'modFilter', addBtnId: 'modAdd',
+  searchKeys: ['name','email'], filterField: 'status', emptyIcon: 'fa-users-gear',
+  columns: [
+    { render: function(u){ return '<strong>'+KCAdmin.esc(u.name)+'</strong>'; } },
+    { render: function(u){ return KCAdmin.esc(u.email); } },
+    { render: function(u){ return '<span class="badge badge-blue">'+u.role+'</span>'; } },
+    { render: function(u){ return '<span class="badge '+(u.status==='Active'?'badge-green':'badge-red')+'">'+u.status+'</span>'; } },
+    { render: function(u){ return u.created; } }
+  ],
+  fields: [
+    { name:'name', label:'Full Name', required:true, pairWith:undefined },
+    { name:'email', label:'Email Address', type:'email', required:true, pairWith:'name' },
+    { name:'password', label:'Password', required:true, pairWith:undefined },
+    { name:'role', label:'Role', type:'select', options:['Super Admin','Editor'], pairWith:'password' },
+    { name:'status', label:'Status', type:'select', options:['Active','Inactive'], pairWith:undefined },
+    { name:'created', label:'Created Date', type:'date', default:new Date().toISOString().slice(0,10), pairWith:'status' }
+  ]
+});
+
+</script>
+</body>
+</html>

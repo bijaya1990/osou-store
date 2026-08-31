@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520">
+<defs><linearGradient id="gg14" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fef08a"/><stop offset="1" stop-color="#a16207"/></linearGradient></defs>
+<rect width="800" height="520" fill="url(#gg14)"/><rect x="110" y="200" width="50" height="200" fill="#ef4444" rx="4"/><rect x="180" y="210" width="50" height="180" fill="#3b82f6" rx="4"/><rect x="250" y="220" width="50" height="160" fill="#f59e0b" rx="4"/><rect x="320" y="200" width="50" height="200" fill="#10b981" rx="4"/><rect x="390" y="210" width="50" height="180" fill="#a855f7" rx="4"/><rect x="460" y="220" width="50" height="160" fill="#ec4899" rx="4"/><rect x="530" y="200" width="50" height="200" fill="#14b8a6" rx="4"/><rect x="600" y="210" width="50" height="180" fill="#f97316" rx="4"/>
+<rect x="0" y="452" width="800" height="68" fill="#0f172a" opacity=".62"/>
+<text x="400" y="494" text-anchor="middle" font-family="Poppins,Arial" font-size="26" font-weight="600" fill="#ffffff">Seminar Hall</text>
+</svg>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/admin.css">
+<title>Theme Customizer | Admin Panel</title>
+</head>
+<body data-title="Theme Customizer">
+<div class="admin-shell">
+  <aside class="sidebar" id="kc-sidebar"></aside>
+  <div class="main">
+    <div class="topbar-admin" id="kc-topbar-admin"></div>
+    <div class="content">
+
+<div class="section-title-row"><div><h2><i class="fa-solid fa-palette" style="color:var(--acc);"></i> Theme Customizer</h2><p style="color:var(--muted);font-size:.85rem;margin:0;">Change site-wide colors and fonts with a live preview. Applies instantly to the public website.</p></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;">
+  <div class="panel">
+    <div class="form-group color-row"><label style="flex:1;">Primary Color</label><input type="color" id="thPrimary"></div>
+    <div class="form-group color-row"><label style="flex:1;">Secondary Color</label><input type="color" id="thSecondary"></div>
+    <div class="form-group color-row"><label style="flex:1;">Accent Color</label><input type="color" id="thAccent"></div>
+    <div class="form-group color-row"><label style="flex:1;">Dark / Header Color</label><input type="color" id="thDark"></div>
+    <div class="form-group"><label>Heading Font</label><select id="thHFont"><option>Poppins</option><option>Montserrat</option><option>Merriweather</option><option>Roboto Slab</option></select></div>
+    <div class="form-group"><label>Body Font</label><select id="thBFont"><option>Inter</option><option>Roboto</option><option>Open Sans</option><option>Lato</option></select></div>
+    <button class="btn btn-primary" id="thSave"><i class="fa-solid fa-floppy-disk"></i> Save Theme</button>
+    <button class="btn btn-outline" id="thReset" style="margin-left:8px;"><i class="fa-solid fa-rotate-left"></i> Reset to Default</button>
+  </div>
+  <div class="panel">
+    <h3>Live Preview</h3>
+    <div id="thPreview" style="border:1px solid var(--border);border-radius:12px;padding:0;overflow:hidden;">
+      <div id="thPHeader" style="padding:16px;color:#fff;font-weight:700;">College Header Bar</div>
+      <div style="padding:20px;">
+        <h4 id="thPHead" style="margin:0 0 10px;">Sample Heading Text</h4>
+        <p style="color:#64748b;font-size:.88rem;">This is how body text will appear across the website.</p>
+        <button id="thPBtn" style="padding:10px 20px;border:none;border-radius:30px;color:#fff;font-weight:600;">Sample Button</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="kc-modal-overlay"><div class="modal" id="kc-modal"></div></div>
+
+<script src="../frontend/js/data.js"></script>
+<script src="js/admin.js"></script>
+<script>
+
+var t = KC.Store.get('theme');
+function loadInputs(t){
+  document.getElementById('thPrimary').value = t.primary; document.getElementById('thSecondary').value = t.secondary;
+  document.getElementById('thAccent').value = t.accent; document.getElementById('thDark').value = t.dark;
+  document.getElementById('thHFont').value = t.headingFont; document.getElementById('thBFont').value = t.bodyFont;
+  preview();
+}
+function preview(){
+  var p = document.getElementById('thPrimary').value, a = document.getElementById('thAccent').value, d = document.getElementById('thDark').value;
+  document.getElementById('thPHeader').style.background = d;
+  document.getElementById('thPHead').style.fontFamily = document.getElementById('thHFont').value;
+  document.getElementById('thPHead').style.color = p;
+  document.getElementById('thPBtn').style.background = a;
+  document.getElementById('thPreview').style.fontFamily = document.getElementById('thBFont').value;
+}
+['thPrimary','thSecondary','thAccent','thDark','thHFont','thBFont'].forEach(function(id){ document.getElementById(id).addEventListener('input', preview); });
+loadInputs(t);
+document.getElementById('thSave').onclick = function(){
+  var data = { primary:document.getElementById('thPrimary').value, secondary:document.getElementById('thSecondary').value, accent:document.getElementById('thAccent').value, dark:document.getElementById('thDark').value, headingFont:document.getElementById('thHFont').value, bodyFont:document.getElementById('thBFont').value };
+  KC.Store.set('theme', data);
+  KCAdmin.toast('Theme updated. Visit the website to see changes.');
+};
+document.getElementById('thReset').onclick = function(){ loadInputs(KC.Store.DEFAULTS.theme); KCAdmin.toast('Theme reset to default (not yet saved).', 'fa-rotate-left'); };
+
+</script>
+</body>
+</html>
