@@ -50,15 +50,17 @@ add_action( 'wp_enqueue_scripts', 'kc_assets' );
 
 /* Theme colours -> CSS custom properties, driven by the Customizer */
 function kc_theme_color_vars() {
-	$primary   = get_theme_mod( 'kc_color_primary', '#1e40af' );
-	$secondary = get_theme_mod( 'kc_color_secondary', '#0f766e' );
-	$accent    = get_theme_mod( 'kc_color_accent', '#f59e0b' );
-	$dark      = get_theme_mod( 'kc_color_dark', '#0b1e4f' );
-	echo "<style id='kc-theme-vars'>:root{--primary:{$primary};--secondary:{$secondary};--accent:{$accent};--dark:{$dark};}</style>\n";
+	$primary   = get_theme_mod( 'kc_color_primary', kc_default( 'kc_color_primary' ) );
+	$secondary = get_theme_mod( 'kc_color_secondary', kc_default( 'kc_color_secondary' ) );
+	$accent    = get_theme_mod( 'kc_color_accent', kc_default( 'kc_color_accent' ) );
+	$dark      = get_theme_mod( 'kc_color_dark', kc_default( 'kc_color_dark' ) );
+	$gold      = get_theme_mod( 'kc_color_gold', kc_default( 'kc_color_gold' ) );
+	echo "<style id='kc-theme-vars'>:root{--primary:{$primary};--secondary:{$secondary};--accent:{$accent};--dark:{$dark};--gold:{$gold};}</style>\n";
 }
 add_action( 'wp_head', 'kc_theme_color_vars' );
 
 /* ------------------------------- includes -------------------------------- */
+require KC_DIR . '/inc/defaults.php';
 require KC_DIR . '/inc/nav-walker.php';
 require KC_DIR . '/inc/cpt.php';
 require KC_DIR . '/inc/metaboxes.php';

@@ -70,6 +70,18 @@ function kc_register_cpts() {
 		'show_in_menu' => 'katapali-college', 'menu_icon' => 'dashicons-download',
 		'supports' => array( 'title' ),
 	) );
+
+	/* One CPT reused for three link lists, grouped by taxonomy: the homepage
+	   "Quick Links" section and the footer's "Resources" / "Useful Links" columns. */
+	register_post_type( 'kc_link', array(
+		'label' => __( 'Links', 'katapali-college' ),
+		'labels' => array( 'name' => 'Links (Quick/Resources/Useful)', 'singular_name' => 'Link', 'add_new_item' => 'Add New Link' ),
+		'public' => false, 'show_ui' => true, 'show_in_menu' => 'katapali-college', 'menu_icon' => 'dashicons-admin-links',
+		'supports' => array( 'title' ),
+	) );
+	register_taxonomy( 'kc_link_group', 'kc_link', array(
+		'label' => 'Link Group', 'hierarchical' => true, 'show_ui' => true, 'show_in_menu' => true,
+	) );
 }
 add_action( 'init', 'kc_register_cpts' );
 
@@ -93,6 +105,7 @@ function kc_admin_dashboard_page() {
 				array( 'edit.php?post_type=kc_faculty', 'Faculty', 'groups', __wp_count( 'kc_faculty' ) ),
 				array( 'edit.php?post_type=kc_gallery', 'Gallery Photos', 'format-gallery', __wp_count( 'kc_gallery' ) ),
 				array( 'edit.php?post_type=kc_download', 'Downloads', 'download', __wp_count( 'kc_download' ) ),
+				array( 'edit.php?post_type=kc_link', 'Links (Quick/Resources/Useful)', 'admin-links', __wp_count( 'kc_link' ) ),
 				array( 'edit.php?post_type=kc_slide', 'Hero Slides', 'images-alt2', __wp_count( 'kc_slide' ) ),
 				array( 'customize.php', 'Theme Customizer (College Info, Colours, Map)', 'admin-customizer', '' ),
 				array( 'nav-menus.php', 'Menus', 'menu', '' ),

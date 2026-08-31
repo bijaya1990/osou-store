@@ -36,24 +36,68 @@
 	<?php else : ?>
 		<div class="hero-slide active" style="background-image:url('<?php echo esc_url( KC_URI . '/assets/demo-images/banner1.svg' ); ?>')">
 			<div class="hero-content"><div class="inner">
-				<h1><?php echo esc_html( get_theme_mod( 'kc_college_name', 'KATAPALI +3 COLLEGE, KATAPALI' ) ); ?></h1>
-				<p><?php echo esc_html( get_theme_mod( 'kc_tagline', 'Empowering Rural Education Since 1985' ) ); ?></p>
+				<h1><?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></h1>
+				<p><?php echo esc_html( get_theme_mod( 'kc_tagline', kc_default( 'kc_tagline' ) ) ); ?></p>
 				<p style="color:#fbbf24;font-size:.85rem;margin-top:14px;">No hero slides yet — run the Demo Content Importer under <strong>Katapali College &rarr; Demo Content Importer</strong>, or add some under Hero Slides.</p>
 			</div></div>
 		</div>
 	<?php endif; ?>
 </section>
 
+<section class="notice-ticker">
+	<div class="container ticker-wrap">
+		<span class="ticker-label"><i class="fa-solid fa-bullhorn"></i> Latest Notice</span>
+		<div class="ticker-track-wrap">
+			<div class="ticker-track">
+				<?php
+				$ticker_notices = get_posts( array( 'post_type' => 'kc_notice', 'posts_per_page' => 6 ) );
+				if ( $ticker_notices ) {
+					$ticker_html = '';
+					foreach ( $ticker_notices as $tn ) {
+						$ticker_html .= '<a href="' . esc_url( get_permalink( $tn ) ) . '">' . esc_html( get_the_title( $tn ) ) . ' <span>(' . esc_html( get_the_date( 'd M Y', $tn ) ) . ')</span></a>';
+					}
+					echo $ticker_html . $ticker_html; // duplicated for a seamless CSS loop
+				} else {
+					echo '<a href="' . esc_url( get_post_type_archive_link( 'kc_notice' ) ) . '">No notices published yet — add one under Katapali College &rarr; Notices.</a>';
+				}
+				?>
+			</div>
+		</div>
+	</div>
+</section>
+
 <section class="section">
 	<div class="container">
-		<div class="section-head fade-in"><span class="eyebrow">Welcome Message</span><h2>Principal's Message</h2><p>A word of welcome from the Principal, <?php echo esc_html( get_theme_mod( 'kc_college_name', '' ) ); ?></p></div>
-		<div class="principal-wrap fade-in">
-			<div class="principal-photo"><img src="<?php echo esc_url( get_theme_mod( 'kc_principal_photo', KC_URI . '/assets/demo-images/principal.svg' ) ); ?>" alt="Principal"></div>
-			<div class="principal-info">
-				<h3><?php echo esc_html( get_theme_mod( 'kc_principal_name', 'Dr. Demo Name' ) ); ?></h3>
-				<div class="desig"><?php echo esc_html( get_theme_mod( 'kc_principal_desig', 'Principal' ) ); ?></div>
-				<div class="qual"><?php echo esc_html( get_theme_mod( 'kc_principal_qual', '' ) ); ?></div>
-				<p><?php echo esc_html( get_theme_mod( 'kc_principal_message', '' ) ); ?></p>
+		<div class="grid grid-2 about-grid fade-in" style="align-items:stretch;">
+			<div class="about-card">
+				<span class="eyebrow">Who We Are</span>
+				<h2>About <?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></h2>
+				<p>
+				<?php
+				$about_page = get_page_by_path( 'about-us' );
+				if ( $about_page ) {
+					$about_spaced = preg_replace( '#<h[1-6][^>]*>.*?</h[1-6]>#i', '', $about_page->post_content, 1 ); // drop the first sub-heading; our own <h2> above already labels this card
+					$about_spaced = preg_replace( '#</(p|div|li|h[1-6])>#i', '$0 ', $about_spaced );
+					echo esc_html( wp_trim_words( wp_strip_all_tags( $about_spaced ), 55 ) );
+				} else {
+					echo esc_html( get_theme_mod( 'kc_tagline', kc_default( 'kc_tagline' ) ) ) . ' Add an "About Us" page (slug: about-us), or run the Demo Content Importer.';
+				}
+				?>
+				</p>
+				<a href="<?php echo esc_url( home_url( '/about-us/' ) ); ?>" class="btn btn-line btn-sm">Read More <i class="fa-solid fa-arrow-right"></i></a>
+			</div>
+			<div class="about-card principal-card">
+				<span class="eyebrow">Welcome Message</span>
+				<h2>Principal's Message</h2>
+				<div class="principal-mini">
+					<img src="<?php echo esc_url( get_theme_mod( 'kc_principal_photo' ) ?: KC_URI . '/assets/demo-images/principal.svg' ); ?>" alt="Principal">
+					<div>
+						<h4><?php echo esc_html( get_theme_mod( 'kc_principal_name', kc_default( 'kc_principal_name' ) ) ); ?></h4>
+						<div class="desig"><?php echo esc_html( get_theme_mod( 'kc_principal_desig', kc_default( 'kc_principal_desig' ) ) ); ?></div>
+					</div>
+				</div>
+				<p><?php echo esc_html( wp_trim_words( get_theme_mod( 'kc_principal_message', kc_default( 'kc_principal_message' ) ), 30 ) ); ?></p>
+				<a href="<?php echo esc_url( home_url( '/about-us/#principal-desk' ) ); ?>" class="btn btn-line btn-sm">Read More <i class="fa-solid fa-arrow-right"></i></a>
 			</div>
 		</div>
 	</div>
@@ -147,6 +191,15 @@
 	</div>
 </section>
 
+<section class="section section-alt">
+	<div class="container">
+		<div class="section-head fade-in"><span class="eyebrow">Important</span><h2>Quick Links</h2><p>Frequently used government and university resources</p></div>
+		<ul class="quick-links-grid fade-in">
+			<?php kc_link_list( 'Quick Links' ); ?>
+		</ul>
+	</div>
+</section>
+
 <section class="section">
 	<div class="container">
 		<div class="section-head fade-in"><span class="eyebrow">Campus Life</span><h2>Photo Gallery</h2><p>Glimpses of campus, events, sports and celebrations</p></div>
@@ -165,12 +218,12 @@
 	<div class="container">
 		<div class="section-head fade-in"><span class="eyebrow">Find Us</span><h2>Our Location</h2><p><?php kc_footer_address(); ?></p></div>
 		<div class="grid grid-2 fade-in" style="grid-template-columns:1.5fr 1fr;align-items:stretch;">
-			<div class="map-wrap"><?php echo get_theme_mod( 'kc_map_embed', '' ); ?></div>
+			<div class="map-wrap"><?php echo get_theme_mod( 'kc_map_embed', kc_default( 'kc_map_embed' ) ); ?></div>
 			<div class="map-info">
-				<div class="mi-row"><i class="fa-solid fa-location-dot"></i><div><strong><?php echo esc_html( get_theme_mod( 'kc_college_name', '' ) ); ?></strong><br><?php kc_footer_address(); ?></div></div>
-				<div class="mi-row"><i class="fa-solid fa-phone"></i><div><?php echo esc_html( get_theme_mod( 'kc_phone', '' ) ); ?></div></div>
-				<div class="mi-row"><i class="fa-solid fa-envelope"></i><div><?php echo esc_html( get_theme_mod( 'kc_email', '' ) ); ?></div></div>
-				<div class="mi-row"><i class="fa-solid fa-circle-info"></i><div><?php echo esc_html( get_theme_mod( 'kc_map_note', '' ) ); ?></div></div>
+				<div class="mi-row"><i class="fa-solid fa-location-dot"></i><div><strong><?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></strong><br><?php kc_footer_address(); ?></div></div>
+				<div class="mi-row"><i class="fa-solid fa-phone"></i><div><?php echo esc_html( get_theme_mod( 'kc_phone', kc_default( 'kc_phone' ) ) ); ?></div></div>
+				<div class="mi-row"><i class="fa-solid fa-envelope"></i><div><?php echo esc_html( get_theme_mod( 'kc_email', kc_default( 'kc_email' ) ) ); ?></div></div>
+				<div class="mi-row"><i class="fa-solid fa-circle-info"></i><div><?php echo esc_html( get_theme_mod( 'kc_map_note', kc_default( 'kc_map_note' ) ) ); ?></div></div>
 			</div>
 		</div>
 	</div>

@@ -37,6 +37,7 @@ katapali-college/            <- upload this folder as your WordPress theme
    - 6 notices, 3 recruitment postings, 2 tenders
    - 16 gallery photos (8 featured on the homepage) across 4 categories
    - 10 downloadable documents (demo PDFs — replace with your real files)
+   - 21 external links across Quick Links, Resources and Useful Links (RTI, SAMS, UGC, NAAC, SWAYAM, National Scholarship Portal, etc.)
    - 8 fully-written content pages (About Us, Academics, Admissions, Examination, Student Corner, Alumni, Downloads, Contact Us)
    - A complete navigation menu with submenus, assigned automatically
    - The college logo, set as the site logo
@@ -50,17 +51,20 @@ Everything on the public site is a normal WordPress post, page, or Customizer se
 
 | What you see on the site | Where to edit it |
 |---|---|
-| Notices, Recruitment, Tenders, Faculty, Gallery photos, Downloads, Hero Slides | **Katapali College** menu in wp-admin (each is Add/Edit/Delete/Search like Posts) |
-| College name, address, phone, email, established year, social links | **Appearance → Customize → College Info / Social Media Links** |
-| Primary/Secondary/Accent/Dark theme colours | **Appearance → Customize → Theme Colours** (live preview) |
+| Notices, Recruitment, Tenders, Faculty, Gallery photos, Downloads, Hero Slides, Links (Quick Links / Resources / Useful Links) | **Katapali College** menu in wp-admin (each is Add/Edit/Delete/Search like Posts) |
+| College name, address, phone, email, established year, social links (incl. WhatsApp) | **Appearance → Customize → College Info / Social Media Links** |
+| Top bar government/affiliation logos and the Feedback link | **Appearance → Customize → Top Bar (Logos & Utility Links)** |
+| Primary/Secondary/Accent/Dark/Gold theme colours | **Appearance → Customize → Theme Colours** (live preview) |
 | Logo | **Appearance → Customize → Site Identity** |
 | Principal's photo, name, message | **Appearance → Customize → Principal's Message** |
 | Homepage stat numbers (students/faculty/departments/years) | **Appearance → Customize → Quick Stats** |
-| Google Map embed & directions note | **Appearance → Customize → Google Map** |
+| Google Map embed & directions note (used on the homepage and the footer's "Find Us on Map" column) | **Appearance → Customize → Google Map** |
 | About Us / Academics / Admissions / Examination / Student Corner / Alumni / Contact Us page text | **Pages** in wp-admin — edit like any normal WordPress page (raw HTML is supported; use the Code Editor / Custom HTML block for tables) |
 | Menus & submenus | **Appearance → Menus** |
 
-Each custom post type (Notice, Recruitment, Tender, Faculty, Gallery, Download, Slide) has its own **Details** box on the edit screen with the exact fields that post needs (dates, salary, department, file links, etc.) — fill them in, set a Featured Image where relevant, and Publish.
+Each custom post type (Notice, Recruitment, Tender, Faculty, Gallery, Download, Slide, Link) has its own **Details** box on the edit screen with the exact fields that post needs (dates, salary, department, file links, etc.) — fill them in, set a Featured Image where relevant, and Publish.
+
+The homepage layout follows the standard government-college pattern: a top bar for official logos and utility links, a scrolling "Latest Notice" ticker, a compact About + Principal's Message pair of cards, the faculty carousel and stats, Notices/Recruitment/Tenders, a "Quick Links" block of external resources, the photo gallery, and a location section — with the footer split into Reach Us At / Resources / Useful Links / Find Us on Map columns. Every one of those pieces is a normal editable post type, page, or Customizer field.
 
 ## Reusing this theme for a different college
 

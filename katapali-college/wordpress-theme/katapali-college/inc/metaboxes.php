@@ -52,6 +52,11 @@ function kc_meta_fields( $post_type ) {
 				'kc_file_url'  => array( 'File URL', 'url' ),
 				'kc_file_size' => array( 'File Size (e.g. 1.2 MB)', 'text' ),
 			);
+		case 'kc_link':
+			return array(
+				'kc_url'   => array( 'Link URL', 'url' ),
+				'kc_order' => array( 'Display Order', 'number' ),
+			);
 		case 'kc_slide':
 			return array(
 				'kc_subtitle' => array( 'Subtitle', 'text' ),
@@ -66,7 +71,7 @@ function kc_meta_fields( $post_type ) {
 }
 
 function kc_add_meta_boxes() {
-	$types = array( 'kc_notice', 'kc_recruitment', 'kc_tender', 'kc_faculty', 'kc_gallery', 'kc_download', 'kc_slide' );
+	$types = array( 'kc_notice', 'kc_recruitment', 'kc_tender', 'kc_faculty', 'kc_gallery', 'kc_download', 'kc_slide', 'kc_link' );
 	foreach ( $types as $t ) {
 		add_meta_box( 'kc_fields_' . $t, __( 'Details', 'katapali-college' ), 'kc_render_meta_box', $t, 'normal', 'high' );
 	}

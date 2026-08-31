@@ -83,3 +83,18 @@ function kc_gallery_item( $post_id ) {
 function kc_footer_address() {
 	echo nl2br( esc_html( get_theme_mod( 'kc_address', 'AT/PO - KATAPALI, VIA - BIJEPUR, DISTRICT - BARGARH, ODISHA' ) ) ) . ' - ' . esc_html( get_theme_mod( 'kc_pin', '768032' ) );
 }
+
+/* Renders <li> items for a kc_link group (Quick Links / Resources / Useful Links). */
+function kc_link_list( $group_name ) {
+	$q = new WP_Query( array(
+		'post_type' => 'kc_link', 'posts_per_page' => -1,
+		'tax_query' => array( array( 'taxonomy' => 'kc_link_group', 'field' => 'name', 'terms' => $group_name ) ),
+		'meta_key' => 'kc_order', 'orderby' => 'meta_value_num', 'order' => 'ASC',
+	) );
+	if ( ! $q->have_posts() ) { echo '<li class="empty-msg">No links added yet — add one under Katapali College &rarr; Links, group "' . esc_html( $group_name ) . '".</li>'; return; }
+	while ( $q->have_posts() ) : $q->the_post();
+		$url = get_post_meta( get_the_ID(), 'kc_url', true );
+		echo '<li><a href="' . esc_url( $url ) . '" target="_blank" rel="noopener"><i class="fa-solid fa-angles-right"></i> ' . esc_html( get_the_title() ) . '</a></li>';
+	endwhile;
+	wp_reset_postdata();
+}
