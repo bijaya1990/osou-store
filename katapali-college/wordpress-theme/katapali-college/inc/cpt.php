@@ -1,6 +1,18 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/* WordPress's "Blog pages show at most" setting (default 10) otherwise caps
+   every custom post type archive too -- so a college with 20+ faculty only
+   ever sees the first 10 on the Faculty archive. Raise it for our own CPTs. */
+function kc_cpt_archive_query( $query ) {
+	if ( is_admin() || ! $query->is_main_query() ) return;
+	$kc_types = array( 'kc_notice', 'kc_recruitment', 'kc_tender', 'kc_faculty', 'kc_gallery', 'kc_download' );
+	if ( is_post_type_archive( $kc_types ) || is_tax( array( 'kc_department', 'kc_gallery_cat', 'kc_notice_cat' ) ) ) {
+		$query->set( 'posts_per_page', 100 );
+	}
+}
+add_action( 'pre_get_posts', 'kc_cpt_archive_query' );
+
 /* ------------------------------ post types ------------------------------ */
 function kc_register_cpts() {
 

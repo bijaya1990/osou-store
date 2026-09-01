@@ -39,6 +39,7 @@ function kc_theme_mod_defaults() {
 		'kc_stat_years'        => '40',
 		'kc_map_embed'         => '<iframe src="https://www.google.com/maps?q=Katapali%2C%20Bijepur%2C%20Bargarh%2C%20Odisha%20768032&output=embed" width="100%" height="400" style="border:0" allowfullscreen loading="lazy"></iframe>',
 		'kc_map_note'          => 'The college is located on the Bijepur-Katapali road, about 8 km from Bijepur Block Head Quarters and 55 km from Bargarh town.',
+		'kc_footer_about'      => 'KATAPALI +3 COLLEGE, KATAPALI is a premier rural degree college offering +3 Arts streams with a commitment to accessible, affordable and quality higher education.',
 	);
 }
 

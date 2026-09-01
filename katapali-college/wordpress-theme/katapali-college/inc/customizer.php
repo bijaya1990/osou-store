@@ -19,6 +19,8 @@ function kc_customize_register( $wp_customize ) {
 		$wp_customize->add_setting( $id, array( 'default' => kc_default( $id ), 'sanitize_callback' => 'sanitize_text_field' ) );
 		$wp_customize->add_control( $id, array( 'label' => $f[0], 'section' => 'kc_college_info', 'type' => $f[1] === 'textarea' ? 'textarea' : 'text' ) );
 	}
+	$wp_customize->add_setting( 'kc_footer_about', array( 'default' => kc_default( 'kc_footer_about' ), 'sanitize_callback' => 'sanitize_textarea_field' ) );
+	$wp_customize->add_control( 'kc_footer_about', array( 'label' => 'Footer "About" paragraph', 'section' => 'kc_college_info', 'type' => 'textarea' ) );
 
 	/* ---------------- Social Links ---------------- */
 	$wp_customize->add_section( 'kc_social', array( 'title' => 'Social Media Links', 'priority' => 31 ) );

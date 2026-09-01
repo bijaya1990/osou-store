@@ -53,13 +53,27 @@ function kc_import_term( $name, $taxonomy ) {
 }
 
 function kc_import_cpt( $post_type, $title, $meta = array(), $terms = array(), $img = '', $content = '' ) {
-	$id = wp_insert_post( array(
-		'post_title'   => $title,
-		'post_content' => $content,
-		'post_status'  => 'publish',
-		'post_type'    => $post_type,
+	/* re-running the importer must never create a second "SWAYAM" link, a
+	   second "Dr. Demo Faculty", etc. -- reuse the existing post of the same
+	   title + type if one already exists, instead of inserting a duplicate. */
+	$existing = get_posts( array(
+		'post_type'      => $post_type,
+		'title'          => $title,
+		'post_status'    => 'any',
+		'posts_per_page' => 1,
+		'fields'         => 'ids',
 	) );
-	if ( is_wp_error( $id ) || ! $id ) return 0;
+	if ( $existing ) {
+		$id = $existing[0];
+	} else {
+		$id = wp_insert_post( array(
+			'post_title'   => $title,
+			'post_content' => $content,
+			'post_status'  => 'publish',
+			'post_type'    => $post_type,
+		) );
+		if ( is_wp_error( $id ) || ! $id ) return 0;
+	}
 	foreach ( $meta as $k => $v ) update_post_meta( $id, $k, $v );
 	foreach ( $terms as $tax => $names ) {
 		$ids = array();
