@@ -84,7 +84,7 @@ function kc_footer_address() {
 	echo nl2br( esc_html( get_theme_mod( 'kc_address', 'AT/PO - KATAPALI, VIA - BIJEPUR, DISTRICT - BARGARH, ODISHA' ) ) ) . ' - ' . esc_html( get_theme_mod( 'kc_pin', '768032' ) );
 }
 
-/* Renders <li> items for a kc_link group (Quick Links / Resources / Useful Links). */
+/* Renders <li> items for a kc_link group (Resources / Useful Links). */
 function kc_link_list( $group_name ) {
 	$q = new WP_Query( array(
 		'post_type' => 'kc_link', 'posts_per_page' => -1,

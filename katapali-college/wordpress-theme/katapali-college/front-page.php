@@ -68,7 +68,7 @@
 
 <section class="section">
 	<div class="container">
-		<div class="grid grid-2 about-grid fade-in" style="align-items:stretch;">
+		<div class="grid grid-2 about-grid fade-in">
 			<div class="about-card">
 				<span class="eyebrow">Who We Are</span>
 				<h2>About <?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></h2>
@@ -104,6 +104,45 @@
 </section>
 
 <section class="section section-alt">
+	<div class="container">
+		<div class="section-head fade-in"><span class="eyebrow">Stay Updated</span><h2>Notices, Recruitment &amp; Tenders</h2></div>
+		<div class="grid grid-3 fade-in three-col-fixed">
+			<div class="tc-col">
+				<h3 class="tc-head">Latest Notices</h3>
+				<div class="tc-body">
+					<?php
+					$notices = get_posts( array( 'post_type' => 'kc_notice', 'posts_per_page' => 3 ) );
+					if ( $notices ) { foreach ( $notices as $n ) kc_notice_card( $n->ID ); } else { echo '<div class="empty-msg">No notices yet.</div>'; }
+					?>
+				</div>
+				<a href="<?php echo esc_url( get_post_type_archive_link( 'kc_notice' ) ); ?>" class="btn btn-line btn-sm">View All Notices <i class="fa-solid fa-arrow-right"></i></a>
+			</div>
+			<div class="tc-col">
+				<h3 class="tc-head">Latest Recruitment</h3>
+				<div class="tc-body">
+					<?php
+					$rec = get_posts( array( 'post_type' => 'kc_recruitment', 'posts_per_page' => 3, 'meta_key' => 'kc_status', 'meta_value' => 'Open' ) );
+					if ( ! $rec ) $rec = get_posts( array( 'post_type' => 'kc_recruitment', 'posts_per_page' => 3 ) );
+					if ( $rec ) { foreach ( $rec as $r ) kc_recruitment_card( $r->ID ); } else { echo '<div class="empty-msg">No openings currently.</div>'; }
+					?>
+				</div>
+				<a href="<?php echo esc_url( get_post_type_archive_link( 'kc_recruitment' ) ); ?>" class="btn btn-line btn-sm">View All Openings <i class="fa-solid fa-arrow-right"></i></a>
+			</div>
+			<div class="tc-col">
+				<h3 class="tc-head">Latest Tenders</h3>
+				<div class="tc-body">
+					<?php
+					$tnd = get_posts( array( 'post_type' => 'kc_tender', 'posts_per_page' => 3 ) );
+					if ( $tnd ) { foreach ( $tnd as $t ) kc_tender_card( $t->ID ); } else { echo '<div class="empty-msg">No tenders currently.</div>'; }
+					?>
+				</div>
+				<a href="<?php echo esc_url( get_post_type_archive_link( 'kc_tender' ) ); ?>" class="btn btn-line btn-sm">View All Tenders <i class="fa-solid fa-arrow-right"></i></a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="section">
 	<div class="container">
 		<div class="section-head fade-in"><span class="eyebrow">Our Faculty</span><h2>Meet Our Teachers</h2><p>Dedicated and experienced faculty guiding our students</p></div>
 		<div class="faculty-slider-wrap fade-in">
@@ -152,56 +191,6 @@
 
 <section class="section">
 	<div class="container">
-		<div class="section-head fade-in"><span class="eyebrow">Announcements</span><h2>Latest Notices</h2><p>Stay updated with the latest college announcements</p></div>
-		<div class="grid grid-3 fade-in">
-			<?php
-			$notices = get_posts( array( 'post_type' => 'kc_notice', 'posts_per_page' => 3 ) );
-			if ( $notices ) { foreach ( $notices as $n ) kc_notice_card( $n->ID ); } else { echo '<div class="empty-msg">No notices yet.</div>'; }
-			?>
-		</div>
-		<div style="text-align:center;margin-top:34px;"><a href="<?php echo esc_url( get_post_type_archive_link( 'kc_notice' ) ); ?>" class="btn btn-primary">View All Notices <i class="fa-solid fa-arrow-right"></i></a></div>
-	</div>
-</section>
-
-<section class="section section-alt">
-	<div class="container">
-		<div class="grid grid-2" style="align-items:start;gap:40px;">
-			<div class="fade-in">
-				<div class="section-head" style="text-align:left;margin:0 0 20px;"><span class="eyebrow">Careers</span><h2>Latest Recruitment</h2></div>
-				<div class="grid" style="gap:20px;">
-					<?php
-					$rec = get_posts( array( 'post_type' => 'kc_recruitment', 'posts_per_page' => 2, 'meta_key' => 'kc_status', 'meta_value' => 'Open' ) );
-					if ( ! $rec ) $rec = get_posts( array( 'post_type' => 'kc_recruitment', 'posts_per_page' => 2 ) );
-					if ( $rec ) { foreach ( $rec as $r ) kc_recruitment_card( $r->ID ); } else { echo '<div class="empty-msg">No openings currently.</div>'; }
-					?>
-				</div>
-				<div style="margin-top:20px;"><a href="<?php echo esc_url( get_post_type_archive_link( 'kc_recruitment' ) ); ?>" class="btn btn-line btn-sm">View All Openings <i class="fa-solid fa-arrow-right"></i></a></div>
-			</div>
-			<div class="fade-in">
-				<div class="section-head" style="text-align:left;margin:0 0 20px;"><span class="eyebrow">Procurement</span><h2>Latest Tenders</h2></div>
-				<div class="grid" style="gap:20px;">
-					<?php
-					$tnd = get_posts( array( 'post_type' => 'kc_tender', 'posts_per_page' => 2 ) );
-					if ( $tnd ) { foreach ( $tnd as $t ) kc_tender_card( $t->ID ); } else { echo '<div class="empty-msg">No tenders currently.</div>'; }
-					?>
-				</div>
-				<div style="margin-top:20px;"><a href="<?php echo esc_url( get_post_type_archive_link( 'kc_tender' ) ); ?>" class="btn btn-line btn-sm">View All Tenders <i class="fa-solid fa-arrow-right"></i></a></div>
-			</div>
-		</div>
-	</div>
-</section>
-
-<section class="section section-alt">
-	<div class="container">
-		<div class="section-head fade-in"><span class="eyebrow">Important</span><h2>Quick Links</h2><p>Frequently used government and university resources</p></div>
-		<ul class="quick-links-grid fade-in">
-			<?php kc_link_list( 'Quick Links' ); ?>
-		</ul>
-	</div>
-</section>
-
-<section class="section">
-	<div class="container">
 		<div class="section-head fade-in"><span class="eyebrow">Campus Life</span><h2>Photo Gallery</h2><p>Glimpses of campus, events, sports and celebrations</p></div>
 		<div class="grid grid-4 fade-in">
 			<?php
@@ -211,21 +200,6 @@
 			?>
 		</div>
 		<div style="text-align:center;margin-top:34px;"><a href="<?php echo esc_url( get_post_type_archive_link( 'kc_gallery' ) ); ?>" class="btn btn-accent">View Full Gallery <i class="fa-solid fa-images"></i></a></div>
-	</div>
-</section>
-
-<section class="section section-alt">
-	<div class="container">
-		<div class="section-head fade-in"><span class="eyebrow">Find Us</span><h2>Our Location</h2><p><?php kc_footer_address(); ?></p></div>
-		<div class="grid grid-2 fade-in" style="grid-template-columns:1.5fr 1fr;align-items:stretch;">
-			<div class="map-wrap"><?php echo get_theme_mod( 'kc_map_embed', kc_default( 'kc_map_embed' ) ); ?></div>
-			<div class="map-info">
-				<div class="mi-row"><i class="fa-solid fa-location-dot"></i><div><strong><?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></strong><br><?php kc_footer_address(); ?></div></div>
-				<div class="mi-row"><i class="fa-solid fa-phone"></i><div><?php echo esc_html( get_theme_mod( 'kc_phone', kc_default( 'kc_phone' ) ) ); ?></div></div>
-				<div class="mi-row"><i class="fa-solid fa-envelope"></i><div><?php echo esc_html( get_theme_mod( 'kc_email', kc_default( 'kc_email' ) ) ); ?></div></div>
-				<div class="mi-row"><i class="fa-solid fa-circle-info"></i><div><?php echo esc_html( get_theme_mod( 'kc_map_note', kc_default( 'kc_map_note' ) ) ); ?></div></div>
-			</div>
-		</div>
 	</div>
 </section>
 

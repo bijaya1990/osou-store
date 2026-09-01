@@ -55,7 +55,9 @@ function kc_theme_color_vars() {
 	$accent    = get_theme_mod( 'kc_color_accent', kc_default( 'kc_color_accent' ) );
 	$dark      = get_theme_mod( 'kc_color_dark', kc_default( 'kc_color_dark' ) );
 	$gold      = get_theme_mod( 'kc_color_gold', kc_default( 'kc_color_gold' ) );
-	echo "<style id='kc-theme-vars'>:root{--primary:{$primary};--secondary:{$secondary};--accent:{$accent};--dark:{$dark};--gold:{$gold};}</style>\n";
+	$logo_size = absint( get_theme_mod( 'kc_logo_size', kc_default( 'kc_logo_size' ) ) );
+	if ( $logo_size < 40 || $logo_size > 160 ) $logo_size = 70;
+	echo "<style id='kc-theme-vars'>:root{--primary:{$primary};--secondary:{$secondary};--accent:{$accent};--dark:{$dark};--gold:{$gold};--logo-size:{$logo_size}px;}</style>\n";
 }
 add_action( 'wp_head', 'kc_theme_color_vars' );
 

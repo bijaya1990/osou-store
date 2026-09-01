@@ -34,14 +34,10 @@ function kc_customize_register( $wp_customize ) {
 		$wp_customize->add_control( $id, array( 'label' => $label, 'section' => 'kc_social', 'type' => 'url' ) );
 	}
 
-	/* ---------------- Top Bar (government/affiliation logos + utility links) ---------------- */
-	$wp_customize->add_section( 'kc_topbar', array( 'title' => 'Top Bar (Logos & Utility Links)', 'priority' => 32 ) );
-	$wp_customize->add_setting( 'kc_topbar_logo_left', array( 'default' => kc_default( 'kc_topbar_logo_left' ) ) );
-	$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'kc_topbar_logo_left', array( 'label' => 'Left Logo (e.g. State Emblem)', 'section' => 'kc_topbar' ) ) );
-	$wp_customize->add_setting( 'kc_topbar_logo_right', array( 'default' => kc_default( 'kc_topbar_logo_right' ) ) );
-	$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'kc_topbar_logo_right', array( 'label' => 'Right Logo (e.g. NAAC/Accreditation)', 'section' => 'kc_topbar' ) ) );
-	$wp_customize->add_setting( 'kc_feedback_link', array( 'default' => kc_default( 'kc_feedback_link' ), 'sanitize_callback' => 'esc_url_raw' ) );
-	$wp_customize->add_control( 'kc_feedback_link', array( 'label' => 'Feedback Link (blank = links to Contact page)', 'section' => 'kc_topbar', 'type' => 'url' ) );
+	/* ---------------- Header Logo ---------------- */
+	$wp_customize->add_section( 'kc_topbar', array( 'title' => 'Header Logo Size', 'priority' => 32 ) );
+	$wp_customize->add_setting( 'kc_logo_size', array( 'default' => kc_default( 'kc_logo_size' ), 'sanitize_callback' => 'absint' ) );
+	$wp_customize->add_control( 'kc_logo_size', array( 'label' => 'Logo Size (px, 40-160)', 'section' => 'kc_topbar', 'type' => 'number', 'input_attrs' => array( 'min' => 40, 'max' => 160, 'step' => 2 ) ) );
 
 	/* ---------------- Colours ---------------- */
 	$wp_customize->add_section( 'kc_colors', array( 'title' => 'Theme Colours', 'priority' => 32 ) );

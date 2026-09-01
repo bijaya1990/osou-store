@@ -199,20 +199,12 @@ function kc_run_demo_import() {
 		) );
 	}
 
-	/* ---------- quick links / resources / useful links ---------- */
+	/* ---------- resources / useful links (footer columns) ---------- */
 	$links = array(
-		'Quick Links' => array(
+		'Resources' => array(
 			array( 'RTI', 'https://rti.gov.in/' ),
 			array( 'SAMS Odisha (Admissions)', 'https://samsodisha.gov.in/' ),
 			array( 'Sambalpur University', 'https://www.sambalpuruniversity.ac.in/' ),
-			array( 'Anti Ragging Cell', 'https://www.antiragging.in/' ),
-			array( 'Scholarship (e-Medhabruti)', 'https://scholarship.odisha.gov.in/' ),
-			array( 'College Magazine', '#' ),
-			array( 'Equal Opportunity Cell', '#' ),
-			array( "Women's Grievance Cell", '#' ),
-			array( 'Grievance Cell', '#' ),
-		),
-		'Resources' => array(
 			array( 'SWAYAM', 'https://swayam.gov.in/' ),
 			array( 'OSOU', 'https://www.osou.ac.in/' ),
 			array( 'e-Gyan Kosh', 'https://egyankosh.ac.in/' ),
@@ -227,6 +219,12 @@ function kc_run_demo_import() {
 			array( 'UGC', 'https://www.ugc.gov.in/' ),
 			array( 'AISHE', 'https://aishe.gov.in/' ),
 			array( 'National Scholarship Portal', 'https://scholarships.gov.in/' ),
+			array( 'Anti Ragging Cell', 'https://www.antiragging.in/' ),
+			array( 'Scholarship (e-Medhabruti)', 'https://scholarship.odisha.gov.in/' ),
+			array( 'College Magazine', '#' ),
+			array( 'Equal Opportunity Cell', '#' ),
+			array( "Women's Grievance Cell", '#' ),
+			array( 'Grievance Cell', '#' ),
 		),
 	);
 	foreach ( $links as $group => $items ) {
@@ -432,7 +430,7 @@ function kc_importer_page() {
 	?>
 	<div class="wrap">
 		<h1>Demo Content Importer</h1>
-		<p>Click the button below to fill your site with the KATAPALI +3 COLLEGE demo content: hero slides, 20 faculty members, notices, recruitment postings, tenders, a 16-photo gallery, 10 downloadable documents, 21 quick/resource/useful links, 8 content pages, and a ready-made navigation menu.</p>
+		<p>Click the button below to fill your site with the KATAPALI +3 COLLEGE demo content: hero slides, 20 faculty members, notices, recruitment postings, tenders, a 16-photo gallery, 10 downloadable documents, 21 resource/useful links (shown in the footer), 8 content pages, and a ready-made navigation menu.</p>
 		<?php if ( $already ) : ?>
 			<div class="notice notice-warning"><p>Demo content has already been imported once. Running it again will add a fresh copy of every item (it will not delete or duplicate-check existing posts other than the menu, which is rebuilt cleanly).</p></div>
 		<?php endif; ?>

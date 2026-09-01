@@ -72,7 +72,7 @@ function kc_register_cpts() {
 	) );
 
 	/* One CPT reused for three link lists, grouped by taxonomy: the homepage
-	   "Quick Links" section and the footer's "Resources" / "Useful Links" columns. */
+	   footer's "Resources" / "Useful Links" columns. */
 	register_post_type( 'kc_link', array(
 		'label' => __( 'Links', 'katapali-college' ),
 		'labels' => array( 'name' => 'Links (Quick/Resources/Useful)', 'singular_name' => 'Link', 'add_new_item' => 'Add New Link' ),
