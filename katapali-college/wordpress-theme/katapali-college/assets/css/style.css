@@ -112,7 +112,7 @@ nav.main-nav li:hover .submenu{opacity:1;visibility:visible;transform:translateY
 .nav-overlay.open{display:block;}
 
 /* ---------- Full-width sliding hero ---------- */
-.hero-slider{position:relative;height:380px;overflow:hidden;background:var(--dark);}
+.hero-slider{position:relative;height:460px;overflow:hidden;background:var(--dark);}
 .hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;visibility:hidden;transform:translateX(0);transition:opacity .7s ease,transform .7s ease,visibility 0s linear .7s;display:flex;align-items:center;z-index:0;}
 .hero-slide.active{opacity:1;visibility:visible;transform:translateX(0);transition:opacity .7s ease,transform .7s ease;z-index:2;}
 .hero-slide.exiting{opacity:0;visibility:visible;transform:translateX(6%);transition:opacity .7s ease,transform .7s ease;z-index:1;}
@@ -130,12 +130,12 @@ nav.main-nav li:hover .submenu{opacity:1;visibility:visible;transform:translateY
 .hero-dot{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer;transition:.25s;}
 .hero-dot.active{background:var(--accent);width:28px;border-radius:6px;}
 @media(max-width:768px){
-  .hero-slider{height:320px;}
+  .hero-slider{height:380px;}
   .hero-slide-content h1{font-size:1.6rem;}
   .hero-arrow{width:36px;height:36px;font-size:.9rem;}
 }
 @media(max-width:480px){
-  .hero-slider{height:280px;}
+  .hero-slider{height:320px;}
   .hero-slide-content p{font-size:.92rem;}
 }
 
