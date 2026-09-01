@@ -53,7 +53,7 @@ Everything on the public site is a normal WordPress post, page, or Customizer se
 | What you see on the site | Where to edit it |
 |---|---|
 | Notices, Recruitment, Tenders, Faculty, Gallery photos, Downloads, Hero Slides, Links (Resources / Useful Links), Organisation Logos | **Katapali College** menu in wp-admin (each is Add/Edit/Delete/Search like Posts) |
-| College name, address, phone, email, established year, social links (incl. WhatsApp) | **Appearance → Customize → College Info / Social Media Links** |
+| College name, address, phone, email, established year, social links (incl. WhatsApp), footer "About" paragraph | **Appearance → Customize → College Info / Social Media Links** |
 | Header logo size (40-160px) | **Appearance → Customize → Header Logo Size** |
 | Primary/Secondary/Accent/Dark/Gold theme colours | **Appearance → Customize → Theme Colours** (live preview) |
 | Logo | **Appearance → Customize → Site Identity** |
