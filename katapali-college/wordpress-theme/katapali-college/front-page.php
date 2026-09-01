@@ -142,7 +142,7 @@
 
 <section class="section">
 	<div class="container">
-		<div class="section-head fade-in"><span class="eyebrow">Our Faculty</span><h2>Meet Our Teachers</h2><p>Dedicated and experienced faculty guiding our students</p></div>
+		<div class="section-head fade-in"><span class="eyebrow">Our Faculty</span><h2>Meet Our Staff</h2><p>Dedicated and experienced faculty guiding our students</p></div>
 		<div class="faculty-slider-wrap fade-in">
 			<div class="faculty-track" id="kc-faculty-track">
 				<?php
