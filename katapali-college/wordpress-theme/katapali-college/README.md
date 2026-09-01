@@ -37,7 +37,8 @@ katapali-college/            <- upload this folder as your WordPress theme
    - 6 notices, 3 recruitment postings, 2 tenders
    - 16 gallery photos (8 featured on the homepage) across 4 categories
    - 10 downloadable documents (demo PDFs — replace with your real files)
-   - 21 external links across the footer's Resources and Useful Links columns (RTI, SAMS, UGC, NAAC, SWAYAM, National Scholarship Portal, etc.)
+   - 13 external links across the footer's Resources and Useful Links columns (SWAYAM, e-Gyan Kosh, Shodhganga, CUET, NAAC, UGC, DHE, AISHE, National Scholarship Portal, Bargarh District website, etc.)
+   - 11 organisation logos (Ministry of Education, Election Commission of India, OPSC Odisha, SSB Odisha, Meri Sarkar, Swachh Bharat Abhiyan, G20 Summit India, Azadi Ka Amrit Mahotsav, Digital India, UGC, UGC NET) in an auto-scrolling strip shown above the footer on every page
    - 8 fully-written content pages (About Us, Academics, Admissions, Examination, Student Corner, Alumni, Downloads, Contact Us)
    - A complete navigation menu with submenus, assigned automatically
    - The college logo, set as the site logo
@@ -51,7 +52,7 @@ Everything on the public site is a normal WordPress post, page, or Customizer se
 
 | What you see on the site | Where to edit it |
 |---|---|
-| Notices, Recruitment, Tenders, Faculty, Gallery photos, Downloads, Hero Slides, Links (Quick Links / Resources / Useful Links) | **Katapali College** menu in wp-admin (each is Add/Edit/Delete/Search like Posts) |
+| Notices, Recruitment, Tenders, Faculty, Gallery photos, Downloads, Hero Slides, Links (Resources / Useful Links), Organisation Logos | **Katapali College** menu in wp-admin (each is Add/Edit/Delete/Search like Posts) |
 | College name, address, phone, email, established year, social links (incl. WhatsApp) | **Appearance → Customize → College Info / Social Media Links** |
 | Header logo size (40-160px) | **Appearance → Customize → Header Logo Size** |
 | Primary/Secondary/Accent/Dark/Gold theme colours | **Appearance → Customize → Theme Colours** (live preview) |
@@ -62,9 +63,11 @@ Everything on the public site is a normal WordPress post, page, or Customizer se
 | About Us / Academics / Admissions / Examination / Student Corner / Alumni / Contact Us page text | **Pages** in wp-admin — edit like any normal WordPress page (raw HTML is supported; use the Code Editor / Custom HTML block for tables) |
 | Menus & submenus | **Appearance → Menus** |
 
-Each custom post type (Notice, Recruitment, Tender, Faculty, Gallery, Download, Slide, Link) has its own **Details** box on the edit screen with the exact fields that post needs (dates, salary, department, file links, etc.) — fill them in, set a Featured Image where relevant, and Publish.
+Each custom post type (Notice, Recruitment, Tender, Faculty, Gallery, Download, Slide, Link, Organisation Logo) has its own **Details** box on the edit screen with the exact fields that post needs (dates, salary, department, file links, etc.) — fill them in, set a Featured Image where relevant, and Publish.
 
-The header has a fixed 3-part layout: a thin contact/social bar, then a centred header (logo on the left, college name and address centred, Admin Login on the right), then a dedicated colour-bar menu row. The homepage below it follows a fixed order: hero slider, a scrolling "Latest Notice" ticker, a compact About + Principal's Message pair of cards, a three-column Notices/Recruitment/Tenders block, the faculty carousel, the student/faculty/department/years stats bar, and the photo gallery — with the footer split into Reach Us At / Resources / Useful Links / Find Us on Map columns. Every one of those pieces is a normal editable post type, page, or Customizer field, and every section keeps a fixed column layout (equal-height cards) so nothing reflows or "spreads" between page loads.
+The header has a fixed 3-part layout: a thin contact/social bar, then a centred header (logo on the left, college name and address centred, Admin Login on the right), then a dedicated colour-bar menu row. The homepage below it follows a fixed order: hero slider, a scrolling "Latest Notice" ticker, a compact About + Principal's Message pair of cards, a three-column Notices/Recruitment/Tenders block, the faculty carousel, the student/faculty/department/years stats bar, and the photo gallery. An auto-scrolling strip of organisation logos (Ministry of Education, Election Commission, UGC, etc. — see **Organisation Logos** in the Katapali College menu) sits just above the footer on every page, and the footer itself is split into Reach Us At / Resources / Useful Links / Find Us on Map columns. Every one of those pieces is a normal editable post type, page, or Customizer field, and every section keeps a fixed column layout (equal-height cards) so nothing reflows or "spreads" between page loads.
+
+**Important — the bundled organisation logos are generic placeholder badges (coloured circle + initials), not the real official emblems.** Government and institutional emblems (the State Emblem of India in particular) are legally protected and cannot be reproduced without authorisation. Before going live, open each entry under **Katapali College → Organisation Logos** and replace its Featured Image with the actual logo you are authorised to use, and update its link URL — several (SSB Odisha, Meri Sarkar, CPET) are left as `#` placeholders since no single official URL could be confirmed.
 
 ## Reusing this theme for a different college
 

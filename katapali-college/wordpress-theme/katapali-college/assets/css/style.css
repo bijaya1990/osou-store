@@ -244,6 +244,18 @@ nav.main-nav li:hover .submenu{opacity:1;visibility:visible;transform:translateY
 .map-info .mi-row i{color:var(--accent);width:22px;}
 
 /* Footer */
+/* Organisation logos strip - sits directly above the footer on every page */
+.org-logo-strip{background:#fff;border-top:1px solid var(--border);border-bottom:3px solid var(--accent);padding:18px 0;overflow:hidden;}
+.org-logo-track-wrap{overflow:hidden;}
+.org-logo-track{display:inline-flex;align-items:center;gap:44px;white-space:nowrap;animation:kc-org-scroll 36s linear infinite;}
+.org-logo-track:hover{animation-play-state:paused;}
+.org-logo-track a,.org-logo-track span{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.org-logo-track img{height:56px;width:auto;max-width:110px;object-fit:contain;filter:grayscale(35%);opacity:.85;transition:.2s;}
+.org-logo-track a:hover img{filter:none;opacity:1;transform:scale(1.06);}
+@keyframes kc-org-scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@media(prefers-reduced-motion: reduce){.org-logo-track{animation:none;overflow-x:auto;}}
+@media(max-width:600px){.org-logo-track img{height:42px;max-width:80px;}.org-logo-track{gap:28px;}}
+
 footer.site-footer{background:var(--dark);color:#c7d3f0;padding-top:56px;}
 .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:34px;padding-bottom:36px;}
 .footer-grid h4{color:#fff;font-size:1.02rem;margin-bottom:16px;}

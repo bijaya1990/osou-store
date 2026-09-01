@@ -98,3 +98,20 @@ function kc_link_list( $group_name ) {
 	endwhile;
 	wp_reset_postdata();
 }
+
+/* Renders the auto-scrolling organisation-logo strip shown just above
+   the footer on every page (Ministry of Education, ECI, UGC, etc.). */
+function kc_org_logo_strip() {
+	$logos = get_posts( array( 'post_type' => 'kc_org_logo', 'posts_per_page' => -1, 'meta_key' => 'kc_order', 'orderby' => 'meta_value_num', 'order' => 'ASC' ) );
+	if ( ! $logos ) return;
+	$track = '';
+	foreach ( $logos as $l ) {
+		$img = get_the_post_thumbnail_url( $l->ID, 'medium' );
+		if ( ! $img ) continue;
+		$url = get_post_meta( $l->ID, 'kc_url', true );
+		$item = '<img src="' . esc_url( $img ) . '" alt="' . esc_attr( $l->post_title ) . '" title="' . esc_attr( $l->post_title ) . '" loading="lazy">';
+		$track .= $url ? '<a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . $item . '</a>' : '<span>' . $item . '</span>';
+	}
+	if ( ! $track ) return;
+	echo '<div class="org-logo-strip"><div class="container"><div class="org-logo-track-wrap"><div class="org-logo-track">' . $track . $track . '</div></div></div></div>';
+}

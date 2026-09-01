@@ -202,35 +202,47 @@ function kc_run_demo_import() {
 	/* ---------- resources / useful links (footer columns) ---------- */
 	$links = array(
 		'Resources' => array(
-			array( 'RTI', 'https://rti.gov.in/' ),
-			array( 'SAMS Odisha (Admissions)', 'https://samsodisha.gov.in/' ),
-			array( 'Sambalpur University', 'https://www.sambalpuruniversity.ac.in/' ),
 			array( 'SWAYAM', 'https://swayam.gov.in/' ),
-			array( 'OSOU', 'https://www.osou.ac.in/' ),
 			array( 'e-Gyan Kosh', 'https://egyankosh.ac.in/' ),
 			array( 'Shodhganga', 'https://shodhganga.inflibnet.ac.in/' ),
 			array( 'Shodh Sindhu', 'https://ess.inflibnet.ac.in/' ),
 			array( 'National Digital Library', 'https://ndl.iitkgp.ac.in/' ),
+			array( 'CPET', '#' ),
 			array( 'CUET', 'https://cuet.samarth.ac.in/' ),
 		),
 		'Useful Links' => array(
 			array( 'NAAC', 'https://www.naac.gov.in/' ),
-			array( 'DHE Odisha', 'https://dhe.odisha.gov.in/' ),
 			array( 'UGC', 'https://www.ugc.gov.in/' ),
+			array( 'DHE Odisha', 'https://dhe.odisha.gov.in/' ),
 			array( 'AISHE', 'https://aishe.gov.in/' ),
 			array( 'National Scholarship Portal', 'https://scholarships.gov.in/' ),
-			array( 'Anti Ragging Cell', 'https://www.antiragging.in/' ),
-			array( 'Scholarship (e-Medhabruti)', 'https://scholarship.odisha.gov.in/' ),
-			array( 'College Magazine', '#' ),
-			array( 'Equal Opportunity Cell', '#' ),
-			array( "Women's Grievance Cell", '#' ),
-			array( 'Grievance Cell', '#' ),
+			array( 'Bargarh District Website', 'https://bargarh.nic.in/' ),
 		),
 	);
 	foreach ( $links as $group => $items ) {
 		foreach ( $items as $i => $item ) {
 			kc_import_cpt( 'kc_link', $item[0], array( 'kc_url' => $item[1], 'kc_order' => $i + 1 ), array( 'kc_link_group' => $group ) );
 		}
+	}
+
+	/* ---------- organisation logos (strip shown above the footer) ----------
+	   Demo placeholder badges only - swap each Featured Image for the real
+	   official logo you are authorised to use before going live. */
+	$org_logos = array(
+		array( 'Ministry of Education', 'org-moe.svg', 'https://www.education.gov.in/' ),
+		array( 'Election Commission of India', 'org-eci.svg', 'https://eci.gov.in/' ),
+		array( 'OPSC Odisha', 'org-opsc.svg', 'https://opsc.gov.in/' ),
+		array( 'SSB Odisha', 'org-ssb.svg', '#' ),
+		array( 'Meri Sarkar', 'org-merisarkar.svg', '#' ),
+		array( 'Swachh Bharat Abhiyan', 'org-swachh.svg', 'https://swachhbharatmission.gov.in/' ),
+		array( 'G20 Summit India', 'org-g20.svg', 'https://www.g20.in/' ),
+		array( 'Azadi Ka Amrit Mahotsav', 'org-amrit.svg', 'https://amritmahotsav.nic.in/' ),
+		array( 'Digital India', 'org-digitalindia.svg', 'https://www.digitalindia.gov.in/' ),
+		array( 'UGC', 'org-ugc.svg', 'https://www.ugc.gov.in/' ),
+		array( 'UGC NET', 'org-ugcnet.svg', 'https://ugcnet.nta.nic.in/' ),
+	);
+	foreach ( $org_logos as $i => $o ) {
+		kc_import_cpt( 'kc_org_logo', $o[0], array( 'kc_url' => $o[2], 'kc_order' => $i + 1 ), array(), $o[1] );
 	}
 
 	/* ---------- pages ---------- */
@@ -430,7 +442,7 @@ function kc_importer_page() {
 	?>
 	<div class="wrap">
 		<h1>Demo Content Importer</h1>
-		<p>Click the button below to fill your site with the KATAPALI +3 COLLEGE demo content: hero slides, 20 faculty members, notices, recruitment postings, tenders, a 16-photo gallery, 10 downloadable documents, 21 resource/useful links (shown in the footer), 8 content pages, and a ready-made navigation menu.</p>
+		<p>Click the button below to fill your site with the KATAPALI +3 COLLEGE demo content: hero slides, 20 faculty members, notices, recruitment postings, tenders, a 16-photo gallery, 10 downloadable documents, 13 resource/useful links (shown in the footer), 11 organisation logos (shown in the strip above the footer), 8 content pages, and a ready-made navigation menu.</p>
 		<?php if ( $already ) : ?>
 			<div class="notice notice-warning"><p>Demo content has already been imported once. Running it again will add a fresh copy of every item (it will not delete or duplicate-check existing posts other than the menu, which is rebuilt cleanly).</p></div>
 		<?php endif; ?>

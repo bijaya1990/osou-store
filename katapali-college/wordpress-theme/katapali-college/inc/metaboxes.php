@@ -57,6 +57,11 @@ function kc_meta_fields( $post_type ) {
 				'kc_url'   => array( 'Link URL', 'url' ),
 				'kc_order' => array( 'Display Order', 'number' ),
 			);
+		case 'kc_org_logo':
+			return array(
+				'kc_url'   => array( 'Link URL (optional, blank = not clickable)', 'url' ),
+				'kc_order' => array( 'Display Order', 'number' ),
+			);
 		case 'kc_slide':
 			return array(
 				'kc_subtitle' => array( 'Subtitle', 'text' ),
@@ -71,7 +76,7 @@ function kc_meta_fields( $post_type ) {
 }
 
 function kc_add_meta_boxes() {
-	$types = array( 'kc_notice', 'kc_recruitment', 'kc_tender', 'kc_faculty', 'kc_gallery', 'kc_download', 'kc_slide', 'kc_link' );
+	$types = array( 'kc_notice', 'kc_recruitment', 'kc_tender', 'kc_faculty', 'kc_gallery', 'kc_download', 'kc_slide', 'kc_link', 'kc_org_logo' );
 	foreach ( $types as $t ) {
 		add_meta_box( 'kc_fields_' . $t, __( 'Details', 'katapali-college' ), 'kc_render_meta_box', $t, 'normal', 'high' );
 	}
@@ -113,6 +118,9 @@ function kc_render_meta_box( $post ) {
 	}
 	if ( $post->post_type === 'kc_gallery' || $post->post_type === 'kc_slide' ) {
 		echo '<p style="margin-top:10px;">Set the photo using the <strong>Featured Image</strong> box on the right' . ( $post->post_type === 'kc_gallery' ? '. Assign a <strong>Gallery Category</strong> from the box on the right.' : '.' ) . '</p>';
+	}
+	if ( $post->post_type === 'kc_org_logo' ) {
+		echo '<p style="margin-top:10px;">Set the logo image using the <strong>Featured Image</strong> box on the right (a small square/circular logo works best).</p>';
 	}
 }
 

@@ -1,4 +1,5 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
+<?php kc_org_logo_strip(); ?>
 <footer class="site-footer">
 	<div class="container">
 		<div class="footer-grid">
