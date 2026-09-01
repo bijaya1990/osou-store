@@ -1,47 +1,34 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; get_header(); ?>
 
-<section class="hero" id="kc-hero">
-	<?php
-	$slides = get_posts( array( 'post_type' => 'kc_slide', 'posts_per_page' => -1, 'meta_key' => 'kc_order', 'orderby' => 'meta_value_num', 'order' => 'ASC' ) );
-	if ( $slides ) :
-		foreach ( $slides as $i => $s ) :
-			$img = get_the_post_thumbnail_url( $s->ID, 'full' );
-			if ( ! $img ) $img = KC_URI . '/assets/demo-images/banner1.svg';
-			$sub = get_post_meta( $s->ID, 'kc_subtitle', true );
-			$b1t = get_post_meta( $s->ID, 'kc_btn1_text', true ) ?: 'Admissions';
-			$b1l = get_post_meta( $s->ID, 'kc_btn1_link', true ) ?: '#';
-			$b2t = get_post_meta( $s->ID, 'kc_btn2_text', true ) ?: 'Know More';
-			$b2l = get_post_meta( $s->ID, 'kc_btn2_link', true ) ?: '#';
-			?>
-			<div class="hero-slide<?php echo $i === 0 ? ' active' : ''; ?>" style="background-image:url('<?php echo esc_url( $img ); ?>')">
-				<div class="hero-content"><div class="inner">
-					<h1><?php echo esc_html( $s->post_title ); ?></h1>
-					<p><?php echo esc_html( $sub ); ?></p>
-					<div class="hero-btns">
-						<a href="<?php echo esc_url( $b1l ); ?>" class="btn btn-accent"><?php echo esc_html( $b1t ); ?></a>
-						<a href="<?php echo esc_url( $b2l ); ?>" class="btn btn-outline"><?php echo esc_html( $b2t ); ?></a>
-					</div>
-				</div></div>
+<section class="hex-hero">
+	<div class="container">
+		<div class="hex-hero-head fade-in">
+			<span class="eyebrow">Welcome to</span>
+			<h1><?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></h1>
+			<p><?php echo esc_html( get_theme_mod( 'kc_tagline', kc_default( 'kc_tagline' ) ) ); ?></p>
+			<div class="hero-btns">
+				<a href="<?php echo esc_url( home_url( '/admissions/' ) ); ?>" class="btn btn-accent">Admissions <i class="fa-solid fa-arrow-right"></i></a>
+				<a href="<?php echo esc_url( home_url( '/about-us/' ) ); ?>" class="btn btn-line">Know More</a>
 			</div>
-			<?php
-		endforeach;
-		?>
-		<button class="hero-arrow prev"><i class="fa-solid fa-chevron-left"></i></button>
-		<button class="hero-arrow next"><i class="fa-solid fa-chevron-right"></i></button>
-		<div class="hero-dots">
-			<?php foreach ( $slides as $i => $s ) : ?>
-				<span class="<?php echo $i === 0 ? 'active' : ''; ?>" data-i="<?php echo esc_attr( $i ); ?>"></span>
-			<?php endforeach; ?>
 		</div>
-	<?php else : ?>
-		<div class="hero-slide active" style="background-image:url('<?php echo esc_url( KC_URI . '/assets/demo-images/banner1.svg' ); ?>')">
-			<div class="hero-content"><div class="inner">
-				<h1><?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></h1>
-				<p><?php echo esc_html( get_theme_mod( 'kc_tagline', kc_default( 'kc_tagline' ) ) ); ?></p>
-				<p style="color:#fbbf24;font-size:.85rem;margin-top:14px;">No hero slides yet — run the Demo Content Importer under <strong>Katapali College &rarr; Demo Content Importer</strong>, or add some under Hero Slides.</p>
-			</div></div>
-		</div>
-	<?php endif; ?>
+		<?php
+		$slides = get_posts( array( 'post_type' => 'kc_slide', 'posts_per_page' => 7, 'meta_key' => 'kc_order', 'orderby' => 'meta_value_num', 'order' => 'ASC' ) );
+		if ( $slides ) :
+			?>
+			<div class="hex-grid">
+				<?php foreach ( $slides as $i => $s ) :
+					$img = get_the_post_thumbnail_url( $s->ID, 'large' );
+					if ( ! $img ) $img = KC_URI . '/assets/demo-images/banner1.svg';
+					?>
+					<div class="hex-item hex-pos-<?php echo esc_attr( ( $i % 2 ) + 1 ); ?>">
+						<img src="<?php echo esc_url( $img ); ?>" alt="<?php echo esc_attr( $s->post_title ); ?>" loading="lazy">
+					</div>
+				<?php endforeach; ?>
+			</div>
+		<?php else : ?>
+			<p style="text-align:center;color:var(--accent);font-size:.9rem;">No hero photos yet — run the Demo Content Importer under <strong>Katapali College &rarr; Demo Content Importer</strong>, or add some under Hero Slides.</p>
+		<?php endif; ?>
+	</div>
 </section>
 
 <section class="notice-ticker">
@@ -54,7 +41,7 @@
 				if ( $ticker_notices ) {
 					$ticker_html = '';
 					foreach ( $ticker_notices as $tn ) {
-						$ticker_html .= '<a href="' . esc_url( get_permalink( $tn ) ) . '">' . esc_html( get_the_title( $tn ) ) . ' <span>(' . esc_html( get_the_date( 'd M Y', $tn ) ) . ')</span></a>';
+						$ticker_html .= '<a href="' . esc_url( get_permalink( $tn ) ) . '"><i class="fa-solid fa-hand-point-right"></i>' . esc_html( get_the_title( $tn ) ) . ' <span>(' . esc_html( get_the_date( 'd M Y', $tn ) ) . ')</span></a>';
 					}
 					echo $ticker_html . $ticker_html; // duplicated for a seamless CSS loop
 				} else {
@@ -69,35 +56,37 @@
 <section class="section">
 	<div class="container">
 		<div class="grid grid-2 about-grid fade-in">
-			<div class="about-card">
-				<span class="eyebrow">Who We Are</span>
-				<h2>About <?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></h2>
-				<p>
-				<?php
-				$about_page = get_page_by_path( 'about-us' );
-				if ( $about_page ) {
-					$about_spaced = preg_replace( '#<h[1-6][^>]*>.*?</h[1-6]>#i', '', $about_page->post_content, 1 ); // drop the first sub-heading; our own <h2> above already labels this card
-					$about_spaced = preg_replace( '#</(p|div|li|h[1-6])>#i', '$0 ', $about_spaced );
-					echo esc_html( wp_trim_words( wp_strip_all_tags( $about_spaced ), 55 ) );
-				} else {
-					echo esc_html( get_theme_mod( 'kc_tagline', kc_default( 'kc_tagline' ) ) ) . ' Add an "About Us" page (slug: about-us), or run the Demo Content Importer.';
-				}
-				?>
-				</p>
-				<a href="<?php echo esc_url( home_url( '/about-us/' ) ); ?>" class="btn btn-line btn-sm">Read More <i class="fa-solid fa-arrow-right"></i></a>
-			</div>
-			<div class="about-card principal-card">
-				<span class="eyebrow">Welcome Message</span>
-				<h2>Principal's Message</h2>
-				<div class="principal-mini">
-					<img src="<?php echo esc_url( get_theme_mod( 'kc_principal_photo' ) ?: KC_URI . '/assets/demo-images/principal.svg' ); ?>" alt="Principal">
-					<div>
-						<h4><?php echo esc_html( get_theme_mod( 'kc_principal_name', kc_default( 'kc_principal_name' ) ) ); ?></h4>
-						<div class="desig"><?php echo esc_html( get_theme_mod( 'kc_principal_desig', kc_default( 'kc_principal_desig' ) ) ); ?></div>
-					</div>
+			<div class="about-card tbar-box">
+				<h2 class="tbar-head">About <?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></h2>
+				<div class="tbar-body">
+					<p>
+					<?php
+					$about_page = get_page_by_path( 'about-us' );
+					if ( $about_page ) {
+						$about_spaced = preg_replace( '#<h[1-6][^>]*>.*?</h[1-6]>#i', '', $about_page->post_content, 1 ); // drop the first sub-heading; our own <h2> above already labels this card
+						$about_spaced = preg_replace( '#</(p|div|li|h[1-6])>#i', '$0 ', $about_spaced );
+						echo esc_html( wp_trim_words( wp_strip_all_tags( $about_spaced ), 55 ) );
+					} else {
+						echo esc_html( get_theme_mod( 'kc_tagline', kc_default( 'kc_tagline' ) ) ) . ' Add an "About Us" page (slug: about-us), or run the Demo Content Importer.';
+					}
+					?>
+					</p>
+					<a href="<?php echo esc_url( home_url( '/about-us/' ) ); ?>" class="read-more-link">[Read More]</a>
 				</div>
-				<p><?php echo esc_html( wp_trim_words( get_theme_mod( 'kc_principal_message', kc_default( 'kc_principal_message' ) ), 30 ) ); ?></p>
-				<a href="<?php echo esc_url( home_url( '/about-us/#principal-desk' ) ); ?>" class="btn btn-line btn-sm">Read More <i class="fa-solid fa-arrow-right"></i></a>
+			</div>
+			<div class="about-card principal-card tbar-box">
+				<h2 class="tbar-head">Principal's Message</h2>
+				<div class="tbar-body">
+					<div class="principal-mini">
+						<img src="<?php echo esc_url( get_theme_mod( 'kc_principal_photo' ) ?: KC_URI . '/assets/demo-images/principal.svg' ); ?>" alt="Principal">
+						<div>
+							<h4><?php echo esc_html( get_theme_mod( 'kc_principal_name', kc_default( 'kc_principal_name' ) ) ); ?></h4>
+							<div class="desig"><?php echo esc_html( get_theme_mod( 'kc_principal_desig', kc_default( 'kc_principal_desig' ) ) ); ?></div>
+						</div>
+					</div>
+					<p><?php echo esc_html( wp_trim_words( get_theme_mod( 'kc_principal_message', kc_default( 'kc_principal_message' ) ), 30 ) ); ?></p>
+					<a href="<?php echo esc_url( home_url( '/about-us/#principal-desk' ) ); ?>" class="read-more-link">[Read More]</a>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -105,38 +94,32 @@
 
 <section class="section section-alt">
 	<div class="container">
-		<div class="section-head fade-in"><span class="eyebrow">Stay Updated</span><h2>Notices, Recruitment &amp; Tenders</h2></div>
 		<div class="grid grid-3 fade-in three-col-fixed">
-			<div class="tc-col">
-				<h3 class="tc-head">Latest Notices</h3>
-				<div class="tc-body">
+			<div class="tc-col tbar-box">
+				<h3 class="tbar-head">Notice</h3>
+				<div class="tbar-body tc-body">
 					<?php
-					$notices = get_posts( array( 'post_type' => 'kc_notice', 'posts_per_page' => 3 ) );
-					if ( $notices ) { foreach ( $notices as $n ) kc_notice_card( $n->ID ); } else { echo '<div class="empty-msg">No notices yet.</div>'; }
+					$notices = get_posts( array( 'post_type' => 'kc_notice', 'posts_per_page' => 5 ) );
+					if ( $notices ) { foreach ( $notices as $n ) kc_notice_mini( $n->ID ); } else { echo '<div class="empty-msg">No notices yet.</div>'; }
 					?>
 				</div>
-				<a href="<?php echo esc_url( get_post_type_archive_link( 'kc_notice' ) ); ?>" class="btn btn-line btn-sm">View All Notices <i class="fa-solid fa-arrow-right"></i></a>
 			</div>
-			<div class="tc-col">
-				<h3 class="tc-head">Latest Recruitment</h3>
-				<div class="tc-body">
+			<div class="tc-col tbar-box">
+				<h3 class="tbar-head">Tenders</h3>
+				<div class="tbar-body tc-body">
 					<?php
-					$rec = get_posts( array( 'post_type' => 'kc_recruitment', 'posts_per_page' => 3, 'meta_key' => 'kc_status', 'meta_value' => 'Open' ) );
-					if ( ! $rec ) $rec = get_posts( array( 'post_type' => 'kc_recruitment', 'posts_per_page' => 3 ) );
-					if ( $rec ) { foreach ( $rec as $r ) kc_recruitment_card( $r->ID ); } else { echo '<div class="empty-msg">No openings currently.</div>'; }
+					$tnd = get_posts( array( 'post_type' => 'kc_tender', 'posts_per_page' => 5 ) );
+					if ( $tnd ) { foreach ( $tnd as $t ) kc_tender_mini( $t->ID ); } else { echo '<div class="empty-msg">Opps, No posts were found.</div>'; }
 					?>
 				</div>
-				<a href="<?php echo esc_url( get_post_type_archive_link( 'kc_recruitment' ) ); ?>" class="btn btn-line btn-sm">View All Openings <i class="fa-solid fa-arrow-right"></i></a>
 			</div>
-			<div class="tc-col">
-				<h3 class="tc-head">Latest Tenders</h3>
-				<div class="tc-body">
-					<?php
-					$tnd = get_posts( array( 'post_type' => 'kc_tender', 'posts_per_page' => 3 ) );
-					if ( $tnd ) { foreach ( $tnd as $t ) kc_tender_card( $t->ID ); } else { echo '<div class="empty-msg">No tenders currently.</div>'; }
-					?>
+			<div class="tc-col tbar-box">
+				<h3 class="tbar-head">Quick Links</h3>
+				<div class="tbar-body tc-body">
+					<ul class="quick-links-list">
+						<?php kc_link_list( 'Quick Links' ); ?>
+					</ul>
 				</div>
-				<a href="<?php echo esc_url( get_post_type_archive_link( 'kc_tender' ) ); ?>" class="btn btn-line btn-sm">View All Tenders <i class="fa-solid fa-arrow-right"></i></a>
 			</div>
 		</div>
 	</div>

@@ -1,5 +1,6 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <?php kc_org_logo_strip(); ?>
+<div class="deco-border"></div>
 <footer class="site-footer">
 	<div class="container">
 		<div class="footer-grid">
@@ -43,7 +44,6 @@
 					<li><i class="fa-solid fa-envelope"></i><span><?php echo esc_html( get_theme_mod( 'kc_email', kc_default( 'kc_email' ) ) ); ?></span></li>
 					<li><i class="fa-solid fa-clock"></i><span>Monday to Saturday, 10:00 AM - 5:00 PM</span></li>
 				</ul>
-				<?php if ( is_active_sidebar( 'footer-1' ) ) dynamic_sidebar( 'footer-1' ); ?>
 			</div>
 		</div>
 	</div>

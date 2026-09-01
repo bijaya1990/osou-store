@@ -16,23 +16,6 @@
       }
     }
 
-    /* hero slider */
-    var hero = document.getElementById('kc-hero');
-    if (hero) {
-      var slides = hero.querySelectorAll('.hero-slide'), dots = hero.querySelectorAll('.hero-dots span');
-      var idx = 0;
-      function show(i) {
-        idx = (i + slides.length) % slides.length;
-        slides.forEach(function (s, j) { s.classList.toggle('active', j === idx); });
-        dots.forEach(function (d, j) { d.classList.toggle('active', j === idx); });
-      }
-      var prevBtn = hero.querySelector('.prev'), nextBtn = hero.querySelector('.next');
-      if (prevBtn) prevBtn.onclick = function () { show(idx - 1); };
-      if (nextBtn) nextBtn.onclick = function () { show(idx + 1); };
-      dots.forEach(function (d) { d.onclick = function () { show(+d.dataset.i); }; });
-      if (slides.length > 1) setInterval(function () { show(idx + 1); }, 5500);
-    }
-
     /* faculty auto-scroll */
     var track = document.getElementById('kc-faculty-track');
     if (track) {

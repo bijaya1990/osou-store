@@ -115,3 +115,31 @@ function kc_org_logo_strip() {
 	if ( ! $track ) return;
 	echo '<div class="org-logo-strip"><div class="container"><div class="org-logo-track-wrap"><div class="org-logo-track">' . $track . $track . '</div></div></div></div>';
 }
+
+/* Compact list-row versions of the notice/tender cards, used in the
+   homepage's boxed Notice/Tenders columns (icon bullet + title + date,
+   no card chrome - matches a typical government-college notice list). */
+function kc_notice_mini( $post_id ) {
+	?>
+	<div class="mini-row">
+		<i class="fa-solid fa-circle-chevron-right"></i>
+		<div>
+			<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>"><?php echo esc_html( get_the_title( $post_id ) ); ?></a>
+			<div class="mini-date"><i class="fa-regular fa-calendar"></i> <?php echo esc_html( get_the_date( 'd M Y', $post_id ) ); ?></div>
+		</div>
+	</div>
+	<?php
+}
+
+function kc_tender_mini( $post_id ) {
+	$last = get_post_meta( $post_id, 'kc_last_date', true );
+	?>
+	<div class="mini-row">
+		<i class="fa-solid fa-circle-chevron-right"></i>
+		<div>
+			<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>"><?php echo esc_html( get_the_title( $post_id ) ); ?></a>
+			<div class="mini-date"><i class="fa-regular fa-clock"></i> Last date: <?php echo esc_html( $last ); ?></div>
+		</div>
+	</div>
+	<?php
+}

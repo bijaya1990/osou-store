@@ -199,8 +199,19 @@ function kc_run_demo_import() {
 		) );
 	}
 
-	/* ---------- resources / useful links (footer columns) ---------- */
+	/* ---------- quick links (homepage) / resources / useful links (footer) ---------- */
 	$links = array(
+		'Quick Links' => array(
+			array( 'RTI', 'https://rti.gov.in/' ),
+			array( 'SAMS', 'https://samsodisha.gov.in/' ),
+			array( 'Sambalpur University', 'https://www.sambalpuruniversity.ac.in/' ),
+			array( 'Anti Ragging Cell', 'https://www.antiragging.in/' ),
+			array( 'Scholarship', 'https://scholarship.odisha.gov.in/' ),
+			array( 'Magazine', '#' ),
+			array( 'Equal Opportunity Cell', '#' ),
+			array( "Women's Grievance Cell", '#' ),
+			array( 'Grievance Cell', '#' ),
+		),
 		'Resources' => array(
 			array( 'SWAYAM', 'https://swayam.gov.in/' ),
 			array( 'e-Gyan Kosh', 'https://egyankosh.ac.in/' ),
@@ -442,7 +453,7 @@ function kc_importer_page() {
 	?>
 	<div class="wrap">
 		<h1>Demo Content Importer</h1>
-		<p>Click the button below to fill your site with the KATAPALI +3 COLLEGE demo content: hero slides, 20 faculty members, notices, recruitment postings, tenders, a 16-photo gallery, 10 downloadable documents, 13 resource/useful links (shown in the footer), 11 organisation logos (shown in the strip above the footer), 8 content pages, and a ready-made navigation menu.</p>
+		<p>Click the button below to fill your site with the KATAPALI +3 COLLEGE demo content: hero slides, 20 faculty members, notices, recruitment postings, tenders, a 16-photo gallery, 10 downloadable documents, 9 Quick Links (shown on the homepage), 13 resource/useful links (shown in the footer), 11 organisation logos (shown in the strip above the footer), 8 content pages, and a ready-made navigation menu.</p>
 		<?php if ( $already ) : ?>
 			<div class="notice notice-warning"><p>Demo content has already been imported once. Running it again will add a fresh copy of every item (it will not delete or duplicate-check existing posts other than the menu, which is rebuilt cleanly).</p></div>
 		<?php endif; ?>

@@ -70,19 +70,6 @@ require KC_DIR . '/inc/customizer.php';
 require KC_DIR . '/inc/template-tags.php';
 require KC_DIR . '/inc/demo-importer.php';
 
-/* --------------------------- footer widget area --------------------------- */
-function kc_widgets_init() {
-	register_sidebar( array(
-		'name'          => __( 'Footer Column', 'katapali-college' ),
-		'id'            => 'footer-1',
-		'before_widget' => '<div class="widget %2$s">',
-		'after_widget'  => '</div>',
-		'before_title'  => '<h4>',
-		'after_title'   => '</h4>',
-	) );
-}
-add_action( 'widgets_init', 'kc_widgets_init' );
-
 /* excerpt length for card previews */
 add_filter( 'excerpt_length', function () { return 24; } );
 add_filter( 'excerpt_more', function () { return '&hellip;'; } );
