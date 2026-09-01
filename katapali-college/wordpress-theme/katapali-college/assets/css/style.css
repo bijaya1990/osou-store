@@ -111,30 +111,31 @@ nav.main-nav li:hover .submenu{opacity:1;visibility:visible;transform:translateY
 .nav-overlay{display:none;position:fixed;inset:0;background:rgba(10,20,50,.5);z-index:250;}
 .nav-overlay.open{display:block;}
 
-/* ---------- Hex-grid hero ---------- */
-.hex-hero{background:#faf3e8 url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCI+PGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMS4yIiBmaWxsPSIjZTliZjY2IiBmaWxsLW9wYWNpdHk9Ii40Ii8+PC9zdmc+");padding:56px 0 44px;position:relative;overflow:hidden;}
-.hex-hero-head{text-align:center;max-width:680px;margin:0 auto 40px;}
-.hex-hero-head .eyebrow{display:inline-block;background:linear-gradient(135deg,var(--accent),#f4c430);color:#402a00;font-weight:700;font-size:.75rem;letter-spacing:1.5px;text-transform:uppercase;padding:6px 16px;border-radius:30px;margin-bottom:14px;}
-.hex-hero-head h1{font-size:2.1rem;color:var(--primary);margin-bottom:10px;}
-.hex-hero-head p{color:var(--text);opacity:.8;font-size:1rem;margin-bottom:22px;}
-.hex-hero-head .hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
-.hex-grid{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:0;padding:10px 0;}
-.hex-item{width:200px;height:230px;margin:0 -14px;clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0% 50%);overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.18);flex-shrink:0;transition:.3s;}
-.hex-item img{width:100%;height:100%;object-fit:cover;transition:.4s;}
-.hex-item:hover img{transform:scale(1.1);}
-.hex-item.hex-pos-2{transform:translateY(-46px);}
-.hex-item:hover{transform:translateY(-6px);z-index:2;}
-.hex-item.hex-pos-2:hover{transform:translateY(-52px);}
-@media(max-width:1080px){.hex-item{width:170px;height:196px;}.hex-item.hex-pos-2{transform:translateY(-38px);}}
+/* ---------- Full-width sliding hero ---------- */
+.hero-slider{position:relative;height:520px;overflow:hidden;background:var(--dark);}
+.hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;visibility:hidden;transition:opacity .8s ease;display:flex;align-items:center;}
+.hero-slide.active{opacity:1;visibility:visible;z-index:1;}
+.hero-slide-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,26,51,.86) 0%,rgba(0,26,51,.55) 55%,rgba(0,26,51,.25) 100%);}
+.hero-slide-content{position:relative;z-index:2;max-width:640px;color:#fff;}
+.hero-slide-content .eyebrow{display:inline-block;background:linear-gradient(135deg,var(--accent),#f4c430);color:#402a00;font-weight:700;font-size:.75rem;letter-spacing:1.5px;text-transform:uppercase;padding:6px 16px;border-radius:30px;margin-bottom:16px;}
+.hero-slide-content h1{font-size:2.4rem;color:#fff;margin-bottom:12px;line-height:1.2;}
+.hero-slide-content p{color:#e8eef7;opacity:.92;font-size:1.05rem;margin-bottom:24px;}
+.hero-slide-content .hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.hero-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:1.05rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.25s;}
+.hero-arrow:hover{background:var(--accent);}
+.hero-arrow-prev{left:20px;}
+.hero-arrow-next{right:20px;}
+.hero-dots{position:absolute;bottom:22px;left:0;right:0;z-index:3;display:flex;justify-content:center;gap:10px;}
+.hero-dot{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer;transition:.25s;}
+.hero-dot.active{background:var(--accent);width:28px;border-radius:6px;}
 @media(max-width:768px){
-  .hex-hero-head h1{font-size:1.5rem;}
-  .hex-item{width:130px;height:150px;margin:0 -10px;}
-  .hex-item.hex-pos-2{transform:translateY(-26px);}
+  .hero-slider{height:420px;}
+  .hero-slide-content h1{font-size:1.6rem;}
+  .hero-arrow{width:36px;height:36px;font-size:.9rem;}
 }
 @media(max-width:480px){
-  .hex-grid{gap:10px 0;}
-  .hex-item{width:44%;height:auto;aspect-ratio:200/230;margin:0;}
-  .hex-item.hex-pos-2{transform:translateY(0);}
+  .hero-slider{height:380px;}
+  .hero-slide-content p{font-size:.92rem;}
 }
 
 /* ---------- Page banner ---------- */

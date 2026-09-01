@@ -1,34 +1,49 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; get_header(); ?>
 
-<section class="hex-hero">
-	<div class="container">
-		<div class="hex-hero-head fade-in">
-			<span class="eyebrow">Welcome to</span>
-			<h1><?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></h1>
-			<p><?php echo esc_html( get_theme_mod( 'kc_tagline', kc_default( 'kc_tagline' ) ) ); ?></p>
-			<div class="hero-btns">
-				<a href="<?php echo esc_url( home_url( '/admissions/' ) ); ?>" class="btn btn-accent">Admissions <i class="fa-solid fa-arrow-right"></i></a>
-				<a href="<?php echo esc_url( home_url( '/about-us/' ) ); ?>" class="btn btn-line">Know More</a>
-			</div>
-		</div>
-		<?php
-		$slides = get_posts( array( 'post_type' => 'kc_slide', 'posts_per_page' => 7, 'meta_key' => 'kc_order', 'orderby' => 'meta_value_num', 'order' => 'ASC' ) );
-		if ( $slides ) :
+<section class="hero-slider" id="kc-hero">
+	<?php
+	$slides = get_posts( array( 'post_type' => 'kc_slide', 'posts_per_page' => 7, 'meta_key' => 'kc_order', 'orderby' => 'meta_value_num', 'order' => 'ASC' ) );
+	if ( $slides ) :
+		foreach ( $slides as $i => $s ) :
+			$img = get_the_post_thumbnail_url( $s->ID, 'full' );
+			if ( ! $img ) $img = KC_URI . '/assets/demo-images/banner1.svg';
 			?>
-			<div class="hex-grid">
-				<?php foreach ( $slides as $i => $s ) :
-					$img = get_the_post_thumbnail_url( $s->ID, 'large' );
-					if ( ! $img ) $img = KC_URI . '/assets/demo-images/banner1.svg';
-					?>
-					<div class="hex-item hex-pos-<?php echo esc_attr( ( $i % 2 ) + 1 ); ?>">
-						<img src="<?php echo esc_url( $img ); ?>" alt="<?php echo esc_attr( $s->post_title ); ?>" loading="lazy">
+			<div class="hero-slide<?php echo $i === 0 ? ' active' : ''; ?>" style="background-image:url('<?php echo esc_url( $img ); ?>');">
+				<div class="hero-slide-overlay"></div>
+				<div class="container hero-slide-content fade-in">
+					<span class="eyebrow">Welcome to</span>
+					<h1><?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></h1>
+					<p><?php echo esc_html( get_theme_mod( 'kc_tagline', kc_default( 'kc_tagline' ) ) ); ?></p>
+					<div class="hero-btns">
+						<a href="<?php echo esc_url( home_url( '/admissions/' ) ); ?>" class="btn btn-accent">Admissions <i class="fa-solid fa-arrow-right"></i></a>
+						<a href="<?php echo esc_url( home_url( '/about-us/' ) ); ?>" class="btn btn-line">Know More</a>
 					</div>
+				</div>
+			</div>
+		<?php endforeach; ?>
+		<?php if ( count( $slides ) > 1 ) : ?>
+			<button class="hero-arrow hero-arrow-prev" id="kc-hero-prev"><i class="fa-solid fa-chevron-left"></i></button>
+			<button class="hero-arrow hero-arrow-next" id="kc-hero-next"><i class="fa-solid fa-chevron-right"></i></button>
+			<div class="hero-dots" id="kc-hero-dots">
+				<?php foreach ( $slides as $i => $s ) : ?>
+					<span class="hero-dot<?php echo $i === 0 ? ' active' : ''; ?>" data-slide="<?php echo esc_attr( $i ); ?>"></span>
 				<?php endforeach; ?>
 			</div>
-		<?php else : ?>
-			<p style="text-align:center;color:var(--accent);font-size:.9rem;">No hero photos yet — run the Demo Content Importer under <strong>Katapali College &rarr; Demo Content Importer</strong>, or add some under Hero Slides.</p>
 		<?php endif; ?>
-	</div>
+	<?php else : ?>
+		<div class="hero-slide active" style="background-image:url('<?php echo esc_url( KC_URI . '/assets/demo-images/banner1.svg' ); ?>');">
+			<div class="hero-slide-overlay"></div>
+			<div class="container hero-slide-content fade-in">
+				<span class="eyebrow">Welcome to</span>
+				<h1><?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></h1>
+				<p><?php echo esc_html( get_theme_mod( 'kc_tagline', kc_default( 'kc_tagline' ) ) ); ?></p>
+				<div class="hero-btns">
+					<a href="<?php echo esc_url( home_url( '/admissions/' ) ); ?>" class="btn btn-accent">Admissions <i class="fa-solid fa-arrow-right"></i></a>
+					<a href="<?php echo esc_url( home_url( '/about-us/' ) ); ?>" class="btn btn-line">Know More</a>
+				</div>
+			</div>
+		</div>
+	<?php endif; ?>
 </section>
 
 <section class="notice-ticker">
