@@ -147,12 +147,12 @@
 			<div class="faculty-track" id="kc-faculty-track">
 				<?php
 				$fac_q = new WP_Query( array(
-					'post_type' => 'kc_faculty', 'posts_per_page' => 7,
+					'post_type' => 'kc_faculty', 'posts_per_page' => -1,
 					'meta_query' => array( array( 'key' => 'kc_on_slider', 'value' => '1' ) ),
 					'meta_key' => 'kc_order', 'orderby' => 'meta_value_num', 'order' => 'ASC',
 				) );
 				if ( ! $fac_q->have_posts() ) {
-					$fac_q = new WP_Query( array( 'post_type' => 'kc_faculty', 'posts_per_page' => 7, 'orderby' => 'menu_order', 'order' => 'ASC' ) );
+					$fac_q = new WP_Query( array( 'post_type' => 'kc_faculty', 'posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC' ) );
 				}
 				$loop_count = 0; $ids = array();
 				while ( $fac_q->have_posts() ) : $fac_q->the_post(); $ids[] = get_the_ID(); kc_faculty_card( get_the_ID() ); $loop_count++;

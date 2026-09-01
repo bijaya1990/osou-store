@@ -38,7 +38,7 @@ function kc_meta_fields( $post_type ) {
 				'kc_experience'    => array( 'Experience', 'text' ),
 				'kc_email'         => array( 'Email', 'text' ),
 				'kc_phone'         => array( 'Phone', 'text' ),
-				'kc_on_slider'     => array( 'Show on Homepage Slider (top 7 shown)', 'checkbox' ),
+				'kc_on_slider'     => array( 'Show on Homepage Slider', 'checkbox' ),
 				'kc_order'         => array( 'Display Order', 'number' ),
 			);
 		case 'kc_gallery':

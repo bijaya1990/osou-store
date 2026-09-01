@@ -16,13 +16,16 @@
       }
     }
 
-    /* hero slider */
+    /* hero slider - current slide exits to the right, next slide fades in */
     var heroWrap = document.getElementById('kc-hero');
     if (heroWrap) {
       var slides = heroWrap.querySelectorAll('.hero-slide'), dots = heroWrap.querySelectorAll('.hero-dot');
       var idx = 0, heroTimer;
       function showSlide(n) {
-        slides[idx].classList.remove('active');
+        var old = slides[idx];
+        old.classList.remove('active');
+        old.classList.add('exiting');
+        setTimeout(function () { old.classList.remove('exiting'); }, 700);
         if (dots.length) dots[idx].classList.remove('active');
         idx = (n + slides.length) % slides.length;
         slides[idx].classList.add('active');
@@ -30,12 +33,12 @@
       }
       function nextSlide() { showSlide(idx + 1); }
       if (slides.length > 1) {
-        heroTimer = setInterval(nextSlide, 5000);
+        heroTimer = setInterval(nextSlide, 3000);
         var prevH = document.getElementById('kc-hero-prev'), nextH = document.getElementById('kc-hero-next');
-        if (nextH) nextH.onclick = function () { clearInterval(heroTimer); nextSlide(); heroTimer = setInterval(nextSlide, 5000); };
-        if (prevH) prevH.onclick = function () { clearInterval(heroTimer); showSlide(idx - 1); heroTimer = setInterval(nextSlide, 5000); };
+        if (nextH) nextH.onclick = function () { clearInterval(heroTimer); nextSlide(); heroTimer = setInterval(nextSlide, 3000); };
+        if (prevH) prevH.onclick = function () { clearInterval(heroTimer); showSlide(idx - 1); heroTimer = setInterval(nextSlide, 3000); };
         dots.forEach(function (d) {
-          d.addEventListener('click', function () { clearInterval(heroTimer); showSlide(+d.dataset.slide); heroTimer = setInterval(nextSlide, 5000); });
+          d.addEventListener('click', function () { clearInterval(heroTimer); showSlide(+d.dataset.slide); heroTimer = setInterval(nextSlide, 3000); });
         });
       }
     }
