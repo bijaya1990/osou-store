@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 define( 'KCMS_VERSION', '1.0.0' );
 define( 'KCMS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'KCMS_URI', plugin_dir_url( __FILE__ ) );
-define( 'KCMS_DB_VERSION', '1' );
+define( 'KCMS_DB_VERSION', '2' );
 
 require_once KCMS_DIR . 'includes/class-kcms-db.php';
 require_once KCMS_DIR . 'includes/class-kcms-roles.php';

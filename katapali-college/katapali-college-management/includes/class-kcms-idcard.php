@@ -83,6 +83,7 @@ class KCMS_IDCard {
 				'dob'         => self::parse_date( $data['dob'] ),
 				'address'     => sanitize_textarea_field( $data['address'] ),
 				'mobile_enc'  => $data['mobile'] ? KCMS_Crypto::encrypt( preg_replace( '/\D/', '', $data['mobile'] ) ) : '',
+				'phone_hash'  => $data['mobile'] ? KCMS_Crypto::hash_phone( preg_replace( '/\D/', '', $data['mobile'] ) ) : '',
 				'email'       => sanitize_email( $data['email'] ),
 				'class'       => sanitize_text_field( $data['class'] ),
 				'branch'      => sanitize_text_field( $data['branch'] ),

@@ -22,12 +22,15 @@ class KCMS_DB {
 			designation VARCHAR(190) NULL,
 			department VARCHAR(190) NULL,
 			phone_enc TEXT NULL,
+			phone_hash VARCHAR(64) NULL,
+			dob DATE NULL,
 			email VARCHAR(190) NULL,
 			status VARCHAR(20) NOT NULL DEFAULT 'active',
 			created_at DATETIME NOT NULL,
 			updated_at DATETIME NOT NULL,
 			PRIMARY KEY (emp_id),
-			KEY user_id (user_id)
+			KEY user_id (user_id),
+			KEY phone_hash (phone_hash)
 		) $charset;";
 
 		$sql[] = "CREATE TABLE " . self::t( 'leave_applications' ) . " (
@@ -124,6 +127,7 @@ class KCMS_DB {
 			dob DATE NULL,
 			address TEXT NULL,
 			mobile_enc TEXT NULL,
+			phone_hash VARCHAR(64) NULL,
 			email VARCHAR(190) NULL,
 			class VARCHAR(60) NULL,
 			branch VARCHAR(100) NULL,
@@ -141,7 +145,8 @@ class KCMS_DB {
 			updated_at DATETIME NOT NULL,
 			PRIMARY KEY (id_card_id),
 			UNIQUE KEY roll_number (roll_number),
-			KEY student_id (student_id)
+			KEY student_id (student_id),
+			KEY phone_hash (phone_hash)
 		) $charset;";
 
 		$sql[] = "CREATE TABLE " . self::t( 'excel_uploads' ) . " (

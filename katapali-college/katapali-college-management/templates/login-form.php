@@ -27,19 +27,19 @@ $requested_type = isset( $_GET['type'] ) && 'student' === $_GET['type'] ? 'stude
 			<input type="hidden" name="login_type" id="kcms-login-type" value="<?php echo esc_attr( $requested_type ); ?>">
 			<input type="hidden" name="redirect_page" value="<?php echo esc_url( get_permalink() ); ?>">
 
-			<p class="kcms-login-sub" id="kcms-login-sub">Sign in with your <?php echo 'teacher' === $requested_type ? 'Teacher/Staff' : 'Student'; ?> username &amp; password</p>
+			<p class="kcms-login-sub" id="kcms-login-sub">Enter the Mobile Number and Date of Birth on your <?php echo 'teacher' === $requested_type ? 'Teacher/Staff' : 'Student'; ?> record</p>
 
-			<label>Username or Email
-				<input type="text" name="username" required autocomplete="username" autofocus>
+			<label>Mobile Number
+				<input type="tel" name="mobile" inputmode="numeric" pattern="[0-9+ ]{8,15}" placeholder="98765 43210" required autofocus>
 			</label>
-			<label>Password
-				<input type="password" name="password" required autocomplete="current-password">
+			<label>Date of Birth
+				<input type="date" name="dob" required>
 			</label>
 
 			<button type="submit" class="kcms-login-submit">Log In</button>
 		</form>
 
-		<p class="kcms-login-help">Forgot your password, or don't have an account yet? Contact the college office.</p>
+		<p class="kcms-login-help">No OTP, no password to remember - just the Mobile Number and Date of Birth already on file with the college office. If it doesn't work, contact the office to check your record.</p>
 	</div>
 </div>
 
@@ -55,7 +55,7 @@ $requested_type = isset( $_GET['type'] ) && 'student' === $_GET['type'] ? 'stude
 		tabs.querySelectorAll('.kcms-login-tab').forEach(function(t){ t.classList.toggle('active', t===btn); });
 		var type = btn.dataset.type;
 		typeInput.value = type;
-		sub.textContent = 'Sign in with your ' + (type === 'teacher' ? 'Teacher/Staff' : 'Student') + ' username & password';
+		sub.textContent = 'Enter the Mobile Number and Date of Birth on your ' + (type === 'teacher' ? 'Teacher/Staff' : 'Student') + ' record';
 	});
 })();
 </script>

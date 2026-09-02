@@ -80,7 +80,12 @@ class KCMS_Admin {
 			'updated_at'  => $now,
 		);
 		$phone = preg_replace( '/\D/', '', wp_unslash( $_POST['phone'] ?? '' ) );
-		if ( $phone ) $data['phone_enc'] = KCMS_Crypto::encrypt( $phone );
+		if ( $phone ) {
+			$data['phone_enc'] = KCMS_Crypto::encrypt( $phone );
+			$data['phone_hash'] = KCMS_Crypto::hash_phone( $phone );
+		}
+		$dob = sanitize_text_field( wp_unslash( $_POST['dob'] ?? '' ) );
+		$data['dob'] = $dob ?: null;
 
 		if ( $id ) {
 			$wpdb->update( KCMS_DB::t( 'employees' ), $data, array( 'emp_id' => $id ) );
@@ -122,7 +127,8 @@ class KCMS_Admin {
 						<p><label>Designation<br><input type="text" name="designation" value="<?php echo esc_attr( $edit_row->designation ?? '' ); ?>"></label></p>
 						<p><label>Department<br><input type="text" name="department" value="<?php echo esc_attr( $edit_row->department ?? '' ); ?>"></label></p>
 						<p><label>Email (must match their WordPress login email to auto-link)<br><input type="email" name="email" value="<?php echo esc_attr( $edit_row->email ?? '' ); ?>"></label></p>
-						<p><label>Mobile Number<br><input type="text" name="phone" value="<?php echo $edit_row ? esc_attr( KCMS_Crypto::decrypt( $edit_row->phone_enc ) ) : ''; ?>"></label></p>
+						<p><label>Mobile Number (used to log in)<br><input type="text" name="phone" required value="<?php echo $edit_row ? esc_attr( KCMS_Crypto::decrypt( $edit_row->phone_enc ) ) : ''; ?>"></label></p>
+						<p><label>Date of Birth (used to log in)<br><input type="date" name="dob" required value="<?php echo esc_attr( $edit_row->dob ?? '' ); ?>"></label></p>
 						<p><label>Status<br><select name="status"><option value="active" <?php selected( $edit_row->status ?? 'active', 'active' ); ?>>Active</option><option value="inactive" <?php selected( $edit_row->status ?? '', 'inactive' ); ?>>Inactive</option></select></label></p>
 						<p><button class="button button-primary"><?php echo $edit_row ? 'Update' : 'Add Employee'; ?></button></p>
 					</form>
@@ -178,6 +184,7 @@ class KCMS_Admin {
 		);
 		$phone = preg_replace( '/\D/', '', wp_unslash( $_POST['phone'] ?? '' ) );
 		if ( $phone ) $data['phone_enc'] = KCMS_Crypto::encrypt( $phone );
+		$dob = sanitize_text_field( wp_unslash( $_POST['dob'] ?? '' ) );
 
 		if ( $id ) {
 			$wpdb->update( KCMS_DB::t( 'students' ), $data, array( 'student_id' => $id ) );
@@ -185,6 +192,33 @@ class KCMS_Admin {
 			$data['created_at'] = $now;
 			$wpdb->insert( KCMS_DB::t( 'students' ), $data );
 			$id = $wpdb->insert_id;
+		}
+
+		/* Mobile Number + Date of Birth login always checks the ID Card
+		   table (it's the one guaranteed to carry a DOB), so keep a
+		   matching row there in sync whenever a student is added/edited
+		   here directly (bulk imports already do this the other way). */
+		if ( $data['college_roll_no'] ) {
+			$id_table = KCMS_DB::t( 'id_cards' );
+			$existing_card = $wpdb->get_var( $wpdb->prepare( "SELECT id_card_id FROM {$id_table} WHERE roll_number=%s", $data['college_roll_no'] ) );
+			$card_data = array(
+				'name'       => $data['name'],
+				'father_name'=> $data['father_name'],
+				'email'      => $data['email'],
+				'updated_at' => $now,
+			);
+			if ( $dob ) $card_data['dob'] = $dob;
+			if ( $phone ) { $card_data['mobile_enc'] = KCMS_Crypto::encrypt( $phone ); $card_data['phone_hash'] = KCMS_Crypto::hash_phone( $phone ); }
+			if ( $existing_card ) {
+				$wpdb->update( $id_table, $card_data, array( 'id_card_id' => $existing_card ) );
+			} else {
+				$card_data['roll_number'] = $data['college_roll_no'];
+				$card_data['status'] = 'active';
+				$card_data['created_at'] = $now;
+				$wpdb->insert( $id_table, $card_data );
+				$new_card_id = $wpdb->insert_id;
+				$wpdb->update( $id_table, array( 'member_id' => KCMS_Numbering::member_id( $new_card_id ) ), array( 'id_card_id' => $new_card_id ) );
+			}
 		}
 
 		$session = sanitize_text_field( wp_unslash( $_POST['session'] ?? '' ) );
@@ -230,7 +264,8 @@ class KCMS_Admin {
 						<p><label>University Roll No.<br><input type="text" name="university_roll_no" value="<?php echo esc_attr( $edit_row->university_roll_no ?? '' ); ?>"></label></p>
 						<p><label>Registration No.<br><input type="text" name="registration_no" value="<?php echo esc_attr( $edit_row->registration_no ?? '' ); ?>"></label></p>
 						<p><label>Email (must match their WordPress login email to auto-link)<br><input type="email" name="email" value="<?php echo esc_attr( $edit_row->email ?? '' ); ?>"></label></p>
-						<p><label>Mobile Number<br><input type="text" name="phone" value="<?php echo $edit_row ? esc_attr( KCMS_Crypto::decrypt( $edit_row->phone_enc ) ) : ''; ?>"></label></p>
+						<p><label>Mobile Number (used to log in)<br><input type="text" name="phone" required value="<?php echo $edit_row ? esc_attr( KCMS_Crypto::decrypt( $edit_row->phone_enc ) ) : ''; ?>"></label></p>
+						<p><label>Date of Birth (used to log in)<br><input type="date" name="dob" required></label></p>
 						<p><label>Status<br><select name="status"><option value="active" <?php selected( $edit_row->status ?? 'active', 'active' ); ?>>Active</option><option value="inactive" <?php selected( $edit_row->status ?? '', 'inactive' ); ?>>Inactive</option></select></label></p>
 						<h4>Latest academic record (optional - adds a new record row)</h4>
 						<p><label>Session<br><input type="text" name="session" placeholder="2025-26"></label></p>

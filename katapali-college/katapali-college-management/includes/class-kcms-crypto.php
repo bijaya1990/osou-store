@@ -44,4 +44,14 @@ class KCMS_Crypto {
 		if ( $len <= 4 ) return str_repeat( 'X', $len );
 		return str_repeat( 'X', $len - 4 ) . substr( $plain, -4 );
 	}
+
+	/* A deterministic, one-way lookup key for a phone number (same input
+	   always produces the same hash), used so the Mobile Number + Date of
+	   Birth login can find the right record with an exact-match SQL query
+	   without ever decrypting every row to compare. Encryption (above) is
+	   for display; this is only ever used for matching, never reversed. */
+	public static function hash_phone( $digits_only ) {
+		if ( '' === (string) $digits_only ) return '';
+		return hash( 'sha256', $digits_only . '|' . wp_salt( 'auth' ) );
+	}
 }
