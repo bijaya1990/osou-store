@@ -477,6 +477,7 @@ class KCMS_Admin {
 	public static function save_settings() {
 		if ( ! current_user_can( 'kcms_manage_settings' ) ) wp_die( 'Not allowed.' );
 		check_admin_referer( 'kcms_settings_save' );
+		update_option( 'kcms_portal_page_id', absint( $_POST['portal_page_id'] ?? 0 ) );
 		$settings = array(
 			'gateway'            => sanitize_text_field( wp_unslash( $_POST['gateway'] ?? '' ) ),
 			'msg91_authkey'      => sanitize_text_field( wp_unslash( $_POST['msg91_authkey'] ?? '' ) ),
@@ -492,14 +493,32 @@ class KCMS_Admin {
 
 	public static function page_settings() {
 		$s = get_option( 'kcms_sms_settings', array() );
+		$portal_page_id = (int) get_option( 'kcms_portal_page_id' );
 		?>
 		<div class="wrap kcms-admin">
-			<h1>Settings - SMS Gateway (OTP delivery)</h1>
+			<h1>Settings</h1>
 			<?php self::msg(); ?>
-			<p>Until a gateway is configured here, OTP codes are emailed to the applicant's registered email address instead of SMS - the leave/certificate portals keep working either way.</p>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<?php wp_nonce_field( 'kcms_settings_save' ); ?>
 				<input type="hidden" name="action" value="kcms_settings_save">
+
+				<h2>Student/Teacher Portal Page</h2>
+				<p>Teachers and students never see wp-admin - the moment they log in (and if they ever try to open a wp-admin link directly), they are sent straight to this page instead. Create a page with the <code>[kcms_my_dashboard]</code> shortcode on it and select it here.</p>
+				<table class="form-table">
+					<tr><th>Portal Page</th><td>
+						<?php
+						wp_dropdown_pages( array(
+							'name'              => 'portal_page_id',
+							'selected'          => $portal_page_id,
+							'show_option_none'  => '— Select a page —',
+							'option_none_value' => '0',
+						) );
+						?>
+					</td></tr>
+				</table>
+
+				<h2>SMS Gateway (OTP delivery)</h2>
+				<p>Until a gateway is configured here, OTP codes are emailed to the applicant's registered email address instead of SMS - the leave/certificate portals keep working either way.</p>
 				<table class="form-table">
 					<tr><th>Gateway</th><td>
 						<select name="gateway">

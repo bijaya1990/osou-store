@@ -9,6 +9,48 @@ class KCMS_Portal {
 
 	public static function init() {
 		add_shortcode( 'kcms_my_dashboard', array( __CLASS__, 'shortcode_dashboard' ) );
+		add_filter( 'login_redirect', array( __CLASS__, 'login_redirect' ), 10, 3 );
+		add_action( 'admin_init', array( __CLASS__, 'block_wp_admin' ) );
+		add_filter( 'show_admin_bar', array( __CLASS__, 'hide_admin_bar' ) );
+	}
+
+	/* Teachers/students have no business in wp-admin - send them straight
+	   to their own portal page (set under College Management -> Settings)
+	   the moment they log in, instead of the confusing wp-admin dashboard. */
+	public static function portal_url() {
+		$page_id = (int) get_option( 'kcms_portal_page_id' );
+		return $page_id ? get_permalink( $page_id ) : home_url( '/' );
+	}
+
+	private static function is_portal_only_user( $user ) {
+		if ( ! $user || is_wp_error( $user ) ) return false;
+		$roles = (array) $user->roles;
+		return in_array( 'kcms_teacher', $roles, true ) || in_array( 'kcms_student', $roles, true );
+	}
+
+	public static function login_redirect( $redirect_to, $requested_redirect_to, $user ) {
+		if ( self::is_portal_only_user( $user ) ) {
+			return self::portal_url();
+		}
+		return $redirect_to;
+	}
+
+	/* Belt-and-braces: even if a teacher/student bookmarks a wp-admin URL,
+	   bounce them back out to the portal page (AJAX calls are left alone,
+	   since the leave/certificate forms submit through admin-ajax.php). */
+	public static function block_wp_admin() {
+		if ( wp_doing_ajax() ) return;
+		if ( self::is_portal_only_user( wp_get_current_user() ) ) {
+			wp_safe_redirect( self::portal_url() );
+			exit;
+		}
+	}
+
+	public static function hide_admin_bar( $show ) {
+		if ( self::is_portal_only_user( wp_get_current_user() ) ) {
+			return false;
+		}
+		return $show;
 	}
 
 	public static function shortcode_dashboard() {
