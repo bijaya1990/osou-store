@@ -48,7 +48,7 @@ class KCMS_IDCard {
 		} elseif ( 'csv' === $ext ) {
 			$rows = array();
 			if ( ( $handle = fopen( $tmp, 'r' ) ) !== false ) {
-				while ( ( $line = fgetcsv( $handle ) ) !== false ) { $rows[] = $line; }
+				while ( ( $line = fgetcsv( $handle, 0, ',', '"', '\\' ) ) !== false ) { $rows[] = $line; }
 				fclose( $handle );
 			}
 		} else {
@@ -189,7 +189,7 @@ class KCMS_IDCard {
 
 	public static function shortcode_my_id_card() {
 		if ( ! is_user_logged_in() ) {
-			return '<div class="kcms-box kcms-notice">Please log in to view your ID card. <a href="' . esc_url( wp_login_url( get_permalink() ) ) . '">Log in</a></div>';
+			return '<div class="kcms-box kcms-notice">Please log in to view your ID card. <a href="' . esc_url( add_query_arg( 'type', 'student', KCMS_Login::login_page_url() ) ) . '">Log in</a></div>';
 		}
 		global $wpdb;
 		$user = wp_get_current_user();

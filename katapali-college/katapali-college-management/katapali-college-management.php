@@ -23,6 +23,7 @@ require_once KCMS_DIR . 'includes/class-kcms-leave.php';
 require_once KCMS_DIR . 'includes/class-kcms-certificate.php';
 require_once KCMS_DIR . 'includes/class-kcms-idcard.php';
 require_once KCMS_DIR . 'includes/class-kcms-portal.php';
+require_once KCMS_DIR . 'includes/class-kcms-login.php';
 require_once KCMS_DIR . 'includes/class-kcms-admin.php';
 
 function kcms_activate() {

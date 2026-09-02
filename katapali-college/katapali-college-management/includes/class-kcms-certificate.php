@@ -28,7 +28,7 @@ class KCMS_Certificate {
 
 	public static function shortcode_form() {
 		if ( ! is_user_logged_in() ) {
-			return '<div class="kcms-box kcms-notice">Please log in as a Student to request a certificate/marksheet. <a href="' . esc_url( wp_login_url( get_permalink() ) ) . '">Log in</a></div>';
+			return '<div class="kcms-box kcms-notice">Please log in as a Student to request a certificate/marksheet. <a href="' . esc_url( add_query_arg( 'type', 'student', KCMS_Login::login_page_url() ) ) . '">Log in</a></div>';
 		}
 		$student = self::get_student_for_user( get_current_user_id() );
 		if ( ! $student ) {

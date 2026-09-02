@@ -38,6 +38,25 @@
 .kcms-idcard-preview-item{display:flex;gap:14px;align-items:center;}
 .kcms-idcard-thumb{width:60px;height:74px;object-fit:cover;border-radius:4px;border:1px solid #ccc;}
 
+/* ---- Login page ---- */
+.kcms-login-wrap{display:flex;justify-content:center;padding:30px 16px 50px;}
+.kcms-login-card{width:100%;max-width:400px;background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(1,45,88,.12);border:1px solid #e6e9ed;overflow:hidden;}
+.kcms-login-head{background:linear-gradient(135deg,#012D58,#001A33);color:#fff;text-align:center;padding:30px 24px 22px;}
+.kcms-login-badge{width:52px;height:52px;border-radius:50%;background:#EBC30F;color:#012D58;font-weight:800;font-size:1.3rem;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+.kcms-login-head h2{margin:0 0 4px;font-size:1.05rem;line-height:1.3;}
+.kcms-login-head p{margin:0;font-size:.8rem;opacity:.8;}
+.kcms-login-tabs{display:flex;}
+.kcms-login-tab{flex:1;border:none;background:#f3f5f8;color:#555;font-weight:700;font-size:.82rem;padding:14px 8px;cursor:pointer;border-bottom:3px solid transparent;}
+.kcms-login-tab.active{background:#fff;color:#012D58;border-bottom-color:#DB3918;}
+.kcms-login-error{margin:16px 24px 0;padding:10px 14px;background:#fdecea;color:#a52a1f;border:1px solid #f5c2bd;border-radius:7px;font-size:.85rem;}
+.kcms-login-form{padding:22px 24px 6px;}
+.kcms-login-sub{font-size:.8rem;color:#666;margin:0 0 16px;}
+.kcms-login-form label{display:block;font-weight:600;font-size:.85rem;margin-bottom:14px;color:#222;}
+.kcms-login-form input{width:100%;margin-top:5px;padding:11px 12px;border:1px solid #ccc;border-radius:7px;font-size:.95rem;box-sizing:border-box;}
+.kcms-login-submit{width:100%;padding:12px;background:#DB3918;color:#fff;border:none;border-radius:7px;font-weight:700;font-size:.95rem;cursor:pointer;margin-top:4px;}
+.kcms-login-submit:hover{background:#b52c10;}
+.kcms-login-help{text-align:center;font-size:.76rem;color:#888;padding:14px 24px 22px;margin:0;}
+
 /* ---- wp-admin pages ---- */
 .kcms-admin .kcms-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:20px 0 30px;}
 .kcms-admin .kcms-stat-card{background:#fff;border:1px solid #ddd;border-left:4px solid #012D58;border-radius:6px;padding:16px 18px;}

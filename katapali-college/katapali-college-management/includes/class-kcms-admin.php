@@ -478,6 +478,7 @@ class KCMS_Admin {
 		if ( ! current_user_can( 'kcms_manage_settings' ) ) wp_die( 'Not allowed.' );
 		check_admin_referer( 'kcms_settings_save' );
 		update_option( 'kcms_portal_page_id', absint( $_POST['portal_page_id'] ?? 0 ) );
+		update_option( 'kcms_login_page_id', absint( $_POST['login_page_id'] ?? 0 ) );
 		$settings = array(
 			'gateway'            => sanitize_text_field( wp_unslash( $_POST['gateway'] ?? '' ) ),
 			'msg91_authkey'      => sanitize_text_field( wp_unslash( $_POST['msg91_authkey'] ?? '' ) ),
@@ -494,6 +495,7 @@ class KCMS_Admin {
 	public static function page_settings() {
 		$s = get_option( 'kcms_sms_settings', array() );
 		$portal_page_id = (int) get_option( 'kcms_portal_page_id' );
+		$login_page_id = (int) get_option( 'kcms_login_page_id' );
 		?>
 		<div class="wrap kcms-admin">
 			<h1>Settings</h1>
@@ -502,10 +504,20 @@ class KCMS_Admin {
 				<?php wp_nonce_field( 'kcms_settings_save' ); ?>
 				<input type="hidden" name="action" value="kcms_settings_save">
 
-				<h2>Student/Teacher Portal Page</h2>
-				<p>Teachers and students never see wp-admin - the moment they log in (and if they ever try to open a wp-admin link directly), they are sent straight to this page instead. Create a page with the <code>[kcms_my_dashboard]</code> shortcode on it and select it here.</p>
+				<h2>Login &amp; Portal Pages</h2>
+				<p>Create one page with the <code>[kcms_login]</code> shortcode (a branded Teacher/Student login screen, replacing the plain wp-login.php) and one with <code>[kcms_my_dashboard]</code>, then select them here. Every "Please log in" message across the site links to the login page you choose below.</p>
 				<table class="form-table">
-					<tr><th>Portal Page</th><td>
+					<tr><th>Login Page</th><td>
+						<?php
+						wp_dropdown_pages( array(
+							'name'              => 'login_page_id',
+							'selected'          => $login_page_id,
+							'show_option_none'  => '— Select a page (falls back to the default WordPress login) —',
+							'option_none_value' => '0',
+						) );
+						?>
+					</td></tr>
+					<tr><th>Portal Page (after login)</th><td>
 						<?php
 						wp_dropdown_pages( array(
 							'name'              => 'portal_page_id',

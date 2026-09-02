@@ -55,7 +55,7 @@ class KCMS_Portal {
 
 	public static function shortcode_dashboard() {
 		if ( ! is_user_logged_in() ) {
-			return '<div class="kcms-box kcms-notice">Please log in to view your dashboard. <a href="' . esc_url( wp_login_url( get_permalink() ) ) . '">Log in</a></div>';
+			return '<div class="kcms-box kcms-notice">Please log in to view your dashboard. <a href="' . esc_url( KCMS_Login::login_page_url() ) . '">Log in</a></div>';
 		}
 		global $wpdb;
 		$uid = get_current_user_id();
