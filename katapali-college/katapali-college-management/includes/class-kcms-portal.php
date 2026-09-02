@@ -64,6 +64,10 @@ class KCMS_Portal {
 
 		$emp = KCMS_Leave::get_employee_for_user( $uid );
 		if ( $emp ) {
+			echo '<h3>Apply for Leave (CL / EL / ML / DL)</h3>';
+			echo '<button type="button" class="kcms-btn kcms-btn-primary kcms-toggle" data-target="kcms-inline-leave-form">New Leave Application</button>';
+			echo '<div id="kcms-inline-leave-form" hidden style="margin-top:16px;">' . KCMS_Leave::shortcode_form() . '</div>';
+
 			$table = KCMS_DB::t( 'leave_applications' );
 			$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE emp_id=%d ORDER BY application_id DESC LIMIT 20", $emp->emp_id ) );
 			echo '<h3>My Leave Applications</h3>';
@@ -81,6 +85,10 @@ class KCMS_Portal {
 
 		$student = KCMS_Certificate::get_student_for_user( $uid );
 		if ( $student ) {
+			echo '<h3>Request a Certificate / Marksheet</h3>';
+			echo '<button type="button" class="kcms-btn kcms-btn-primary kcms-toggle" data-target="kcms-inline-cert-form">New Certificate Request</button>';
+			echo '<div id="kcms-inline-cert-form" hidden style="margin-top:16px;">' . KCMS_Certificate::shortcode_form() . '</div>';
+
 			$table = KCMS_DB::t( 'certificate_requests' );
 			$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE student_id=%d ORDER BY request_id DESC LIMIT 20", $student->student_id ) );
 			echo '<h3>My Certificate/Marksheet Requests</h3>';
