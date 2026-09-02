@@ -31,7 +31,7 @@ class KCMS_Leave {
 
 	public static function shortcode_form() {
 		if ( ! is_user_logged_in() ) {
-			return '<div class="kcms-box kcms-notice">Please log in as a Teacher/Employee to submit a leave application. <a href="' . esc_url( add_query_arg( 'type', 'teacher', KCMS_Login::login_page_url() ) ) . '">Log in</a></div>';
+			return KCMS_Login::render_inline( 'teacher', 'Please Log In to Apply' );
 		}
 		$emp = self::get_employee_for_user( get_current_user_id() );
 		if ( ! $emp ) {

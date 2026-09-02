@@ -190,7 +190,7 @@ class KCMS_IDCard {
 
 	public static function shortcode_my_id_card() {
 		if ( ! is_user_logged_in() ) {
-			return '<div class="kcms-box kcms-notice">Please log in to view your ID card. <a href="' . esc_url( add_query_arg( 'type', 'student', KCMS_Login::login_page_url() ) ) . '">Log in</a></div>';
+			return KCMS_Login::render_inline( 'student', 'Please Log In to View Your ID Card' );
 		}
 		global $wpdb;
 		$user = wp_get_current_user();

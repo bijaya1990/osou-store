@@ -30,6 +30,43 @@ class KCMS_Login {
 			return '<div class="kcms-box kcms-notice">You are already logged in. <a href="' . esc_url( $url ) . '">Go to My Dashboard</a> or <a href="' . esc_url( wp_logout_url( get_permalink() ) ) . '">log out</a>.</div>';
 		}
 
+		return self::render( array( 'show_tabs' => true, 'after_login' => 'portal' ) );
+	}
+
+	/* Renders the same branded login card, but locked to one type (no tab
+	   switcher) with a contextual heading, and set to return the user to
+	   the current page after logging in rather than the generic portal -
+	   used inline wherever a form says "please log in first" (leave,
+	   certificate, ID card) so login happens right there instead of
+	   sending them off to a separate page. */
+	public static function render_inline( $type, $heading ) {
+		return self::render( array(
+			'show_tabs'   => false,
+			'locked_type' => $type,
+			'heading'     => $heading,
+			'after_login' => 'return',
+		) );
+	}
+
+	/* Same as render_inline() but keeps the Teacher/Student tab switcher -
+	   used where the visitor's type isn't already known (e.g. the shared
+	   "My Dashboard" page, which both roles can land on). */
+	public static function render_inline_with_tabs( $heading ) {
+		return self::render( array(
+			'show_tabs'   => true,
+			'heading'     => $heading,
+			'after_login' => 'return',
+		) );
+	}
+
+	private static function render( $args ) {
+		$args = wp_parse_args( $args, array(
+			'show_tabs'   => true,
+			'locked_type' => 'teacher',
+			'heading'     => '',
+			'after_login' => 'portal',
+		) );
+
 		$error = '';
 		if ( isset( $_GET['kcms_login_error'] ) ) {
 			$errors = array(
@@ -40,6 +77,11 @@ class KCMS_Login {
 			$key = sanitize_key( wp_unslash( $_GET['kcms_login_error'] ) );
 			$error = $errors[ $key ] ?? 'Login failed. Please try again.';
 		}
+
+		$show_tabs = $args['show_tabs'];
+		$locked_type = $args['locked_type'];
+		$heading = $args['heading'];
+		$after_login = $args['after_login'];
 
 		ob_start();
 		include KCMS_DIR . 'templates/login-form.php';
@@ -100,7 +142,9 @@ class KCMS_Login {
 			do_action( 'wp_login', $user->user_login, $user );
 		}
 		KCMS_DB::log( 'portal_login', 'user', $user_id, $type );
-		wp_safe_redirect( KCMS_Portal::portal_url() );
+		$after_login = sanitize_key( wp_unslash( $_POST['after_login'] ?? '' ) );
+		$destination = ( 'return' === $after_login && $redirect_page ) ? $redirect_page : KCMS_Portal::portal_url();
+		wp_safe_redirect( $destination );
 		exit;
 	}
 
