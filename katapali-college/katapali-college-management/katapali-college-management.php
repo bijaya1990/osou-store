@@ -2,13 +2,13 @@
 /**
  * Plugin Name: Katapali College Management System
  * Description: Leave Application, Certificate/Marksheet Request, and Student ID Card management for Katapali +3 College. Works alongside the Katapali College theme (or any theme).
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author: Katapali +3 College
  * Text Domain: kcms
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'KCMS_VERSION', '1.1.1' );
+define( 'KCMS_VERSION', '1.1.2' );
 define( 'KCMS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'KCMS_URI', plugin_dir_url( __FILE__ ) );
 define( 'KCMS_DB_VERSION', '2' );
