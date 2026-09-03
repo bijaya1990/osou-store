@@ -1,20 +1,13 @@
-.ksr-search-box { max-width: 640px; margin: 0 auto; background: #fff; border: 1px solid #e2e2e2; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
-.ksr-search-row { display: flex; gap: 10px; }
-.ksr-search-row input { flex: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 6px; font-size: .95rem; }
-.ksr-search-row button { background: var(--primary, #012D58); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; }
-.ksr-search-row button:hover { background: var(--primary-d, #001A33); }
-#ksr-search-results { margin-top: 16px; }
 .ksr-hint { color: #777; font-size: .88rem; margin: 0; }
 table.ksr-result-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
 table.ksr-result-table th, table.ksr-result-table td { border: 1px solid #e2e2e2; padding: 8px 10px; text-align: left; }
 table.ksr-result-table th { background: #f5f6f8; }
 
-.ksr-alumni-batch { border: 1px solid #e2e2e2; border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
-.ksr-alumni-toggle { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; background: var(--primary, #012D58); color: #fff; border: none; padding: 12px 16px; font-size: 1rem; font-weight: 700; cursor: pointer; text-align: left; }
-.ksr-alumni-toggle em { font-weight: 400; opacity: .85; font-size: .82rem; margin-right: auto; margin-left: 6px; }
-.ksr-alumni-toggle i { transition: transform .2s; }
-.ksr-alumni-toggle.open i { transform: rotate(180deg); }
-.ksr-alumni-list table { width: 100%; border-collapse: collapse; font-size: .88rem; }
-.ksr-alumni-list th, .ksr-alumni-list td { padding: 8px 14px; border-bottom: 1px solid #eee; text-align: left; }
-.ksr-alumni-list th { background: #f5f6f8; }
-.ksr-alumni-list tr:last-child td { border-bottom: none; }
+/* Session/batch "pick and view" widget - shared by Students List and
+   Alumni Directory. */
+.ksr-batch-box { max-width: 640px; margin: 0 auto; background: #fff; border: 1px solid #e2e2e2; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+.ksr-batch-row { display: flex; gap: 10px; }
+.ksr-batch-row select { flex: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 6px; font-size: .95rem; background: #fff; }
+.ksr-batch-row button { background: var(--primary, #012D58); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.ksr-batch-row button:hover { background: var(--primary-d, #001A33); }
+.ksr-batch-results { margin-top: 16px; }

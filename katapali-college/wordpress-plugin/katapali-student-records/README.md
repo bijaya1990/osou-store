@@ -45,10 +45,16 @@ is no public/self-service download by design (these cards carry photo, DOB, addr
 
 ## Shortcodes
 
-Add these to any WordPress Page:
+Create two Pages with these exact slugs (WordPress sets the slug from the title
+automatically) so the homepage "Student Corner" buttons link to them correctly:
 
-- `[ksr_student_search]` — the search/verification box.
-- `[ksr_alumni_directory]` — the batch-wise alumni list.
+- Page titled **Students List** (slug `students-list`), content: `[ksr_students_list]`
+- Page titled **Alumni Directory** (slug `alumni-directory`), content: `[ksr_alumni_directory]`
+
+Both render the same "pick a session, click View List" widget — select a batch
+year from the dropdown and that session's students (Name, Roll No, Stream) appear
+below. The **Student Corner** button bar (Students List / Alumni Directory) shows
+automatically on the theme's homepage once this plugin is active.
 
 ## Requirements
 

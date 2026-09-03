@@ -1,48 +1,44 @@
 (function () {
 	'use strict';
+	function escapeHtml(s) {
+		var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML;
+	}
+
 	document.addEventListener('DOMContentLoaded', function () {
 
-		/* Student search / verification */
-		var input = document.getElementById('ksr-search-input');
-		var btn = document.getElementById('ksr-search-btn');
-		var out = document.getElementById('ksr-search-results');
-		if (input && btn && out && typeof KSR_DATA !== 'undefined') {
-			function doSearch() {
-				var q = input.value.trim();
-				if (q.length < 2) { out.innerHTML = '<p class="ksr-hint">Type at least 2 characters.</p>'; return; }
-				out.innerHTML = '<p class="ksr-hint">Searching...</p>';
+		/* Session/batch dropdown "View List" widgets - used by both the
+		   Students List and Alumni Directory pages. Several can exist on
+		   one page, each identified by its data-target id prefix. */
+		document.querySelectorAll('.ksr-batch-btn').forEach(function (btn) {
+			var prefix = btn.dataset.target;
+			var select = document.getElementById(prefix + '-select');
+			var out = document.getElementById(prefix + '-results');
+			if (!select || !out || typeof KSR_DATA === 'undefined') return;
+
+			function loadBatch() {
+				var batch = select.value;
+				if (!batch) { out.innerHTML = '<p class="ksr-hint">Select a session first.</p>'; return; }
+				out.innerHTML = '<p class="ksr-hint">Loading...</p>';
 				var body = new URLSearchParams();
-				body.set('action', 'ksr_search');
+				body.set('action', 'ksr_batch_list');
 				body.set('nonce', KSR_DATA.nonce);
-				body.set('q', q);
+				body.set('batch', batch);
 				fetch(KSR_DATA.ajaxUrl, { method: 'POST', body: body })
 					.then(function (r) { return r.json(); })
 					.then(function (res) {
 						var rows = (res && res.success) ? res.data : [];
-						if (!rows.length) { out.innerHTML = '<p class="ksr-hint">No matching student found.</p>'; return; }
-						var html = '<table class="ksr-result-table"><thead><tr><th>Name</th><th>Roll No</th><th>Stream</th><th>Batch</th></tr></thead><tbody>';
-						rows.forEach(function (s) {
-							html += '<tr><td>' + escapeHtml(s.name) + '</td><td>' + escapeHtml(s.roll_no) + '</td><td>' + escapeHtml(s.stream) + '</td><td>' + escapeHtml(s.batch) + '</td></tr>';
+						if (!rows.length) { out.innerHTML = '<p class="ksr-hint">No students found for this session.</p>'; return; }
+						var html = '<table class="ksr-result-table"><thead><tr><th>#</th><th>Name</th><th>Roll No</th><th>Stream</th></tr></thead><tbody>';
+						rows.forEach(function (s, i) {
+							html += '<tr><td>' + (i + 1) + '</td><td>' + escapeHtml(s.name) + '</td><td>' + escapeHtml(s.roll_no) + '</td><td>' + escapeHtml(s.stream) + '</td></tr>';
 						});
 						html += '</tbody></table>';
 						out.innerHTML = html;
 					})
-					.catch(function () { out.innerHTML = '<p class="ksr-hint">Search failed, please try again.</p>'; });
+					.catch(function () { out.innerHTML = '<p class="ksr-hint">Could not load the list, please try again.</p>'; });
 			}
-			function escapeHtml(s) {
-				var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML;
-			}
-			btn.addEventListener('click', doSearch);
-			input.addEventListener('keydown', function (e) { if (e.key === 'Enter') doSearch(); });
-		}
-
-		/* Alumni directory batch toggles */
-		document.querySelectorAll('.ksr-alumni-toggle').forEach(function (t) {
-			t.addEventListener('click', function () {
-				var list = t.nextElementSibling;
-				var open = t.classList.toggle('open');
-				list.hidden = !open;
-			});
+			btn.addEventListener('click', loadBatch);
+			select.addEventListener('change', loadBatch);
 		});
 	});
 })();

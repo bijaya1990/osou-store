@@ -440,7 +440,7 @@ footer.site-footer{background:#0a0a0a;color:#c7d3f0;padding-top:56px;}
 .kc-apply-bar-section{background:#fff;border-bottom:1px solid var(--border);padding:16px 0;}
 .kc-apply-bar-label{text-align:center;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 .kc-apply-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:1100px;margin:0 auto;}
-.kc-apply-btn{flex:1 1 200px;max-width:260px;display:flex;align-items:center;justify-content:center;gap:9px;background:#fff;border:2px solid var(--primary);border-radius:30px;padding:11px 18px;text-align:center;cursor:pointer;transition:.2s;font-family:inherit;font-weight:700;font-size:.88rem;color:var(--primary);white-space:nowrap;}
+.kc-apply-btn{flex:1 1 200px;max-width:260px;display:flex;align-items:center;justify-content:center;gap:9px;background:#fff;border:2px solid var(--primary);border-radius:30px;padding:11px 18px;text-align:center;cursor:pointer;transition:.2s;font-family:inherit;font-weight:700;font-size:.88rem;color:var(--primary);white-space:nowrap;text-decoration:none;}
 .kc-apply-btn i{font-size:1rem;color:var(--accent);}
 .kc-apply-btn:hover,.kc-apply-btn.active{background:var(--primary);color:#fff;}
 .kc-apply-btn:hover i,.kc-apply-btn.active i{color:var(--gold);}

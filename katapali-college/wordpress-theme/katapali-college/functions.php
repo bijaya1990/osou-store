@@ -1,7 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'KC_VERSION', '1.4.1' );
+define( 'KC_VERSION', '1.4.2' );
 define( 'KC_DIR', get_template_directory() );
 define( 'KC_URI', get_template_directory_uri() );
 
