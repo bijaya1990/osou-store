@@ -39,7 +39,13 @@
       }
       function nextSlide() { showSlide(idx + 1); }
 
-      setTimeout(function () { slides[0].classList.add('kc-text-hidden'); }, TEXT_VISIBLE_MS); // one-time, first slide only
+      /* one-time only: after 5s, hide the welcome text/overlay on every
+         slide (not just the current one) so it stays gone through every
+         later auto/manual slide change - only a fresh page load brings
+         it back. */
+      setTimeout(function () {
+        slides.forEach(function (s) { s.classList.add('kc-text-hidden'); });
+      }, TEXT_VISIBLE_MS);
 
       if (slides.length > 1) {
         heroTimer = setInterval(nextSlide, HERO_INTERVAL);
