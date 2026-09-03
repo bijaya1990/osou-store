@@ -182,12 +182,20 @@ nav.main-nav li:hover .submenu{opacity:1;visibility:visible;transform:translateY
 .read-more-link:hover{text-decoration:underline;}
 
 .about-grid{gap:26px;align-items:stretch;}
-.principal-mini{display:flex;align-items:center;gap:18px;margin-bottom:16px;}
-.principal-mini img{width:110px;height:110px;border-radius:50%;object-fit:cover;flex-shrink:0;border:4px solid var(--bg);box-shadow:0 0 0 2px var(--primary);}
-.principal-mini h4{margin-bottom:3px;font-size:1.15rem;}
-.principal-mini .desig{color:var(--secondary);font-size:.85rem;font-weight:600;}
+
+/* Principal's Message - split into a fixed photo/name/designation card
+   (left) and the message text (right), so nothing reflows between them. */
+.principal-split{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:start;}
+.principal-photo-card{background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.06);text-align:center;padding:12px 10px 16px;}
+.principal-photo-card img{width:100%;height:150px;border-radius:4px;object-fit:cover;margin:0 0 12px;display:block;}
+.principal-photo-card h4{font-size:.88rem;margin-bottom:8px;color:var(--dark);font-weight:700;line-height:1.3;}
+.principal-photo-card .desig-rule{width:44px;height:2px;background:var(--accent);margin:0 auto 8px;}
+.principal-photo-card .desig{color:var(--primary);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em;line-height:1.4;}
+.principal-message-col{display:flex;flex-direction:column;}
+.principal-message-col p{color:var(--muted);flex:1;margin-bottom:12px;}
 @media(max-width:780px){.about-grid{grid-template-columns:1fr;}}
-@media(max-width:480px){.principal-mini img{width:84px;height:84px;}}
+@media(max-width:560px){.principal-split{grid-template-columns:120px 1fr;gap:16px;}.principal-photo-card img{height:120px;}}
+@media(max-width:420px){.principal-split{grid-template-columns:1fr;}.principal-photo-card{max-width:150px;margin:0 auto;}}
 
 .three-col-fixed{align-items:stretch;}
 .tc-col .tbar-body{padding:18px 20px;}
@@ -216,14 +224,16 @@ nav.main-nav li:hover .submenu{opacity:1;visibility:visible;transform:translateY
 .principal-info .qual{color:var(--muted);font-size:.9rem;margin-bottom:16px;}
 @media(max-width:768px){.principal-wrap{grid-template-columns:1fr;text-align:center;padding:28px;}}
 
-/* ---------- Faculty slider ---------- */
+/* ---------- Faculty slider - official/govt "board member" card style:
+   rectangular photo, bold name, thin underline, designation below ---------- */
 .faculty-slider-wrap{position:relative;}
-.faculty-track{display:flex;gap:22px;overflow:hidden;scroll-behavior:smooth;}
-.faculty-card{flex:0 0 220px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);text-align:center;padding:26px 16px;transition:.25s;}
-.faculty-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-hover);}
-.faculty-card img{width:100px;height:100px;border-radius:50%;object-fit:cover;margin:0 auto 14px;border:4px solid #eef2fb;}
-.faculty-card h4{font-size:1rem;margin-bottom:3px;}
-.faculty-card .desig{color:var(--secondary);font-size:.82rem;font-weight:600;}
+.faculty-track{display:flex;gap:20px;overflow:hidden;scroll-behavior:smooth;}
+.faculty-card{flex:0 0 190px;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.06);text-align:center;padding:12px 12px 16px;transition:.25s;}
+.faculty-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-hover);border-color:var(--primary);}
+.faculty-card img{width:100%;height:150px;border-radius:4px;object-fit:cover;margin:0 0 12px;display:block;}
+.faculty-card h4{font-size:.92rem;margin-bottom:8px;color:var(--dark);font-weight:700;line-height:1.3;}
+.faculty-card .desig-rule{width:44px;height:2px;background:var(--accent);margin:0 auto 8px;}
+.faculty-card .desig{color:var(--primary);font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em;line-height:1.4;}
 .faculty-arrows{display:flex;justify-content:center;gap:14px;margin-top:22px;}
 .faculty-arrows button{background:var(--primary);color:#fff;border:none;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:1rem;}
 .faculty-arrows button:hover{background:var(--accent);color:#402a00;}

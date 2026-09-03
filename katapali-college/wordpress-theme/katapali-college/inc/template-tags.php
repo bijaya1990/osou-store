@@ -62,6 +62,7 @@ function kc_faculty_card( $post_id ) {
 	<div class="faculty-card">
 		<img src="<?php echo esc_url( $img ); ?>" alt="<?php echo esc_attr( get_the_title( $post_id ) ); ?>">
 		<h4><?php echo esc_html( get_the_title( $post_id ) ); ?></h4>
+		<div class="desig-rule"></div>
 		<div class="desig"><?php echo esc_html( $desig ); ?></div>
 	</div>
 	<?php
