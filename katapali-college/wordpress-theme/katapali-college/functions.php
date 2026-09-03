@@ -1,7 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'KC_VERSION', '1.0.7' );
+define( 'KC_VERSION', '1.1.0' );
 define( 'KC_DIR', get_template_directory() );
 define( 'KC_URI', get_template_directory_uri() );
 
@@ -45,6 +45,11 @@ function kc_assets() {
 	wp_localize_script( 'kc-theme', 'KC_DATA', array(
 		'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 	) );
+
+	if ( is_front_page() ) {
+		wp_enqueue_script( 'html2pdf', 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js', array(), '0.10.1', true );
+		wp_enqueue_script( 'kc-apply-forms', KC_URI . '/assets/js/apply-forms.js', array( 'html2pdf' ), KC_VERSION, true );
+	}
 }
 add_action( 'wp_enqueue_scripts', 'kc_assets' );
 

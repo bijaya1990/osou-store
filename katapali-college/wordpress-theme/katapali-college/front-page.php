@@ -68,6 +68,165 @@
 	</div>
 </section>
 
+<section class="kc-apply-bar-section" id="kc-apply-page" data-college="<?php echo esc_attr( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?>" data-address="<?php echo esc_attr( get_theme_mod( 'kc_address', kc_default( 'kc_address' ) ) . ' - ' . get_theme_mod( 'kc_pin', kc_default( 'kc_pin' ) ) ); ?>">
+	<div class="container">
+		<div class="kc-apply-bar-label">Online Applications</div>
+		<div class="kc-apply-btns">
+			<button type="button" class="kc-apply-btn" data-form="clc"><i class="fa-solid fa-file-circle-check"></i> Apply CLC</button>
+			<button type="button" class="kc-apply-btn" data-form="cl"><i class="fa-solid fa-calendar-days"></i> Apply C.L.</button>
+			<button type="button" class="kc-apply-btn" data-form="certmark" data-preselect="certificate"><i class="fa-solid fa-award"></i> Apply Certificate</button>
+			<button type="button" class="kc-apply-btn" data-form="certmark" data-preselect="marksheet"><i class="fa-solid fa-file-lines"></i> Apply Marksheet</button>
+		</div>
+
+		<!-- CLC form -->
+		<form class="kc-apply-form-box" id="kc-form-clc" hidden onsubmit="return false;">
+			<h2>Application for College Leaving Certificate (CLC)</h2>
+			<div id="kc-clc-form-el">
+			<div class="kc-row">
+				<div class="kc-f"><label>Title</label><select id="clc_title" required><option value="Mr.">Mr.</option><option value="Miss">Miss</option><option value="Mrs.">Mrs.</option></select></div>
+				<div class="kc-f"><label>First Name</label><input type="text" id="clc_first" required></div>
+				<div class="kc-f"><label>Middle Name</label><input type="text" id="clc_middle"></div>
+				<div class="kc-f"><label>Last Name</label><input type="text" id="clc_last" required></div>
+			</div>
+			<div class="kc-row">
+				<div class="kc-f"><label>Relation</label><select id="clc_relation" required><option value="S/o">S/o</option><option value="D/o">D/o</option><option value="W/o">W/o</option></select></div>
+				<div class="kc-f kc-f-wide"><label>Father's / Husband's Name</label><input type="text" id="clc_parent" required></div>
+			</div>
+			<div class="kc-row">
+				<div class="kc-f"><label>College Roll No.</label><input type="text" id="clc_college_roll" required></div>
+				<div class="kc-f"><label>University Roll No.</label><input type="text" id="clc_univ_roll" required></div>
+				<div class="kc-f"><label>Semester</label><input type="text" id="clc_semester" required></div>
+				<div class="kc-f"><label>Date of Birth</label><input type="date" id="clc_dob" required></div>
+			</div>
+			<div class="kc-f"><label>Result</label>
+				<div class="kc-check-group">
+					<label><input type="radio" name="clc_result" id="clc_result_pass"> Pass</label>
+					<label><input type="radio" name="clc_result" id="clc_result_fail"> Fail</label>
+				</div>
+			</div>
+			<h4>Address</h4>
+			<div class="kc-row">
+				<div class="kc-f"><label>At</label><input type="text" id="clc_addr_at" required></div>
+				<div class="kc-f"><label>P.O.</label><input type="text" id="clc_addr_po" required></div>
+				<div class="kc-f"><label>Block</label><input type="text" id="clc_addr_block" required></div>
+			</div>
+			<div class="kc-row">
+				<div class="kc-f"><label>District</label><input type="text" id="clc_addr_dist" required></div>
+				<div class="kc-f"><label>State</label><input type="text" id="clc_addr_state" required></div>
+				<div class="kc-f"><label>PIN</label><input type="text" id="clc_addr_pin" required></div>
+			</div>
+			</div>
+			<div class="kc-apply-actions"><button type="button" id="kc-generate-clc" class="btn btn-accent">Generate Application <i class="fa-solid fa-arrow-right"></i></button></div>
+		</form>
+
+		<!-- C.L. form -->
+		<form class="kc-apply-form-box" id="kc-form-cl" hidden onsubmit="return false;">
+			<h2>Application for Casual Leave (C.L.)</h2>
+			<div id="kc-cl-form-el">
+			<div class="kc-row">
+				<div class="kc-f"><label>Title</label><select id="cl_title" required><option value="Mr.">Mr.</option><option value="Miss">Miss</option><option value="Mrs.">Mrs.</option></select></div>
+				<div class="kc-f"><label>First Name</label><input type="text" id="cl_first" required></div>
+				<div class="kc-f"><label>Middle Name</label><input type="text" id="cl_middle"></div>
+				<div class="kc-f"><label>Last Name</label><input type="text" id="cl_last" required></div>
+			</div>
+			<div class="kc-f"><label>Designation</label>
+				<select id="cl_designation" required>
+					<option value="Lecturer in History">Lecturer in History</option>
+					<option value="Lecturer in Political Science">Lecturer in Political Science</option>
+					<option value="Lecturer in Education">Lecturer in Education</option>
+					<option value="Lecturer in Odia">Lecturer in Odia</option>
+					<option value="Lecturer in English">Lecturer in English</option>
+					<option value="Lecturer in Sociology">Lecturer in Sociology</option>
+					<option value="Lecturer in Hindi">Lecturer in Hindi</option>
+					<option value="Lecturer in Sanskrit">Lecturer in Sanskrit</option>
+					<option value="Lecturer in Economics">Lecturer in Economics</option>
+				</select>
+			</div>
+			<div class="kc-f"><label>Reason for Leave</label><textarea id="cl_reason" rows="2" required></textarea></div>
+			<div class="kc-row">
+				<div class="kc-f"><label>C.L. From Date</label><input type="date" id="cl_from" required></div>
+				<div class="kc-f"><label>To Date</label><input type="date" id="cl_to" required></div>
+				<div class="kc-f"><label>Number of Days</label><input type="text" id="cl_days" readonly placeholder="auto-calculated"></div>
+				<div class="kc-f"><label>Date of Joining</label><input type="date" id="cl_joining" required></div>
+			</div>
+			</div>
+			<div class="kc-apply-actions"><button type="button" id="kc-generate-cl" class="btn btn-accent">Generate Application <i class="fa-solid fa-arrow-right"></i></button></div>
+		</form>
+
+		<!-- Certificate / Marksheet form -->
+		<form class="kc-apply-form-box" id="kc-form-certmark" hidden onsubmit="return false;">
+			<h2>Application for Certificate / Mark Sheet</h2>
+			<div id="kc-cm-form-el">
+			<div class="kc-row">
+				<div class="kc-f"><label>Title</label><select id="cm_title" required><option value="Mr.">Mr.</option><option value="Miss">Miss</option><option value="Mrs.">Mrs.</option></select></div>
+				<div class="kc-f"><label>First Name</label><input type="text" id="cm_first" required></div>
+				<div class="kc-f"><label>Middle Name</label><input type="text" id="cm_middle"></div>
+				<div class="kc-f"><label>Last Name</label><input type="text" id="cm_last" required></div>
+			</div>
+			<div class="kc-row">
+				<div class="kc-f"><label>Relation</label><select id="cm_relation" required><option value="S/o">S/o</option><option value="D/o">D/o</option><option value="W/o">W/o</option></select></div>
+				<div class="kc-f kc-f-wide"><label>Father's / Mother's Name</label><input type="text" id="cm_parent" required></div>
+			</div>
+			<div class="kc-row">
+				<div class="kc-f"><label>College Roll No.</label><input type="text" id="cm_college_roll" required></div>
+				<div class="kc-f"><label>University Roll No.</label><input type="text" id="cm_univ_roll" required></div>
+				<div class="kc-f"><label>Course / Stream</label><input type="text" id="cm_course" required></div>
+				<div class="kc-f"><label>Semester / Examination</label><input type="text" id="cm_semester" required></div>
+			</div>
+			<div class="kc-row">
+				<div class="kc-f"><label>Examination Year</label><input type="text" id="cm_exam_year" required></div>
+				<div class="kc-f"><label>Grade Point Secured</label><input type="text" id="cm_gradepoint" required></div>
+				<div class="kc-f"><label>Date of Birth</label><input type="date" id="cm_dob" required></div>
+			</div>
+			<div class="kc-f"><label>Final Semester Result</label>
+				<div class="kc-check-group">
+					<label><input type="checkbox" id="cm_class_1"> First Class Honours</label>
+					<label><input type="checkbox" id="cm_class_2"> Second Class Honours</label>
+					<label><input type="checkbox" id="cm_class_3"> Pass Without Honours</label>
+					<label><input type="checkbox" id="cm_class_4"> First Class Honours with Distinction</label>
+				</div>
+			</div>
+			<h4>Address</h4>
+			<div class="kc-row">
+				<div class="kc-f"><label>At</label><input type="text" id="cm_addr_at" required></div>
+				<div class="kc-f"><label>P.O.</label><input type="text" id="cm_addr_po" required></div>
+				<div class="kc-f"><label>Block</label><input type="text" id="cm_addr_block" required></div>
+			</div>
+			<div class="kc-row">
+				<div class="kc-f"><label>District</label><input type="text" id="cm_addr_dist" required></div>
+				<div class="kc-f"><label>State</label><input type="text" id="cm_addr_state" required></div>
+				<div class="kc-f"><label>PIN</label><input type="text" id="cm_addr_pin" required></div>
+			</div>
+			<h4>Document(s) Requested</h4>
+			<div class="kc-check-group">
+				<label><input type="checkbox" id="cm_type_cert"> Certificate</label>
+				<label><input type="checkbox" id="cm_type_mark"> Mark Sheet</label>
+			</div>
+			</div>
+			<div class="kc-apply-actions"><button type="button" id="kc-generate-certmark" class="btn btn-accent">Generate Application <i class="fa-solid fa-arrow-right"></i></button></div>
+		</form>
+
+		<!-- Preview -->
+		<div class="kc-apply-preview-wrap" id="kc-apply-preview-wrap" hidden>
+			<div class="kc-apply-preview" id="kc-apply-preview"></div>
+			<div class="kc-apply-preview-actions">
+				<button type="button" id="kc-apply-download" class="btn btn-accent"><i class="fa-solid fa-download"></i> Download PDF</button>
+				<button type="button" id="kc-apply-print" class="btn btn-line"><i class="fa-solid fa-print"></i> Print</button>
+				<button type="button" id="kc-apply-edit" class="btn btn-line"><i class="fa-solid fa-pen"></i> Edit Application</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="kc-apply-modal" id="kc-apply-success-modal" hidden>
+		<div class="kc-apply-modal-box">
+			<i class="fa-solid fa-circle-check"></i>
+			<h3>Form Submitted Successfully</h3>
+			<p>Download your application now, put your sign, and submit it to the college authority.</p>
+			<button type="button" class="btn btn-accent" id="kc-apply-modal-close">OK, Got It</button>
+		</div>
+	</div>
+</section>
+
 <section class="section">
 	<div class="container">
 		<div class="grid grid-2 about-grid fade-in">

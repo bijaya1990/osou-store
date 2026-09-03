@@ -46,6 +46,17 @@ katapali-college/            <- upload this folder as your WordPress theme
 
 No database import, no XML file, no plugin dependency beyond WordPress core — the importer uses your bundled theme images directly.
 
+## Online Applications (CLC / C.L. / Certificate / Marksheet)
+
+A row of four buttons sits right below the homepage's Latest Notice ticker: **Apply CLC**, **Apply C.L.**, **Apply Certificate**, and **Apply Marksheet** (the last two open the same combined Certificate/Mark Sheet form, just pre-ticking the matching checkbox). No login, database, or admin approval workflow is involved — this is intentionally simple:
+
+1. Visitor clicks a button, a form opens matching the college's official CLC / C.L. / Certificate-Marksheet application layout (title, name, roll numbers, address, etc. — only the truly blank fields are asked for; designation on the C.L. form is a dropdown of the college's subjects).
+2. On submit, a "Form Submitted Successfully" popup confirms it, then a preview of the finished application appears — formatted like the official letter, with today's date auto-filled next to the signature line.
+3. **Download PDF** saves it as a PDF (generated entirely in the visitor's browser); **Print** opens the browser's print dialog for that document only; **Edit Application** goes back to the form.
+4. Nothing is submitted to the server or stored anywhere — the applicant downloads/prints the filled application, signs it by hand, and submits it to the college office in person, exactly like the paper process it replaces.
+
+The three form layouts live in `front-page.php` (search for `kc-form-clc` / `kc-form-cl` / `kc-form-certmark`); the letter-generation logic is in `assets/js/apply-forms.js`. To change the C.L. designation list, edit the `<select id="cl_designation">` options in `front-page.php`.
+
 ## Editing content (what your client will actually use)
 
 Everything on the public site is a normal WordPress post, page, or Customizer setting:

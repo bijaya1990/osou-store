@@ -54,7 +54,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="footer-bottom">&copy; <?php echo esc_html( date( 'Y' ) ); ?> <?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?>. All Rights Reserved. | Built on WordPress -- every section above is editable from wp-admin.</div>
+	<div class="footer-bottom">All Rights Reserved &copy; <?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></div>
 </footer>
 
 <div class="back-top" id="kc-back-top"><i class="fa-solid fa-arrow-up"></i></div>

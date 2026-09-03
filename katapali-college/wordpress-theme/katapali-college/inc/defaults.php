@@ -37,7 +37,7 @@ function kc_theme_mod_defaults() {
 		'kc_stat_faculty'      => '42',
 		'kc_stat_depts'        => '10',
 		'kc_stat_years'        => '40',
-		'kc_map_embed'         => '<iframe src="https://www.google.com/maps?q=Katapali%2C%20Bijepur%2C%20Bargarh%2C%20Odisha%20768032&output=embed" width="100%" height="400" style="border:0" allowfullscreen loading="lazy"></iframe>',
+		'kc_map_embed'         => '<a href="https://maps.app.goo.gl/MttXjCto2NqvzNYQ6" target="_blank" rel="noopener" class="footer-map-link"><i class="fa-solid fa-location-dot"></i> Open in Google Maps</a>',
 		'kc_map_note'          => 'The college is located on the Bijepur-Katapali road, about 8 km from Bijepur Block Head Quarters and 55 km from Bargarh town.',
 		'kc_footer_about'      => 'KATAPALI +3 COLLEGE, KATAPALI is a premier rural degree college offering +3 Arts streams with a commitment to accessible, affordable and quality higher education.',
 	);
@@ -63,3 +63,20 @@ function kc_apply_default_theme_mods() {
 	}
 }
 add_action( 'after_switch_theme', 'kc_apply_default_theme_mods' );
+
+/* One-time migration: the Google Map footer field used to default to an
+   embedded iframe; it's now a direct "Open in Google Maps" link instead
+   (short goo.gl share links can't reliably be embedded in an iframe).
+   Sites that never touched this Customizer field still have the old
+   iframe value saved (get_theme_mod() persists the old default forever
+   once set), so on every theme load we replace it - but only if it still
+   exactly matches the old auto-generated iframe, never a value an admin
+   deliberately typed in themselves. */
+function kc_migrate_map_embed() {
+	$old_default = '<iframe src="https://www.google.com/maps?q=Katapali%2C%20Bijepur%2C%20Bargarh%2C%20Odisha%20768032&output=embed" width="100%" height="400" style="border:0" allowfullscreen loading="lazy"></iframe>';
+	$current = get_theme_mod( 'kc_map_embed' );
+	if ( $current === $old_default ) {
+		set_theme_mod( 'kc_map_embed', kc_default( 'kc_map_embed' ) );
+	}
+}
+add_action( 'after_setup_theme', 'kc_migrate_map_embed', 20 );
