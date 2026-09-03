@@ -68,6 +68,115 @@ class KSR_Xlsx_Reader {
 		return $strings;
 	}
 
+	/**
+	 * Extracts embedded pictures from the first worksheet, if any, mapped
+	 * to the (0-based) worksheet row each is anchored to. Only common web
+	 * image formats are returned - Excel sometimes embeds decorative
+	 * icons (e.g. dropdown/checkbox glyphs) as .emf/.wmf vector images,
+	 * which browsers can't display and are never real student photos, so
+	 * those are silently skipped rather than imported as a "photo".
+	 *
+	 * @return array  [ row_0based => [ 'data' => bytes, 'ext' => 'png' ] ]
+	 */
+	public static function extract_images( $file_path ) {
+		if ( is_wp_error( self::available() ) ) return array();
+
+		$zip = new ZipArchive();
+		if ( $zip->open( $file_path ) !== true ) return array();
+
+		$sheet_path = self::first_sheet_path( $zip );
+		$sheet_rels_path = self::rels_path_for( $sheet_path );
+		$sheet_rels_xml = $zip->getFromName( $sheet_rels_path );
+		if ( $sheet_rels_xml === false ) { $zip->close(); return array(); }
+
+		$drawing_target = null;
+		$prev = libxml_use_internal_errors( true );
+		$rdoc = simplexml_load_string( $sheet_rels_xml );
+		libxml_use_internal_errors( $prev );
+		if ( $rdoc ) {
+			foreach ( $rdoc->Relationship as $rel ) {
+				if ( strpos( (string) $rel['Type'], '/drawing' ) !== false ) {
+					$drawing_target = (string) $rel['Target'];
+					break;
+				}
+			}
+		}
+		if ( ! $drawing_target ) { $zip->close(); return array(); }
+
+		$drawing_path = self::resolve_path( dirname( $sheet_path ), $drawing_target );
+		$drawing_xml = $zip->getFromName( $drawing_path );
+		if ( $drawing_xml === false ) { $zip->close(); return array(); }
+
+		$drawing_rels_xml = $zip->getFromName( self::rels_path_for( $drawing_path ) );
+		$drawing_rels = array();
+		if ( $drawing_rels_xml !== false ) {
+			$prev = libxml_use_internal_errors( true );
+			$drdoc = simplexml_load_string( $drawing_rels_xml );
+			libxml_use_internal_errors( $prev );
+			if ( $drdoc ) {
+				foreach ( $drdoc->Relationship as $rel ) {
+					$drawing_rels[ (string) $rel['Id'] ] = (string) $rel['Target'];
+				}
+			}
+		}
+
+		$prev = libxml_use_internal_errors( true );
+		$ddoc = simplexml_load_string( $drawing_xml );
+		libxml_use_internal_errors( $prev );
+		$images = array();
+		if ( $ddoc ) {
+			$ddoc->registerXPathNamespace( 'xdr', 'http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing' );
+			$ddoc->registerXPathNamespace( 'a', 'http://schemas.openxmlformats.org/drawingml/2006/main' );
+			$ddoc->registerXPathNamespace( 'r', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships' );
+
+			$anchors = $ddoc->xpath( '//xdr:twoCellAnchor | //xdr:oneCellAnchor' );
+			foreach ( $anchors as $anchor ) {
+				$anchor->registerXPathNamespace( 'xdr', 'http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing' );
+				$anchor->registerXPathNamespace( 'a', 'http://schemas.openxmlformats.org/drawingml/2006/main' );
+				$anchor->registerXPathNamespace( 'r', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships' );
+
+				$row_nodes = $anchor->xpath( './xdr:from/xdr:row' );
+				if ( ! $row_nodes ) continue;
+				$row = (int) (string) $row_nodes[0];
+
+				$blip_nodes = $anchor->xpath( './/a:blip' );
+				if ( ! $blip_nodes ) continue;
+				$rid_attrs = $blip_nodes[0]->attributes( 'http://schemas.openxmlformats.org/officeDocument/2006/relationships' );
+				$rid = (string) $rid_attrs['embed'];
+				if ( ! $rid || ! isset( $drawing_rels[ $rid ] ) ) continue;
+
+				$img_path = self::resolve_path( dirname( $drawing_path ), $drawing_rels[ $rid ] );
+				$ext = strtolower( pathinfo( $img_path, PATHINFO_EXTENSION ) );
+				if ( ! in_array( $ext, array( 'png', 'jpg', 'jpeg', 'gif' ), true ) ) continue; // skip .emf/.wmf decorative icons
+
+				$data = $zip->getFromName( $img_path );
+				if ( $data === false ) continue;
+
+				$images[ $row ] = array( 'data' => $data, 'ext' => $ext );
+			}
+		}
+
+		$zip->close();
+		return $images;
+	}
+
+	private static function rels_path_for( $part_path ) {
+		return dirname( $part_path ) . '/_rels/' . basename( $part_path ) . '.rels';
+	}
+
+	/** Resolves an OOXML relative Target (e.g. "../media/image1.png") against a base directory. */
+	private static function resolve_path( $base_dir, $target ) {
+		if ( strpos( $target, '/' ) === 0 ) return ltrim( $target, '/' );
+		$parts = explode( '/', trim( $base_dir, '/' ) . '/' . $target );
+		$out = array();
+		foreach ( $parts as $p ) {
+			if ( $p === '' || $p === '.' ) continue;
+			if ( $p === '..' ) { array_pop( $out ); continue; }
+			$out[] = $p;
+		}
+		return implode( '/', $out );
+	}
+
 	private static function first_sheet_path( ZipArchive $zip ) {
 		// Simplest reliable case: worksheets are named sheet1.xml, sheet2.xml... in document order.
 		$wb = $zip->getFromName( 'xl/workbook.xml' );

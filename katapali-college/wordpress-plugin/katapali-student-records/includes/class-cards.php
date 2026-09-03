@@ -29,7 +29,7 @@ class KSR_Cards {
 			'name' => $s->name, 'roll_no' => $s->roll_no, 'batch_year' => $s->batch_year, 'stream' => $s->stream,
 			'dob' => $s->dob, 'mobile' => $s->mobile, 'id_card_no' => $s->id_card_no,
 			'father_name' => $fields['father_name'] ?? '', 'blood_group' => $fields['blood_group'] ?? '',
-			'address' => $fields['address'] ?? '',
+			'address' => $fields['address'] ?? '', 'subject_name' => $fields['subject_name'] ?? '',
 			'college_name' => $college_name, 'address_line' => $address . ' - ' . $pin,
 			'logo_url' => $logo_url, 'photo_url' => $photo_url, 'principal' => $principal,
 		);
@@ -60,7 +60,10 @@ body { font-family: Arial, Helvetica, sans-serif; background: #ececec; margin: 0
 @media print {
 	body { background: #fff; padding: 0; }
 	.ksr-toolbar { display: none; }
-	.card-sheet { box-shadow: none; margin: 0; }
+	/* margin stays "0 auto" (not "0") so a card narrower than the page
+	   (the library card on A4) still centers horizontally instead of
+	   sticking to the left edge. */
+	.card-sheet { box-shadow: none; margin: 0 auto; }
 }
 </style>
 </head>
@@ -164,7 +167,7 @@ body { font-family: Arial, Helvetica, sans-serif; background: #ececec; margin: 0
 .lib-head .cname { font-size: 12pt; font-weight: 800; color: #012D58; }
 .lib-head .caddr { font-size: 7.5pt; color: #555; margin-top: 1mm; }
 .lib-title { text-align: center; font-size: 13pt; font-weight: 800; letter-spacing: 1px; margin: 3mm 0; }
-.lib-issued { font-size: 9pt; margin-bottom: 3mm; display: flex; gap: 8mm; }
+.lib-issued { font-size: 9pt; margin-bottom: 3mm; display: flex; flex-wrap: wrap; gap: 3mm 8mm; }
 .lib-issued span b { display: inline-block; min-width: 20mm; }
 table.lib-table { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
 table.lib-table th, table.lib-table td { border: 1px solid #333; padding: 2mm; text-align: left; }
@@ -184,10 +187,11 @@ table.lib-table td.rowno { width: 8mm; text-align: center; color: #999; }
 		<span><b>Issued to:</b> <?php echo esc_html( $d['name'] ); ?></span>
 		<span><b>Roll No:</b> <?php echo esc_html( $d['roll_no'] ); ?></span>
 		<span><b>Class:</b> <?php echo esc_html( $d['stream'] ); ?> (<?php echo esc_html( $d['batch_year'] ); ?>)</span>
+		<?php if ( $d['subject_name'] ) : ?><span><b>Subject:</b> <?php echo esc_html( $d['subject_name'] ); ?></span><?php endif; ?>
 	</div>
 	<table class="lib-table">
 		<tr><th class="rowno">#</th><th>Date Issued</th><th>Book Title</th><th>Date Returned</th></tr>
-		<?php for ( $i = 1; $i <= 14; $i++ ) : ?>
+		<?php for ( $i = 1; $i <= 20; $i++ ) : ?>
 		<tr><td class="rowno"><?php echo (int) $i; ?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
 		<?php endfor; ?>
 	</table>

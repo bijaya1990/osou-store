@@ -59,6 +59,11 @@ class KSR_Importer {
 			return new WP_Error( 'ksr_missing_cols', 'Could not find a "Roll No" and "Applicant Name" column in the file - please check the file matches the usual admission register export format.' );
 		}
 
+		// row 0 (0-based) is the header we just shifted off, so data row $i
+		// (0-based in $rows) sits at worksheet row $i + 1 - the same row
+		// an embedded picture would be anchored to.
+		$images = $is_csv ? array() : KSR_Xlsx_Reader::extract_images( $file_path );
+
 		global $wpdb;
 		$table = KSR_Install::table_name();
 		$stats = array( 'inserted' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => array() );
@@ -79,7 +84,7 @@ class KSR_Importer {
 				}
 			}
 
-			$existing_id = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $table WHERE roll_no = %s", $roll_no ) );
+			$existing = $wpdb->get_row( $wpdb->prepare( "SELECT id, photo_attachment_id FROM $table WHERE roll_no = %s", $roll_no ) );
 
 			$data = array(
 				'name'        => $name,
@@ -90,8 +95,14 @@ class KSR_Importer {
 				'fields_json' => wp_json_encode( $fields ),
 			);
 
-			if ( $existing_id ) {
-				$wpdb->update( $table, $data, array( 'id' => $existing_id ) );
+			if ( $existing ) {
+				// Never clobber a photo the office already uploaded by hand with
+				// whatever (or nothing) the Excel re-import happens to carry.
+				if ( ! $existing->photo_attachment_id && isset( $images[ $i + 1 ] ) ) {
+					$att_id = self::sideload_image( $images[ $i + 1 ], $name );
+					if ( $att_id ) $data['photo_attachment_id'] = $att_id;
+				}
+				$wpdb->update( $table, $data, array( 'id' => $existing->id ) );
 				$stats['updated']++;
 			} else {
 				$data['roll_no'] = $roll_no;
@@ -99,13 +110,43 @@ class KSR_Importer {
 				$new_id = $wpdb->insert_id;
 				if ( $new_id ) {
 					$id_card_no = 'KC' . str_pad( $new_id, 6, '0', STR_PAD_LEFT );
-					$wpdb->update( $table, array( 'id_card_no' => $id_card_no ), array( 'id' => $new_id ) );
+					$upd = array( 'id_card_no' => $id_card_no );
+					if ( isset( $images[ $i + 1 ] ) ) {
+						$att_id = self::sideload_image( $images[ $i + 1 ], $name );
+						if ( $att_id ) $upd['photo_attachment_id'] = $att_id;
+					}
+					$wpdb->update( $table, $upd, array( 'id' => $new_id ) );
 				}
 				$stats['inserted']++;
 			}
 		}
 
 		return $stats;
+	}
+
+	/** Uploads one extracted image (bytes + ext) as a Media Library attachment. @return int attachment ID, or 0 on failure. */
+	private static function sideload_image( $image, $student_name ) {
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+		require_once ABSPATH . 'wp-admin/includes/media.php';
+
+		$filename = sanitize_file_name( $student_name ) . '-' . wp_generate_password( 6, false ) . '.' . $image['ext'];
+		$upload = wp_upload_bits( $filename, null, $image['data'] );
+		if ( ! empty( $upload['error'] ) ) return 0;
+
+		$filetype = wp_check_filetype( $upload['file'] );
+		$attachment = array(
+			'post_mime_type' => $filetype['type'],
+			'post_title'     => sanitize_text_field( $student_name ) . ' photo',
+			'post_status'    => 'inherit',
+		);
+		$att_id = wp_insert_attachment( $attachment, $upload['file'] );
+		if ( ! $att_id || is_wp_error( $att_id ) ) return 0;
+
+		$meta = wp_generate_attachment_metadata( $att_id, $upload['file'] );
+		wp_update_attachment_metadata( $att_id, $meta );
+
+		return $att_id;
 	}
 
 	private static function map_columns( $header ) {
