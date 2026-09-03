@@ -258,7 +258,7 @@
 							</div>
 							<div class="ppc-info">
 								<h4><?php echo esc_html( get_theme_mod( 'kc_principal_name', kc_default( 'kc_principal_name' ) ) ); ?></h4>
-								<div class="ppc-org"><?php echo esc_html( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?></div>
+								<div class="ppc-org">Principal</div>
 								<div class="desig-rule"></div>
 								<div class="desig"><?php echo esc_html( get_theme_mod( 'kc_principal_desig', kc_default( 'kc_principal_desig' ) ) ); ?></div>
 							</div>
