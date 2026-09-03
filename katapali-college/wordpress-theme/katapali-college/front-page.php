@@ -236,17 +236,6 @@ $ticker_loops = count( $ticker_notices ) > 3;
 	</div>
 </section>
 
-<?php if ( class_exists( 'KSR_Install' ) ) : ?>
-<section class="kc-apply-bar-section">
-	<div class="container">
-		<div class="kc-apply-bar-label">Student Corner</div>
-		<div class="kc-apply-btns">
-			<a href="<?php echo esc_url( home_url( '/students-list/' ) ); ?>" class="kc-apply-btn"><i class="fa-solid fa-users-line"></i> Students List</a>
-			<a href="<?php echo esc_url( home_url( '/alumni-directory/' ) ); ?>" class="kc-apply-btn"><i class="fa-solid fa-graduation-cap"></i> Alumni Directory</a>
-		</div>
-	</div>
-</section>
-<?php endif; ?>
 
 <section class="section">
 	<div class="container">

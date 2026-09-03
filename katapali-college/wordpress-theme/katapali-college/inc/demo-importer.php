@@ -335,6 +335,10 @@ function kc_import_menu( $page_ids ) {
 	$add( "Students' Union", get_permalink( $page_ids['student-corner'] ) . '#union', $sc );
 	$add( 'Sports & NCC/NSS', get_permalink( $page_ids['student-corner'] ) . '#sports', $sc );
 	$add( 'Library', get_permalink( $page_ids['student-corner'] ) . '#library', $sc );
+	if ( class_exists( 'KSR_Install' ) ) { // Katapali Student Records plugin
+		$add( 'Students List', home_url( '/students-list/' ), $sc );
+		$add( 'Alumni Directory', home_url( '/alumni-directory/' ), $sc );
+	}
 
 	$gal = $add( 'Gallery', get_post_type_archive_link( 'kc_gallery' ) );
 
