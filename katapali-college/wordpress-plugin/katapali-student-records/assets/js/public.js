@@ -28,9 +28,9 @@
 					.then(function (res) {
 						var rows = (res && res.success) ? res.data : [];
 						if (!rows.length) { out.innerHTML = '<p class="ksr-hint">No students found for this session.</p>'; return; }
-						var html = '<table class="ksr-result-table"><thead><tr><th>#</th><th>Name</th><th>Roll No</th><th>Stream</th></tr></thead><tbody>';
+						var html = '<table class="ksr-result-table"><thead><tr><th>#</th><th>Name</th><th>Roll No</th><th>Stream</th><th>Subject</th></tr></thead><tbody>';
 						rows.forEach(function (s, i) {
-							html += '<tr><td>' + (i + 1) + '</td><td>' + escapeHtml(s.name) + '</td><td>' + escapeHtml(s.roll_no) + '</td><td>' + escapeHtml(s.stream) + '</td></tr>';
+							html += '<tr><td>' + (i + 1) + '</td><td>' + escapeHtml(s.name) + '</td><td>' + escapeHtml(s.roll_no) + '</td><td>' + escapeHtml(s.stream) + '</td><td>' + escapeHtml(s.subject) + '</td></tr>';
 						});
 						html += '</tbody></table>';
 						out.innerHTML = html;

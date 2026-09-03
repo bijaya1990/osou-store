@@ -76,12 +76,14 @@ class KSR_Shortcodes {
 
 		$table = KSR_Install::table_name();
 		$rows = $wpdb->get_results( $wpdb->prepare(
-			"SELECT name, roll_no, stream FROM $table WHERE batch_year = %s ORDER BY name ASC", $batch
+			"SELECT name, roll_no, stream, fields_json FROM $table WHERE batch_year = %s ORDER BY name ASC", $batch
 		) );
 
 		$out = array();
 		foreach ( $rows as $r ) {
-			$out[] = array( 'name' => $r->name, 'roll_no' => $r->roll_no, 'stream' => $r->stream );
+			$fields = json_decode( $r->fields_json, true );
+			$subject = is_array( $fields ) && ! empty( $fields['subject_name'] ) ? $fields['subject_name'] : '';
+			$out[] = array( 'name' => $r->name, 'roll_no' => $r->roll_no, 'stream' => $r->stream, 'subject' => $subject );
 		}
 		wp_send_json_success( $out );
 	}
