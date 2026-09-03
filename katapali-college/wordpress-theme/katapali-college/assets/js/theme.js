@@ -16,21 +16,16 @@
       }
     }
 
-    /* hero slider - current slide exits to the right, next slide fades in;
-       each slide's welcome text/overlay auto-hides 5s after it becomes
-       active so the background photo shows clearly, then reappears when
-       the next slide comes in. */
+    /* hero slider - current slide exits to the right, next slide fades in.
+       The welcome text/overlay is a one-time thing: visible for 5s after
+       the very first slide appears on page load, then hidden for good -
+       it does NOT come back on later slide changes, only on a fresh page
+       load/refresh. */
     var heroWrap = document.getElementById('kc-hero');
     if (heroWrap) {
       var slides = heroWrap.querySelectorAll('.hero-slide'), dots = heroWrap.querySelectorAll('.hero-dot');
-      var idx = 0, heroTimer, textTimer;
+      var idx = 0, heroTimer;
       var HERO_INTERVAL = 8000, TEXT_VISIBLE_MS = 5000;
-
-      function armTextHide(slideEl) {
-        clearTimeout(textTimer);
-        slideEl.classList.remove('kc-text-hidden');
-        textTimer = setTimeout(function () { slideEl.classList.add('kc-text-hidden'); }, TEXT_VISIBLE_MS);
-      }
 
       function showSlide(n) {
         var old = slides[idx];
@@ -41,11 +36,10 @@
         idx = (n + slides.length) % slides.length;
         slides[idx].classList.add('active');
         if (dots.length) dots[idx].classList.add('active');
-        armTextHide(slides[idx]);
       }
       function nextSlide() { showSlide(idx + 1); }
 
-      armTextHide(slides[idx]); // first slide's own 5s timer, on page load
+      setTimeout(function () { slides[0].classList.add('kc-text-hidden'); }, TEXT_VISIBLE_MS); // one-time, first slide only
 
       if (slides.length > 1) {
         heroTimer = setInterval(nextSlide, HERO_INTERVAL);

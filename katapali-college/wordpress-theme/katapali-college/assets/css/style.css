@@ -435,8 +435,8 @@ footer.site-footer{background:#0a0a0a;color:#c7d3f0;padding-top:56px;}
 .kc-apply-preview .kc-p-office{margin-top:34px;border:2px solid var(--primary);padding:14px 16px;font-size:.82rem;color:#444;}
 .kc-apply-preview-actions{display:flex;gap:14px;justify-content:center;margin-top:22px;flex-wrap:wrap;}
 @media print{
-	body *{visibility:hidden;}
-	#kc-apply-preview,#kc-apply-preview *{visibility:visible;}
+	body *{visibility:hidden !important;opacity:0 !important;}
+	#kc-apply-preview,#kc-apply-preview *{visibility:visible !important;opacity:1 !important;}
 	#kc-apply-preview{position:absolute;left:0;top:0;width:100%;box-shadow:none;border:none;}
 }
 @media(max-width:640px){

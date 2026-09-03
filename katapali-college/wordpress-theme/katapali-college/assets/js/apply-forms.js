@@ -253,15 +253,21 @@
 			var btn = this;
 			if (typeof html2pdf === 'undefined') { alert('PDF library failed to load - please check your internet connection and try again, or use Print instead.'); return; }
 			btn.disabled = true; btn.textContent = 'Preparing PDF...';
-			html2pdf().set({
-				margin: 10,
-				filename: 'Application-' + Date.now() + '.pdf',
-				image: { type: 'jpeg', quality: 0.98 },
-				html2canvas: { scale: 2, useCORS: true },
-				jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-			}).from(previewEl).save().then(function () {
-				btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-download"></i> Download PDF';
-			});
+			/* html2canvas mis-captures (blank/offset) an in-page element when
+			   the window is scrolled away from the top - scrolling to (0,0)
+			   right before capture is the standard, reliable fix. */
+			window.scrollTo(0, 0);
+			setTimeout(function () {
+				html2pdf().set({
+					margin: 10,
+					filename: 'Application-' + Date.now() + '.pdf',
+					image: { type: 'jpeg', quality: 0.98 },
+					html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
+					jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+				}).from(previewEl).save().then(function () {
+					btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-download"></i> Download PDF';
+				});
+			}, 100);
 		});
 
 		document.getElementById('kc-apply-edit').addEventListener('click', function () {
