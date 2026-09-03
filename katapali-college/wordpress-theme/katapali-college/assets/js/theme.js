@@ -16,11 +16,22 @@
       }
     }
 
-    /* hero slider - current slide exits to the right, next slide fades in */
+    /* hero slider - current slide exits to the right, next slide fades in;
+       each slide's welcome text/overlay auto-hides 5s after it becomes
+       active so the background photo shows clearly, then reappears when
+       the next slide comes in. */
     var heroWrap = document.getElementById('kc-hero');
     if (heroWrap) {
       var slides = heroWrap.querySelectorAll('.hero-slide'), dots = heroWrap.querySelectorAll('.hero-dot');
-      var idx = 0, heroTimer;
+      var idx = 0, heroTimer, textTimer;
+      var HERO_INTERVAL = 8000, TEXT_VISIBLE_MS = 5000;
+
+      function armTextHide(slideEl) {
+        clearTimeout(textTimer);
+        slideEl.classList.remove('kc-text-hidden');
+        textTimer = setTimeout(function () { slideEl.classList.add('kc-text-hidden'); }, TEXT_VISIBLE_MS);
+      }
+
       function showSlide(n) {
         var old = slides[idx];
         old.classList.remove('active');
@@ -30,15 +41,19 @@
         idx = (n + slides.length) % slides.length;
         slides[idx].classList.add('active');
         if (dots.length) dots[idx].classList.add('active');
+        armTextHide(slides[idx]);
       }
       function nextSlide() { showSlide(idx + 1); }
+
+      armTextHide(slides[idx]); // first slide's own 5s timer, on page load
+
       if (slides.length > 1) {
-        heroTimer = setInterval(nextSlide, 3000);
+        heroTimer = setInterval(nextSlide, HERO_INTERVAL);
         var prevH = document.getElementById('kc-hero-prev'), nextH = document.getElementById('kc-hero-next');
-        if (nextH) nextH.onclick = function () { clearInterval(heroTimer); nextSlide(); heroTimer = setInterval(nextSlide, 3000); };
-        if (prevH) prevH.onclick = function () { clearInterval(heroTimer); showSlide(idx - 1); heroTimer = setInterval(nextSlide, 3000); };
+        if (nextH) nextH.onclick = function () { clearInterval(heroTimer); nextSlide(); heroTimer = setInterval(nextSlide, HERO_INTERVAL); };
+        if (prevH) prevH.onclick = function () { clearInterval(heroTimer); showSlide(idx - 1); heroTimer = setInterval(nextSlide, HERO_INTERVAL); };
         dots.forEach(function (d) {
-          d.addEventListener('click', function () { clearInterval(heroTimer); showSlide(+d.dataset.slide); heroTimer = setInterval(nextSlide, 3000); });
+          d.addEventListener('click', function () { clearInterval(heroTimer); showSlide(+d.dataset.slide); heroTimer = setInterval(nextSlide, HERO_INTERVAL); });
         });
       }
     }

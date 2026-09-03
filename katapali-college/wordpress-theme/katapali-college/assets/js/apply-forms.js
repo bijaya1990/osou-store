@@ -19,6 +19,23 @@
 			previewWrap.hidden = false;
 			successModal.hidden = false;
 		}
+
+		/* Records the submission for the office's records (Katapali College ->
+		   Applications in wp-admin) - fire-and-forget, never blocks the
+		   applicant from seeing/downloading their own preview even if this
+		   fails (e.g. offline). */
+		function saveApplication(type, name, reference, fieldsObj, html) {
+			if (typeof KC_APPS === 'undefined') return;
+			var body = new URLSearchParams();
+			body.set('action', 'kc_save_application');
+			body.set('nonce', KC_APPS.nonce);
+			body.set('app_type', type);
+			body.set('applicant_name', name);
+			body.set('reference', reference);
+			body.set('fields', JSON.stringify(fieldsObj));
+			body.set('letter_html', html);
+			fetch(KC_APPS.ajaxUrl, { method: 'POST', body: body }).catch(function () {});
+		}
 		document.getElementById('kc-apply-modal-close').addEventListener('click', function () {
 			successModal.hidden = true;
 			previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -113,6 +130,12 @@
 					signRow('Student\'s Signature') +
 					'<div class="kc-p-office">For Office Use: CLC No. __________________ &nbsp; Date of Issue: ____/____/______</div>';
 
+				saveApplication('clc', name, val('clc_college_roll'), {
+					name: name, relation: relation, parent: parent,
+					college_roll: val('clc_college_roll'), univ_roll: val('clc_univ_roll'),
+					semester: val('clc_semester'), result: result, dob: val('clc_dob'),
+					address: addr + ', ' + addr2
+				}, html);
 				finishGenerate(html, 'clc');
 			});
 		}
@@ -164,6 +187,13 @@
 					signRow('Student\'s Signature') +
 					'<div class="kc-p-office">For Office Use: Application No. __________________ &nbsp; Date: ____/____/______ &nbsp; Certificate/Mark Sheet No. __________________</div>';
 
+				saveApplication('certmark', name, val('cm_college_roll'), {
+					name: name, relation: relation, parent: parent,
+					college_roll: val('cm_college_roll'), univ_roll: val('cm_univ_roll'),
+					course: val('cm_course'), semester: val('cm_semester'), exam_year: val('cm_exam_year'),
+					gradepoint: val('cm_gradepoint'), class_result: classChecks, dob: val('cm_dob'),
+					address: addr + ', ' + addr2, type_requested: typeLabel
+				}, html);
 				finishGenerate(html, 'certmark');
 			});
 		}
@@ -208,6 +238,10 @@
 					signRow('Employee\'s Signature') +
 					'';
 
+				saveApplication('cl', name, designation, {
+					name: name, designation: designation, reason: val('cl_reason'),
+					from: val('cl_from'), to: val('cl_to'), days: val('cl_days'), joining: val('cl_joining')
+				}, html);
 				finishGenerate(html, 'cl');
 			});
 		}
