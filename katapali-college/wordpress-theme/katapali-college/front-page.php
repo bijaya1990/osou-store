@@ -56,7 +56,9 @@
 				if ( $ticker_notices ) {
 					$ticker_html = '';
 					foreach ( $ticker_notices as $tn ) {
-						$ticker_html .= '<a href="' . esc_url( get_permalink( $tn ) ) . '"><i class="fa-solid fa-hand-point-right"></i>' . esc_html( get_the_title( $tn ) ) . ' <span>(' . esc_html( get_the_date( 'd M Y', $tn ) ) . ')</span></a>';
+						$tn_file  = get_post_meta( $tn->ID, 'kc_file_url', true );
+						$tn_extra = $tn_file ? ' target="_blank" rel="noopener"' : '';
+						$ticker_html .= '<a href="' . esc_url( kc_notice_link( $tn->ID ) ) . '"' . $tn_extra . '><i class="fa-solid fa-hand-point-right"></i>' . esc_html( get_the_title( $tn ) ) . ' <span>(' . esc_html( get_the_date( 'd M Y', $tn ) ) . ')</span></a>';
 					}
 					echo $ticker_html . $ticker_html; // duplicated for a seamless CSS loop
 				} else {
@@ -284,6 +286,7 @@
 					$notices = get_posts( array( 'post_type' => 'kc_notice', 'posts_per_page' => 5 ) );
 					if ( $notices ) { foreach ( $notices as $n ) kc_notice_mini( $n->ID ); } else { echo '<div class="empty-msg">No notices yet.</div>'; }
 					?>
+					<a class="tbar-more" href="<?php echo esc_url( get_post_type_archive_link( 'kc_notice' ) ); ?>">More Notices <i class="fa-solid fa-arrow-right"></i></a>
 				</div>
 			</div>
 			<div class="tc-col tbar-box">
@@ -293,6 +296,7 @@
 					$tnd = get_posts( array( 'post_type' => 'kc_tender', 'posts_per_page' => 5 ) );
 					if ( $tnd ) { foreach ( $tnd as $t ) kc_tender_mini( $t->ID ); } else { echo '<div class="empty-msg">Opps, No posts were found.</div>'; }
 					?>
+					<a class="tbar-more" href="<?php echo esc_url( get_post_type_archive_link( 'kc_tender' ) ); ?>">More Tenders <i class="fa-solid fa-arrow-right"></i></a>
 				</div>
 			</div>
 			<div class="tc-col tbar-box">

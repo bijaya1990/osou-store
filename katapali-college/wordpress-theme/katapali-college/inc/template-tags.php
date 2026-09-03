@@ -117,15 +117,40 @@ function kc_org_logo_strip() {
 	echo '<div class="org-logo-strip"><div class="container"><div class="org-logo-track-wrap"><div class="org-logo-track">' . $track . $track . '</div></div></div></div>';
 }
 
+/* IDs of the most recently published notices - used to flash a blinking
+   "New" badge on them wherever a notice title appears (homepage panel,
+   ticker, full notice list). Cached per request since several places on
+   one page need the same answer. */
+function kc_recent_notice_ids( $n = 6 ) {
+	static $cache = array();
+	if ( ! isset( $cache[ $n ] ) ) {
+		$cache[ $n ] = get_posts( array( 'post_type' => 'kc_notice', 'posts_per_page' => $n, 'fields' => 'ids' ) );
+	}
+	return $cache[ $n ];
+}
+
+/* A notice's title always links straight to its attachment (PDF/notice
+   file) when one is set on the post, skipping the single-notice page -
+   visitors want the document, not a detail page. Falls back to the
+   permalink for notices without a file attached. */
+function kc_notice_link( $post_id ) {
+	$file = get_post_meta( $post_id, 'kc_file_url', true );
+	return $file ? $file : get_permalink( $post_id );
+}
+
 /* Compact list-row versions of the notice/tender cards, used in the
    homepage's boxed Notice/Tenders columns (icon bullet + title + date,
    no card chrome - matches a typical government-college notice list). */
 function kc_notice_mini( $post_id ) {
+	$href    = kc_notice_link( $post_id );
+	$is_file = (bool) get_post_meta( $post_id, 'kc_file_url', true );
+	$is_new  = in_array( $post_id, kc_recent_notice_ids(), true );
 	?>
 	<div class="mini-row">
 		<i class="fa-solid fa-circle-chevron-right"></i>
 		<div>
-			<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>"><?php echo esc_html( get_the_title( $post_id ) ); ?></a>
+			<a class="notice-blue-title" href="<?php echo esc_url( $href ); ?>"<?php echo $is_file ? ' target="_blank" rel="noopener"' : ''; ?>><?php echo esc_html( get_the_title( $post_id ) ); ?></a>
+			<?php if ( $is_new ) : ?><span class="new-blink">New</span><?php endif; ?>
 			<div class="mini-date"><i class="fa-regular fa-calendar"></i> <?php echo esc_html( get_the_date( 'd M Y', $post_id ) ); ?></div>
 		</div>
 	</div>
