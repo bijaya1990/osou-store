@@ -258,14 +258,36 @@
 			   right before capture is the standard, reliable fix. */
 			window.scrollTo(0, 0);
 			setTimeout(function () {
+				var MARGIN_MM = 10, CONTENT_WIDTH_MM = 190; // A4 width (210mm) minus 10mm margins each side
+
+				/* A fixed 'a4' page forces the letter onto 2+ pages if it's
+				   even slightly taller than one page. Instead, size the PDF
+				   page to the letter's own aspect ratio (width fixed at A4's
+				   190mm content width, height computed to match) so it is
+				   always exactly one page, however long the content is.
+				   Measured straight from the DOM (offsetWidth/offsetHeight)
+				   rather than via a separate toCanvas() pre-pass - re-using
+				   the same worker for both a size probe and the final render
+				   is unreliable, so this single-shot chain (proven to work)
+				   is kept as the one and only render. */
+				/* +8mm safety buffer: html2canvas's rendered output can come out
+				   a hair taller than the DOM's own offsetHeight (font metrics,
+				   sub-pixel rounding), which without a buffer occasionally
+				   spills a couple of lines onto a second page. */
+				var contentHeightMM = (previewEl.offsetHeight * CONTENT_WIDTH_MM / previewEl.offsetWidth) + 40;
+
 				html2pdf().set({
-					margin: 10,
+					margin: MARGIN_MM,
 					filename: 'Application-' + Date.now() + '.pdf',
 					image: { type: 'jpeg', quality: 0.98 },
 					html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
-					jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+					jsPDF: { unit: 'mm', format: [CONTENT_WIDTH_MM + MARGIN_MM * 2, contentHeightMM + MARGIN_MM * 2], orientation: 'portrait' },
+					pagebreak: { mode: ['avoid-all'] }
 				}).from(previewEl).save().then(function () {
 					btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-download"></i> Download PDF';
+				}).catch(function () {
+					btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-download"></i> Download PDF';
+					alert('PDF download failed. Please use Print instead and choose "Save as PDF".');
 				});
 			}, 100);
 		});

@@ -445,9 +445,32 @@ footer.site-footer{background:#0a0a0a;color:#c7d3f0;padding-top:56px;}
 .kc-apply-preview .kc-p-office{margin-top:34px;border:2px solid var(--primary);padding:14px 16px;font-size:.82rem;color:#444;}
 .kc-apply-preview-actions{display:flex;gap:14px;justify-content:center;margin-top:22px;flex-wrap:wrap;}
 @media print{
-	body *{visibility:hidden !important;opacity:0 !important;}
-	#kc-apply-preview,#kc-apply-preview *{visibility:visible !important;opacity:1 !important;}
-	#kc-apply-preview{position:absolute;left:0;top:0;width:100%;box-shadow:none;border:none;}
+	/* visibility:hidden keeps an element's layout space reserved (unlike
+	   display:none), so hiding the rest of the homepage that way still
+	   leaves several near-blank pages after the printed letter. Instead,
+	   collapse every branch of the page OUTSIDE the direct ancestor chain
+	   down to #kc-apply-preview with display:none (removes it from layout
+	   entirely), so the printed page's total height is just the letter's
+	   own height - one page, not five. */
+	body > *{display:none !important;}
+	body > .kc-apply-bar-section{display:block !important;}
+	.kc-apply-bar-section > *{display:none !important;}
+	.kc-apply-bar-section > .container{display:block !important;}
+	.kc-apply-bar-section .container > *{display:none !important;}
+	.kc-apply-bar-section .container > .kc-apply-preview-wrap{display:block !important;margin:0 !important;}
+	.kc-apply-preview-wrap > *{display:none !important;}
+	.kc-apply-preview-wrap > #kc-apply-preview{display:block !important;}
+	#kc-apply-preview{position:static;box-shadow:none;border:none;padding:16px 24px !important;}
+	#kc-apply-preview .kc-p-head{margin-bottom:10px !important;padding-bottom:8px !important;}
+	#kc-apply-preview .kc-p-title{margin:10px 0 !important;}
+	#kc-apply-preview .kc-p-body p{margin:0 0 8px !important;line-height:1.5 !important;}
+	#kc-apply-preview table.kc-p-fields{margin:10px 0 !important;}
+	#kc-apply-preview table.kc-p-fields td{padding:5px 10px !important;}
+	#kc-apply-preview .kc-p-declaration{margin:10px 0 !important;padding:8px 12px !important;font-size:.78rem !important;line-height:1.4 !important;}
+	#kc-apply-preview .kc-p-sign-row{margin-top:24px !important;}
+	#kc-apply-preview .kc-p-sign-box .line{margin-top:24px !important;}
+	#kc-apply-preview .kc-p-office{margin-top:18px !important;padding:8px 12px !important;}
+	@page{size:A4;margin:8mm;}
 }
 @media(max-width:640px){
 	.kc-apply-form-box{padding:22px 18px;}
