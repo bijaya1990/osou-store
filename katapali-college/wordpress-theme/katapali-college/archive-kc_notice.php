@@ -3,14 +3,19 @@ kc_banner( 'Notices', 'Notices' );
 
 $all_notices = get_posts( array( 'post_type' => 'kc_notice', 'posts_per_page' => 40 ) );
 $recent_ids  = kc_recent_notice_ids( 6 );
+/* Only enough notices to actually need scrolling get rendered twice for
+   the seamless upward loop; with just a few, duplicating would make
+   each one visibly appear twice - looks like a bug, not a marquee. */
+$notice_loops = count( $all_notices ) > 5;
+$notice_passes = $notice_loops ? array( 1, 2 ) : array( 1 );
 ?>
 <section class="section">
 	<div class="container">
 		<?php if ( $all_notices ) : ?>
 			<div class="notice-scroll-wrap">
-				<div class="notice-scroll-track">
+				<div class="notice-scroll-track<?php echo $notice_loops ? '' : ' notice-scroll-static'; ?>">
 					<?php
-					foreach ( array( 1, 2 ) as $pass ) : // rendered twice for a seamless upward CSS loop
+					foreach ( $notice_passes as $pass ) :
 						foreach ( $all_notices as $n ) :
 							$href    = kc_notice_link( $n->ID );
 							$is_file = (bool) get_post_meta( $n->ID, 'kc_file_url', true );

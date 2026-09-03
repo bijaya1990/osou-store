@@ -46,13 +46,20 @@
 	<?php endif; ?>
 </section>
 
+<?php
+$ticker_notices = get_posts( array( 'post_type' => 'kc_notice', 'posts_per_page' => 6 ) );
+/* The horizontal scroll only needs a duplicated set to loop seamlessly
+   when there's enough content to actually scroll off-screen; with a
+   handful of notices, duplicating just makes each one visibly appear
+   twice, which reads as a bug rather than a marquee. */
+$ticker_loops = count( $ticker_notices ) > 3;
+?>
 <section class="notice-ticker">
 	<div class="container ticker-wrap">
 		<span class="ticker-label"><i class="fa-solid fa-bullhorn"></i> Latest Notice</span>
 		<div class="ticker-track-wrap">
-			<div class="ticker-track">
+			<div class="ticker-track<?php echo $ticker_loops ? '' : ' ticker-static'; ?>">
 				<?php
-				$ticker_notices = get_posts( array( 'post_type' => 'kc_notice', 'posts_per_page' => 6 ) );
 				if ( $ticker_notices ) {
 					$ticker_html = '';
 					foreach ( $ticker_notices as $tn ) {
@@ -60,7 +67,7 @@
 						$tn_extra = $tn_file ? ' target="_blank" rel="noopener"' : '';
 						$ticker_html .= '<a href="' . esc_url( kc_notice_link( $tn->ID ) ) . '"' . $tn_extra . '><i class="fa-solid fa-hand-point-right"></i>' . esc_html( get_the_title( $tn ) ) . ' <span>(' . esc_html( get_the_date( 'd M Y', $tn ) ) . ')</span></a>';
 					}
-					echo $ticker_html . $ticker_html; // duplicated for a seamless CSS loop
+					echo $ticker_loops ? $ticker_html . $ticker_html : $ticker_html; // duplicated only when it loops, for a seamless CSS scroll
 				} else {
 					echo '<a href="' . esc_url( get_post_type_archive_link( 'kc_notice' ) ) . '">No notices published yet — add one under Katapali College &rarr; Notices.</a>';
 				}
@@ -314,22 +321,31 @@
 <section class="section">
 	<div class="container">
 		<div class="section-head fade-in"><span class="eyebrow">Our Faculty</span><h2>Meet Our Staff</h2><p>Dedicated and experienced faculty guiding our students</p></div>
+		<?php
+		$fac_q = new WP_Query( array(
+			'post_type' => 'kc_faculty', 'posts_per_page' => -1,
+			'meta_query' => array( array( 'key' => 'kc_on_slider', 'value' => '1' ) ),
+			'meta_key' => 'kc_order', 'orderby' => 'meta_value_num', 'order' => 'ASC',
+		) );
+		if ( ! $fac_q->have_posts() ) {
+			$fac_q = new WP_Query( array( 'post_type' => 'kc_faculty', 'posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC' ) );
+		}
+		$ids = array();
+		while ( $fac_q->have_posts() ) : $fac_q->the_post(); $ids[] = get_the_ID();
+		endwhile;
+		wp_reset_postdata();
+		/* Duplicating the set gives the auto-scroll a seamless loop, but
+		   with only a few faculty added it just makes each one visibly
+		   appear twice - looks like a bug, not a carousel. */
+		$fac_loops = count( $ids ) > 4;
+		?>
 		<div class="faculty-slider-wrap fade-in">
-			<div class="faculty-track" id="kc-faculty-track">
+			<div class="faculty-track<?php echo $fac_loops ? '' : ' faculty-track-static'; ?>" id="kc-faculty-track" data-looped="<?php echo $fac_loops ? '1' : '0'; ?>">
 				<?php
-				$fac_q = new WP_Query( array(
-					'post_type' => 'kc_faculty', 'posts_per_page' => -1,
-					'meta_query' => array( array( 'key' => 'kc_on_slider', 'value' => '1' ) ),
-					'meta_key' => 'kc_order', 'orderby' => 'meta_value_num', 'order' => 'ASC',
-				) );
-				if ( ! $fac_q->have_posts() ) {
-					$fac_q = new WP_Query( array( 'post_type' => 'kc_faculty', 'posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC' ) );
+				foreach ( $ids as $id ) kc_faculty_card( $id );
+				if ( $fac_loops ) {
+					foreach ( $ids as $id ) kc_faculty_card( $id );
 				}
-				$loop_count = 0; $ids = array();
-				while ( $fac_q->have_posts() ) : $fac_q->the_post(); $ids[] = get_the_ID(); kc_faculty_card( get_the_ID() ); $loop_count++;
-				endwhile;
-				foreach ( $ids as $id ) kc_faculty_card( $id ); // duplicate set for seamless auto-scroll
-				wp_reset_postdata();
 				?>
 			</div>
 			<div class="faculty-arrows">

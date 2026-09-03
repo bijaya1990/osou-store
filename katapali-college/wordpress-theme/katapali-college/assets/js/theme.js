@@ -61,13 +61,18 @@
     /* faculty auto-scroll */
     var track = document.getElementById('kc-faculty-track');
     if (track) {
-      var cards = track.querySelectorAll('.faculty-card'), setLen = cards.length / 2;
+      var cards = track.querySelectorAll('.faculty-card');
+      /* Only a looped track (enough faculty to need auto-scroll) has its
+         card set duplicated in the markup - setLen is the length of one
+         set. A non-looped track shows every card once with no wrap. */
+      var looped = track.dataset.looped === '1';
+      var setLen = looped ? cards.length / 2 : cards.length;
       var pos = 0, cardW = 242, timer;
       function step() { pos += cardW; if (pos >= cardW * setLen) pos = 0; track.scrollTo({ left: pos, behavior: 'smooth' }); }
-      if (setLen > 0) timer = setInterval(step, 2600);
+      if (looped && setLen > 0) timer = setInterval(step, 2600);
       var prevF = document.getElementById('kc-faculty-prev'), nextF = document.getElementById('kc-faculty-next');
-      if (nextF) nextF.onclick = function () { clearInterval(timer); step(); timer = setInterval(step, 2600); };
-      if (prevF) prevF.onclick = function () { clearInterval(timer); pos -= cardW; if (pos < 0) pos = cardW * (setLen - 1); track.scrollTo({ left: pos, behavior: 'smooth' }); timer = setInterval(step, 2600); };
+      if (nextF) nextF.onclick = function () { clearInterval(timer); step(); if (looped) timer = setInterval(step, 2600); };
+      if (prevF) prevF.onclick = function () { clearInterval(timer); pos -= cardW; if (pos < 0) pos = cardW * (setLen - 1); track.scrollTo({ left: pos, behavior: 'smooth' }); if (looped) timer = setInterval(step, 2600); };
     }
 
     /* stat counters */
