@@ -20,19 +20,21 @@ out full WordPress administrator accounts.
 - **"Login Successful" welcome popup** the moment a staff account signs in.
 - **Add College Admin** (Katapali College &rarr; Add College Admin, real
   site administrators only): fill in Name / User ID / Mobile / Email /
-  Password &rarr; a 6-digit OTP is emailed to that address &rarr; entering
-  the correct OTP creates the account (nothing is created if the OTP is
-  never entered/expires after 10 minutes) &rarr; a welcome email
-  ("Welcome to &lt;college&gt;! You are now an admin of this college
-  website.") goes out once the account exists.
+  Password &rarr; the account is created immediately (same as WordPress's
+  own Users &rarr; Add New) &rarr; share that User ID and password with the
+  person directly. A welcome email ("Welcome to &lt;college&gt;! You are
+  now an admin of this college website.") is also attempted, but it's
+  best-effort and never blocks account creation.
 
 ## Requirements
 
-Both OTP delivery and the welcome email use WordPress's standard `wp_mail()`.
-Most hosts (including MilesWeb) send this fine out of the box, but if the
-emails don't arrive, install an SMTP plugin (e.g. WP Mail SMTP) and connect
-it to a real mailbox/SMTP service - this is a hosting/mail-deliverability
-setting, not something this plugin can fix in code.
+The welcome email uses WordPress's standard `wp_mail()`. Most hosts
+(including MilesWeb) send this fine out of the box, but if it doesn't
+arrive that's fine to ignore - the account itself doesn't depend on it. If
+you'd like it to arrive reliably, install an SMTP plugin (e.g. WP Mail
+SMTP) and connect it to a real mailbox/SMTP service - this is a
+hosting/mail-deliverability setting, not something this plugin can fix in
+code.
 
 ## Notes
 

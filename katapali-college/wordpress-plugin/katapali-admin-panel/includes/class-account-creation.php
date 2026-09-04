@@ -1,15 +1,16 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/* "Add College Admin" screen - full site administrators only (manage_options,
-   never the limited staff role) fill in Name/User ID/Mobile/Email/Password,
-   an OTP is emailed to that address, and only once the correct OTP is
-   entered is the actual WordPress account created (role: kc_staff_admin) -
-   so a mistyped/unreachable email never leaves a half-created account
-   behind. A final welcome email goes out once the account is live. */
+/* "Add College Admin" screen - full site administrators only
+   (manage_options, never the limited staff role) fill in Name/User ID/
+   Mobile/Email/Password and the account (role: kc_staff_admin) is
+   created immediately, same as WordPress's own Users -> Add New. The
+   administrator then shares that User ID/Password with the staff
+   member directly. A welcome email is still attempted, but it's
+   best-effort - never blocks account creation, since mail delivery on
+   shared hosting can't be relied on to gate something as basic as
+   creating a login. */
 class KAP_Account_Creation {
-
-	const OTP_TTL = 10 * MINUTE_IN_SECONDS;
 
 	public static function init() {
 		// Priority 20 (after the theme's own admin_menu hook, which
@@ -19,8 +20,7 @@ class KAP_Account_Creation {
 		// internally (wrong hookname), which then 403s every real
 		// administrator trying to open it.
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ), 20 );
-		add_action( 'admin_post_kap_request_otp', array( __CLASS__, 'handle_request_otp' ) );
-		add_action( 'admin_post_kap_verify_otp', array( __CLASS__, 'handle_verify_otp' ) );
+		add_action( 'admin_post_kap_create_admin', array( __CLASS__, 'handle_create_admin' ) );
 	}
 
 	public static function menu() {
@@ -35,32 +35,26 @@ class KAP_Account_Creation {
 		echo '<div class="wrap"><h1>Add College Admin</h1>';
 
 		if ( isset( $_GET['kap_done'] ) ) {
-			echo '<div class="notice notice-success"><p>Admin account created and the welcome email has been sent.</p></div>';
+			$uname = isset( $_GET['u'] ) ? sanitize_user( wp_unslash( $_GET['u'] ) ) : '';
+			echo '<div class="notice notice-success"><p><strong>Account created</strong> for User ID <strong>' . esc_html( $uname ) . '</strong>. Share the User ID and password you just set with them directly - they can sign in from the site\'s "Admin Login" button.</p></div>';
 		}
 		if ( isset( $_GET['kap_error'] ) ) {
 			echo '<div class="notice notice-error"><p>' . esc_html( sanitize_text_field( wp_unslash( $_GET['kap_error'] ) ) ) . '</p></div>';
 		}
 
-		$token = isset( $_GET['token'] ) ? sanitize_key( wp_unslash( $_GET['token'] ) ) : '';
-		$pending = $token ? get_transient( 'kap_pending_' . $token ) : false;
-
-		if ( $token && $pending ) {
-			self::render_otp_form( $token, $pending );
-		} else {
-			self::render_request_form();
-		}
-
+		self::render_form();
 		echo '</div>';
 	}
 
-	private static function render_request_form() {
+	private static function render_form() {
 		?>
 		<p>Creates a limited "College Staff Admin" account - access to Hero Slides, Notices, Recruitment,
 		Tenders, Faculty, Gallery, Downloads, Links, Organisation Logos, Applications, Posts, Student
-		Records and Media only. No Settings, Plugins, Themes, or Users access.</p>
+		Records and Media only. No Settings, Plugins, Themes, or Users access. Share the User ID and
+		password you set below with the person directly - there is no separate verification step.</p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<?php wp_nonce_field( 'kap_request_otp' ); ?>
-			<input type="hidden" name="action" value="kap_request_otp">
+			<?php wp_nonce_field( 'kap_create_admin' ); ?>
+			<input type="hidden" name="action" value="kap_create_admin">
 			<table class="form-table">
 				<tr><th><label>Full Name</label></th><td><input type="text" name="kap_name" class="regular-text" required></td></tr>
 				<tr><th><label>User ID (username)</label></th><td><input type="text" name="kap_username" class="regular-text" required pattern="[A-Za-z0-9_\.\-]+"></td></tr>
@@ -68,30 +62,14 @@ class KAP_Account_Creation {
 				<tr><th><label>Email ID</label></th><td><input type="email" name="kap_email" class="regular-text" required></td></tr>
 				<tr><th><label>Password</label></th><td><input type="password" name="kap_password" class="regular-text" required minlength="8"></td></tr>
 			</table>
-			<?php submit_button( 'Send OTP to this Email' ); ?>
+			<?php submit_button( 'Create Admin Account' ); ?>
 		</form>
 		<?php
 	}
 
-	private static function render_otp_form( $token, $pending ) {
-		?>
-		<p>An OTP has been sent to <strong><?php echo esc_html( $pending['email'] ); ?></strong>. Enter it below to finish creating the account for <strong><?php echo esc_html( $pending['name'] ); ?></strong>.</p>
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<?php wp_nonce_field( 'kap_verify_otp_' . $token ); ?>
-			<input type="hidden" name="action" value="kap_verify_otp">
-			<input type="hidden" name="token" value="<?php echo esc_attr( $token ); ?>">
-			<table class="form-table">
-				<tr><th><label>OTP</label></th><td><input type="text" name="kap_otp" class="regular-text" required autocomplete="one-time-code" maxlength="6"></td></tr>
-			</table>
-			<?php submit_button( 'Verify & Create Account' ); ?>
-		</form>
-		<p><a href="<?php echo esc_url( admin_url( 'admin.php?page=kap-add-admin' ) ); ?>">&larr; Start over</a></p>
-		<?php
-	}
-
-	public static function handle_request_otp() {
+	public static function handle_create_admin() {
 		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Not allowed.' );
-		check_admin_referer( 'kap_request_otp' );
+		check_admin_referer( 'kap_create_admin' );
 
 		$name     = sanitize_text_field( wp_unslash( $_POST['kap_name'] ?? '' ) );
 		$username = sanitize_user( wp_unslash( $_POST['kap_username'] ?? '' ) );
@@ -115,77 +93,32 @@ class KAP_Account_Creation {
 			exit;
 		}
 
-		$token = wp_generate_password( 20, false, false );
-		$otp   = (string) wp_rand( 100000, 999999 );
-
-		set_transient( 'kap_pending_' . $token, array(
-			'name' => $name, 'username' => $username, 'mobile' => $mobile,
-			'email' => $email, 'password' => $password, 'otp' => $otp,
-		), self::OTP_TTL );
-
-		$college = self::college_name();
-		$mail_error = '';
-		add_action( 'wp_mail_failed', function ( $wp_error ) use ( &$mail_error ) { $mail_error = $wp_error->get_error_message(); } );
-		$sent = wp_mail(
-			$email,
-			'Your OTP for ' . $college . ' Admin Panel',
-			"Hello $name,\n\nYour OTP to activate your College Staff Admin account for $college is:\n\n$otp\n\nThis code expires in 10 minutes. If you did not request this, you can ignore this email.\n\nThank you."
-		);
-
-		if ( ! $sent ) {
-			delete_transient( 'kap_pending_' . $token );
-			$msg = 'Could not send the OTP email' . ( $mail_error ? ' (' . $mail_error . ')' : '' ) . '. This is usually a hosting/mail setup issue - see the plugin README for fixing email delivery (an SMTP plugin is normally needed on shared hosting).';
-			wp_safe_redirect( admin_url( 'admin.php?page=kap-add-admin&kap_error=' . rawurlencode( $msg ) ) );
-			exit;
-		}
-
-		wp_safe_redirect( admin_url( 'admin.php?page=kap-add-admin&token=' . $token ) );
-		exit;
-	}
-
-	public static function handle_verify_otp() {
-		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Not allowed.' );
-		$token = isset( $_POST['token'] ) ? sanitize_key( wp_unslash( $_POST['token'] ) ) : '';
-		check_admin_referer( 'kap_verify_otp_' . $token );
-
-		$pending = $token ? get_transient( 'kap_pending_' . $token ) : false;
-		if ( ! $pending ) {
-			wp_safe_redirect( admin_url( 'admin.php?page=kap-add-admin&kap_error=' . rawurlencode( 'This OTP request has expired - please start again.' ) ) );
-			exit;
-		}
-
-		$otp_entered = sanitize_text_field( wp_unslash( $_POST['kap_otp'] ?? '' ) );
-		if ( ! hash_equals( $pending['otp'], $otp_entered ) ) {
-			wp_safe_redirect( admin_url( 'admin.php?page=kap-add-admin&token=' . $token . '&kap_error=' . rawurlencode( 'Incorrect OTP, please try again.' ) ) );
-			exit;
-		}
-
 		$user_id = wp_insert_user( array(
-			'user_login' => $pending['username'],
-			'user_email' => $pending['email'],
-			'user_pass'  => $pending['password'],
-			'display_name' => $pending['name'],
-			'first_name' => $pending['name'],
-			'role' => KAP_Role::ROLE,
+			'user_login'   => $username,
+			'user_email'   => $email,
+			'user_pass'    => $password,
+			'display_name' => $name,
+			'first_name'   => $name,
+			'role'         => KAP_Role::ROLE,
 		) );
-
-		delete_transient( 'kap_pending_' . $token );
 
 		if ( is_wp_error( $user_id ) ) {
 			wp_safe_redirect( admin_url( 'admin.php?page=kap-add-admin&kap_error=' . rawurlencode( $user_id->get_error_message() ) ) );
 			exit;
 		}
 
-		update_user_meta( $user_id, 'kap_mobile', $pending['mobile'] );
+		update_user_meta( $user_id, 'kap_mobile', $mobile );
 
+		// Best-effort welcome email - failing to send it never undoes the
+		// account that was just created.
 		$college = self::college_name();
 		wp_mail(
-			$pending['email'],
+			$email,
 			'Welcome to ' . $college,
-			"Welcome to $college!\n\nYou are now an admin of this college website.\n\nUser ID: {$pending['username']}\nLogin: " . wp_login_url() . "\n\nThank you."
+			"Welcome to $college!\n\nYou are now an admin of this college website.\n\nUser ID: $username\nLogin: " . wp_login_url() . "\n\nThank you."
 		);
 
-		wp_safe_redirect( admin_url( 'admin.php?page=kap-add-admin&kap_done=1' ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=kap-add-admin&kap_done=1&u=' . rawurlencode( $username ) ) );
 		exit;
 	}
 }
