@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/admin.css">
+<title>Gallery Management | Admin Panel</title>
+</head>
+<body data-title="Gallery Management">
+<div class="admin-shell">
+  <aside class="sidebar" id="kc-sidebar"></aside>
+  <div class="main">
+    <div class="topbar-admin" id="kc-topbar-admin"></div>
+    <div class="content">
+
+<div class="section-title-row">
+  <div><h2 style="margin-bottom:2px;"><i class="fa-solid fa-images" style="color:var(--acc);"></i> Gallery Management</h2><p style="color:var(--muted);font-size:.85rem;margin:0;">Add, edit, delete and search gallery management records.</p></div>
+  <button class="btn btn-primary" id="modAdd"><i class="fa-solid fa-plus"></i> Add Photo</button>
+</div>
+<div class="toolbar">
+  <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="modSearch" placeholder="Search gallery management..."></div>
+  <select id="modFilter"><option>All</option><option>Campus</option><option>Events</option><option>Sports</option><option>Annual Function</option></select>
+</div>
+<div class="table-wrap">
+<table class="data-table">
+<thead><tr><th style="width:90px;">Actions</th><th>Photo</th><th>Title</th><th>Category</th><th>Featured (Home)</th><th>Order</th></tr></thead>
+<tbody id="modBody"></tbody>
+</table>
+</div>
+
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="kc-modal-overlay"><div class="modal" id="kc-modal"></div></div>
+
+<script src="../frontend/js/data.js"></script>
+<script src="js/admin.js"></script>
+<script>
+
+KCAdmin.crud({
+  key: 'gallery', itemName: 'Photo',
+  tableBodyId: 'modBody', searchId: 'modSearch', filterId: 'modFilter', addBtnId: 'modAdd',
+  searchKeys: ['title'], filterField: 'category', emptyIcon: 'fa-images',
+  columns: [
+    { render: function(g){ return '<img src="'+g.image+'" class="thumb">'; } },
+    { render: function(g){ return KCAdmin.esc(g.title); } },
+    { render: function(g){ return '<span class="badge badge-blue">'+g.category+'</span>'; } },
+    { render: function(g){ return g.featured? '<span class="badge badge-green">Yes</span>':'<span class="badge badge-red">No</span>'; } },
+    { render: function(g){ return g.order; } }
+  ],
+  fields: [
+    { name:'image', label:'Photo', type:'image' },
+    { name:'title', label:'Title / Caption', required:true, pairWith:undefined },
+    { name:'category', label:'Category', type:'select', options:['Campus','Events','Sports','Annual Function'], pairWith:'title' },
+    { name:'date', label:'Date', type:'date', pairWith:undefined },
+    { name:'order', label:'Display Order', type:'number', default:1, pairWith:'date' },
+    { name:'featured', label:'Show on Homepage Preview', type:'checkbox' }
+  ]
+});
+
+</script>
+</body>
+</html>

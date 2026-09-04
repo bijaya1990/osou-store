@@ -1,0 +1,51 @@
+/* ---- Frontend forms/portal ---- */
+.kcms-box{max-width:760px;margin:0 auto;background:#fff;border:1px solid #e2e2e2;border-radius:10px;padding:26px 28px;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.kcms-box h3{margin-top:0;color:#012D58;border-bottom:2px solid #EBC30F;padding-bottom:10px;}
+.kcms-notice{padding:16px 20px;background:#fff8e1;border:1px solid #EBC30F;border-radius:8px;}
+.kcms-readonly-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:20px;}
+.kcms-readonly-grid label{font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:#666;display:block;margin-bottom:3px;}
+.kcms-ro{background:#f5f7fa;border:1px solid #dfe3e8;border-radius:6px;padding:8px 10px;font-weight:600;color:#012D58;}
+.kcms-form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 16px;}
+.kcms-box form p{margin-bottom:14px;}
+.kcms-box label{display:block;font-weight:600;font-size:.9rem;color:#222;margin-bottom:5px;}
+.kcms-box input[type=text],.kcms-box input[type=email],.kcms-box input[type=date],.kcms-box input[type=number],.kcms-box input[type=file],.kcms-box select,.kcms-box textarea{width:100%;padding:9px 11px;border:1px solid #ccc;border-radius:6px;font-size:.95rem;box-sizing:border-box;font-family:inherit;}
+.kcms-checkbox-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 16px;margin-bottom:16px;}
+.kcms-checkbox-grid label{font-weight:400;display:flex;align-items:center;gap:6px;}
+.kcms-checkbox-grid input{width:auto;}
+.kcms-otp-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0 4px;}
+.kcms-otp-row input{max-width:180px;}
+.kcms-hint{font-size:.8rem;color:#777;margin:4px 0 18px;}
+.kcms-btn{display:inline-block;padding:10px 22px;border-radius:6px;font-weight:700;text-decoration:none;cursor:pointer;border:2px solid transparent;font-size:.95rem;}
+.kcms-btn-primary{background:#DB3918;color:#fff;}
+.kcms-btn-primary:hover{background:#b52c10;}
+.kcms-btn-outline{background:#fff;border-color:#012D58;color:#012D58;}
+.kcms-btn-outline:hover{background:#012D58;color:#fff;}
+.kcms-msg{padding:10px 14px;border-radius:6px;margin-bottom:14px;font-size:.9rem;}
+.kcms-msg.kcms-msg-error{background:#fdecea;color:#a52a1f;border:1px solid #f5c2bd;}
+.kcms-msg.kcms-msg-ok{background:#e8f6ee;color:#1e7e42;border:1px solid #b7e4c7;}
+.kcms-success{background:#e8f6ee;border:1px solid #b7e4c7;border-radius:8px;padding:20px;color:#1e7e42;}
+.kcms-success a{color:#012D58;font-weight:700;}
+
+.kcms-dashboard h3{color:#012D58;border-bottom:2px solid #EBC30F;padding-bottom:8px;margin-top:30px;}
+.kcms-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:.9rem;}
+.kcms-table th,.kcms-table td{border:1px solid #e0e0e0;padding:8px 10px;text-align:left;}
+.kcms-table th{background:#012D58;color:#fff;}
+.kcms-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700;text-transform:capitalize;}
+.kcms-badge-submitted,.kcms-badge-pending{background:#fff3cd;color:#8a6d00;}
+.kcms-badge-approved,.kcms-badge-issued{background:#d4edda;color:#1e7e42;}
+.kcms-badge-rejected{background:#f8d7da;color:#a52a1f;}
+.kcms-idcard-preview-row{display:flex;gap:24px;flex-wrap:wrap;}
+.kcms-idcard-preview-item{display:flex;gap:14px;align-items:center;}
+.kcms-idcard-thumb{width:60px;height:74px;object-fit:cover;border-radius:4px;border:1px solid #ccc;}
+
+/* ---- wp-admin pages ---- */
+.kcms-admin .kcms-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:20px 0 30px;}
+.kcms-admin .kcms-stat-card{background:#fff;border:1px solid #ddd;border-left:4px solid #012D58;border-radius:6px;padding:16px 18px;}
+.kcms-admin .kcms-stat-card .n{font-size:1.8rem;font-weight:700;color:#012D58;}
+.kcms-admin .kcms-stat-card .l{color:#555;font-size:.85rem;margin:4px 0 8px;}
+.kcms-admin .kcms-two-col{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start;}
+.kcms-admin .kcms-panel{background:#fff;border:1px solid #ddd;border-radius:6px;padding:18px 20px;}
+.kcms-admin .kcms-panel-wide{overflow-x:auto;}
+.kcms-admin .kcms-inline-form{margin-top:8px;padding:10px;background:#f6f7f7;border:1px solid #ddd;border-radius:4px;}
+.kcms-admin .kcms-inline-form textarea{width:100%;min-height:50px;margin-bottom:6px;}
+@media(max-width:960px){ .kcms-admin .kcms-two-col{grid-template-columns:1fr;} }

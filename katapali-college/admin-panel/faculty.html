@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/admin.css">
+<title>Faculty Management | Admin Panel</title>
+</head>
+<body data-title="Faculty Management">
+<div class="admin-shell">
+  <aside class="sidebar" id="kc-sidebar"></aside>
+  <div class="main">
+    <div class="topbar-admin" id="kc-topbar-admin"></div>
+    <div class="content">
+
+<div class="section-title-row">
+  <div><h2 style="margin-bottom:2px;"><i class="fa-solid fa-chalkboard-user" style="color:var(--acc);"></i> Faculty Management</h2><p style="color:var(--muted);font-size:.85rem;margin:0;">Add, edit, delete and search faculty management records.</p></div>
+  <button class="btn btn-primary" id="modAdd"><i class="fa-solid fa-plus"></i> Add Faculty</button>
+</div>
+<div class="toolbar">
+  <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="modSearch" placeholder="Search faculty management..."></div>
+  <select id="modFilter"><option>All</option><option>Odia</option><option>English</option><option>History</option><option>Political Science</option><option>Economics</option><option>Mathematics</option><option>Physics</option><option>Chemistry</option><option>Botany</option><option>Zoology</option><option>Commerce</option><option>Education</option><option>Sanskrit</option><option>Hindi</option><option>Philosophy</option><option>Computer Science</option><option>Physical Education</option><option>Library</option><option>Geography</option><option>Statistics</option></select>
+</div>
+<div class="table-wrap">
+<table class="data-table">
+<thead><tr><th style="width:90px;">Actions</th><th>Photo</th><th>Name</th><th>Designation</th><th>Department</th><th>Homepage Slider</th></tr></thead>
+<tbody id="modBody"></tbody>
+</table>
+</div>
+
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="kc-modal-overlay"><div class="modal" id="kc-modal"></div></div>
+
+<script src="../frontend/js/data.js"></script>
+<script src="js/admin.js"></script>
+<script>
+
+KCAdmin.crud({
+  key: 'faculty', itemName: 'Faculty Member',
+  tableBodyId: 'modBody', searchId: 'modSearch', filterId: 'modFilter', addBtnId: 'modAdd',
+  searchKeys: ['name','designation','department'], filterField: 'department', emptyIcon: 'fa-chalkboard-user',
+  columns: [
+    { render: function(f){ return '<img src="'+f.image+'" class="thumb">'; } },
+    { render: function(f){ return '<strong>'+KCAdmin.esc(f.name)+'</strong>'; } },
+    { render: function(f){ return KCAdmin.esc(f.designation); } },
+    { render: function(f){ return '<span class="badge badge-blue">'+f.department+'</span>'; } },
+    { render: function(f){ return f.onSlider? '<span class="badge badge-green">Yes</span>':'<span class="badge badge-red">No</span>'; } }
+  ],
+  fields: [
+    { name:'image', label:'Photo', type:'image' },
+    { name:'name', label:'Full Name', required:true, pairWith:undefined },
+    { name:'designation', label:'Designation', required:true, pairWith:'name' },
+    { name:'department', label:'Department', type:'select', options:["Odia","English","History","Political Science","Economics","Mathematics","Physics","Chemistry","Botany","Zoology","Commerce","Education","Sanskrit","Hindi","Philosophy","Computer Science","Physical Education","Library","Geography","Statistics"], pairWith:undefined },
+    { name:'qualification', label:'Qualification', pairWith:'department' },
+    { name:'experience', label:'Experience', pairWith:undefined },
+    { name:'email', label:'Email', type:'email', pairWith:'experience' },
+    { name:'phone', label:'Phone', pairWith:undefined },
+    { name:'order', label:'Display Order', type:'number', default:1, pairWith:'phone' },
+    { name:'onSlider', label:'Show in Homepage Faculty Slider', type:'checkbox' }
+  ]
+});
+
+</script>
+</body>
+</html>

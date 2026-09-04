@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 620" width="1400" height="620">
+<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4c1d95"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+<rect width="1400" height="620" fill="url(#s)"/>
+<circle cx="1180" cy="120" r="70" fill="#fde68a" opacity=".55"/>
+<rect x="300" y="250" width="800" height="320" rx="14" fill="#ede9fe"/>
+        <rect x="340" y="290" width="60" height="80" rx="6" fill="#fff" opacity=".8"/><rect x="430" y="290" width="60" height="80" rx="6" fill="#fff" opacity=".8"/><rect x="520" y="290" width="60" height="80" rx="6" fill="#fff" opacity=".8"/><rect x="610" y="290" width="60" height="80" rx="6" fill="#fff" opacity=".8"/><rect x="700" y="290" width="60" height="80" rx="6" fill="#fff" opacity=".8"/><rect x="790" y="290" width="60" height="80" rx="6" fill="#fff" opacity=".8"/><rect x="880" y="290" width="60" height="80" rx="6" fill="#fff" opacity=".8"/><rect x="970" y="290" width="60" height="80" rx="6" fill="#fff" opacity=".8"/>
+        <rect x="340" y="400" width="720" height="18" rx="9" fill="#f59e0b"/>
+        <rect x="340" y="440" width="520" height="18" rx="9" fill="#ffffff" opacity=".7"/>
+        <rect x="340" y="480" width="620" height="18" rx="9" fill="#ffffff" opacity=".5"/>
+<text x="700" y="70" text-anchor="middle" font-family="Poppins,Arial" font-size="34" font-weight="700" fill="#ffffff" opacity=".92">Library &amp; Reading Hall</text>
+</svg>

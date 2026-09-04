@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/admin.css">
+<title>Homepage Content | Admin Panel</title>
+</head>
+<body data-title="Homepage Content">
+<div class="admin-shell">
+  <aside class="sidebar" id="kc-sidebar"></aside>
+  <div class="main">
+    <div class="topbar-admin" id="kc-topbar-admin"></div>
+    <div class="content">
+
+<div class="section-title-row"><div><h2><i class="fa-solid fa-house" style="color:var(--acc);"></i> Homepage Content Editor</h2><p style="color:var(--muted);font-size:.85rem;margin:0;">Edit hero slider, principal message and quick stats shown on the homepage.</p></div></div>
+
+<div class="panel">
+  <div class="section-title-row"><h3 style="margin:0;">Hero Slider Images</h3><button class="btn btn-primary btn-sm" id="heroAdd"><i class="fa-solid fa-plus"></i> Add Slide</button></div>
+  <div class="table-wrap"><table class="data-table"><thead><tr><th>Actions</th><th>Image</th><th>Title</th><th>Subtitle</th></tr></thead><tbody id="heroBody"></tbody></table></div>
+</div>
+
+<div class="panel">
+  <h3>Principal's Message</h3>
+  <div class="img-preview" id="pImgPrev" style="width:120px;height:120px;border-radius:50%;"></div>
+  <input type="file" accept="image/*" id="pImgFile" style="margin:10px 0;">
+  <div class="form-row">
+    <div class="form-group"><label>Name</label><input type="text" id="pName"></div>
+    <div class="form-group"><label>Designation</label><input type="text" id="pDesig"></div>
+  </div>
+  <div class="form-group"><label>Qualification</label><input type="text" id="pQual"></div>
+  <div class="form-group"><label>Message</label><textarea id="pMsg" rows="5"></textarea></div>
+  <button class="btn btn-primary" id="pSave"><i class="fa-solid fa-floppy-disk"></i> Save Principal Message</button>
+</div>
+
+<div class="panel">
+  <h3>Quick Stats Numbers</h3>
+  <div id="statsWrap"></div>
+  <button class="btn btn-primary" id="statsSave" style="margin-top:12px;"><i class="fa-solid fa-floppy-disk"></i> Save Stats</button>
+</div>
+
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="kc-modal-overlay"><div class="modal" id="kc-modal"></div></div>
+
+<script src="../frontend/js/data.js"></script>
+<script src="js/admin.js"></script>
+<script>
+
+var overlay = document.getElementById('kc-modal-overlay'), modal = document.getElementById('kc-modal');
+function renderHero(){
+  var slides = KC.Store.get('hero');
+  document.getElementById('heroBody').innerHTML = slides.map(function(s){
+    return '<tr><td class="actions"><button class="act-btn act-edit" data-id="'+s.id+'"><i class="fa-solid fa-pen"></i></button><button class="act-btn act-del" data-id="'+s.id+'"><i class="fa-solid fa-trash"></i></button></td><td><img src="'+s.image+'" class="thumb"></td><td>'+KCAdmin.esc(s.title)+'</td><td>'+KCAdmin.esc((s.subtitle||'').slice(0,50))+'</td></tr>';
+  }).join('') || '<tr class="empty-row"><td colspan="4">No slides yet.</td></tr>';
+  document.querySelectorAll('#heroBody .act-edit').forEach(function(b){ b.onclick=function(){ openHeroModal(KC.Store.find('hero', b.dataset.id)); }; });
+  document.querySelectorAll('#heroBody .act-del').forEach(function(b){ b.onclick=function(){ KCAdmin.confirmDelete('Delete this slide?', function(){ KC.Store.remove('hero', b.dataset.id); renderHero(); KCAdmin.toast('Slide deleted.'); }); }; });
+}
+function openHeroModal(item){
+  var isEdit = !!item;
+  modal.innerHTML = '<div class="modal-head"><h3>'+(isEdit?'Edit':'Add')+' Hero Slide</h3><button class="modal-close" id="kc-modal-x"><i class="fa-solid fa-xmark"></i></button></div>'+
+  '<div class="modal-body" id="hm-body"></div>'+
+  '<div class="modal-foot"><button class="btn btn-outline" id="kc-modal-cancel">Cancel</button><button class="btn btn-primary" id="hm-save"><i class="fa-solid fa-floppy-disk"></i> Save</button></div>';
+  var v = item || {image:'',title:'',subtitle:'',btn1:'Admissions',link1:'admissions.html',btn2:'Know More',link2:'about.html'};
+  document.getElementById('hm-body').innerHTML =
+   (v.image? '<img src="'+v.image+'" class="img-preview" id="hm-prev">':'<div class="img-preview" id="hm-prev"></div>')+
+   '<input type="hidden" id="hm-image" value="'+v.image+'"><div class="file-drop" id="hm-drop"><i class="fa-solid fa-cloud-arrow-up"></i> Click to upload banner image</div><input type="file" accept="image/*" id="hm-file" style="display:none;">'+
+   '<div class="form-group"><label>Title</label><input id="hm-title" value="'+KCAdmin.esc(v.title)+'"></div>'+
+   '<div class="form-group"><label>Subtitle</label><textarea id="hm-subtitle" rows="2">'+KCAdmin.esc(v.subtitle)+'</textarea></div>'+
+   '<div class="form-row"><div class="form-group"><label>Button 1 Text</label><input id="hm-btn1" value="'+KCAdmin.esc(v.btn1)+'"></div><div class="form-group"><label>Button 1 Link</label><input id="hm-link1" value="'+KCAdmin.esc(v.link1)+'"></div></div>'+
+   '<div class="form-row"><div class="form-group"><label>Button 2 Text</label><input id="hm-btn2" value="'+KCAdmin.esc(v.btn2)+'"></div><div class="form-group"><label>Button 2 Link</label><input id="hm-link2" value="'+KCAdmin.esc(v.link2)+'"></div></div>';
+  document.getElementById('hm-drop').onclick=function(){document.getElementById('hm-file').click();};
+  document.getElementById('hm-file').onchange=function(){ KCAdmin.fileToDataURL(this, function(data){ document.getElementById('hm-image').value=data; document.getElementById('hm-prev').outerHTML='<img src="'+data+'" class="img-preview" id="hm-prev">'; }); };
+  overlay.classList.add('open');
+  document.getElementById('kc-modal-x').onclick = document.getElementById('kc-modal-cancel').onclick = function(){ overlay.classList.remove('open'); };
+  document.getElementById('hm-save').onclick = function(){
+    var data = { image:document.getElementById('hm-image').value, title:document.getElementById('hm-title').value, subtitle:document.getElementById('hm-subtitle').value, btn1:document.getElementById('hm-btn1').value, link1:document.getElementById('hm-link1').value, btn2:document.getElementById('hm-btn2').value, link2:document.getElementById('hm-link2').value };
+    if(isEdit) KC.Store.update('hero', item.id, data); else KC.Store.add('hero', data);
+    overlay.classList.remove('open'); renderHero(); KCAdmin.toast('Hero slide saved.');
+  };
+}
+document.getElementById('heroAdd').onclick = function(){ openHeroModal(null); };
+renderHero();
+
+var p = KC.Store.get('principal');
+document.getElementById('pImgPrev').innerHTML = p.image? '<img src="'+p.image+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">':'';
+document.getElementById('pName').value = p.name; document.getElementById('pDesig').value = p.designation;
+document.getElementById('pQual').value = p.qualification; document.getElementById('pMsg').value = p.message;
+var pImgData = p.image;
+document.getElementById('pImgFile').onchange = function(){ KCAdmin.fileToDataURL(this, function(data){ pImgData=data; document.getElementById('pImgPrev').innerHTML='<img src="'+data+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">'; }); };
+document.getElementById('pSave').onclick = function(){
+  KC.Store.set('principal', { image: pImgData, name: document.getElementById('pName').value, designation: document.getElementById('pDesig').value, qualification: document.getElementById('pQual').value, message: document.getElementById('pMsg').value });
+  KCAdmin.toast('Principal message updated.');
+};
+
+var stats = KC.Store.get('stats');
+document.getElementById('statsWrap').innerHTML = '<div class="form-row">' + stats.map(function(s,i){
+  return '<div class="form-group"><label>'+s.label+'</label><input type="number" id="stat_'+i+'" value="'+s.value+'"></div>';
+}).join('') + '</div>';
+document.getElementById('statsSave').onclick = function(){
+  stats.forEach(function(s,i){ s.value = +document.getElementById('stat_'+i).value; });
+  KC.Store.set('stats', stats);
+  KCAdmin.toast('Quick stats updated.');
+};
+
+</script>
+</body>
+</html>

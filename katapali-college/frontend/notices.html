@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<title>Notices | KATAPALI +3 COLLEGE, KATAPALI</title>
+</head>
+<body data-page="notices">
+<div id="kc-topbar" class="topbar"></div>
+<header class="site-header" id="kc-header"></header>
+
+<section class="page-banner">
+  <div class="container">
+    <h1>Notices</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Notices</div>
+  </div>
+</section>
+<section class="section">
+  <div class="container side-layout">
+    <div>
+      <div id="notice-detail" style="display:none;" class="content-block fade-in"></div>
+      <div id="notice-list-wrap">
+        <div class="gallery-filters fade-in" id="notice-filters"></div>
+        <div id="notice-list" style="display:flex;flex-direction:column;gap:16px;"></div>
+      </div>
+    </div>
+    <aside>
+      <div class="side-box"><h4>Categories</h4><ul id="notice-cats"></ul></div>
+      <div class="side-box"><h4>Need Help?</h4><p style="font-size:.88rem;color:var(--muted);">For any query regarding notices, contact the college office during working hours.</p>
+      <a href="contact.html" class="btn btn-line btn-sm">Contact Us</a></div>
+    </aside>
+  </div>
+</section>
+
+
+<footer class="site-footer" id="kc-footer"></footer>
+
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+
+<script>
+window.KCPageInit = function() {
+  
+  
+var notices = KC.Store.get('notices');
+var params = new URLSearchParams(location.search);
+var openId = params.get('id');
+var cats = ['All'].concat(Array.from(new Set(notices.map(function(n){return n.category;}))));
+document.getElementById('notice-filters').innerHTML = cats.map(function(c,i){ return '<button class="gf-btn'+(i===0?' active':'')+'" data-c="'+c+'">'+c+'</button>'; }).join('');
+document.getElementById('notice-cats').innerHTML = cats.slice(1).map(function(c){ return '<li><a href="#" data-c="'+c+'">'+c+' <span style="float:right;color:var(--muted);">('+notices.filter(function(n){return n.category===c;}).length+')</span></a></li>'; }).join('');
+function card(n){
+  return '<div class="notice-card"><div class="notice-date">'+new Date(n.date).getDate()+'<small>'+new Date(n.date).toLocaleString('en-IN',{month:'short'})+'</small></div>' +
+  '<div style="flex:1;"><span class="tag tag-blue">'+n.category+'</span>'+(n.isNew?'<span class="badge-new">NEW</span>':'')+'<h4 style="margin:8px 0 6px;">'+n.title+'</h4><p style="margin:0;color:var(--muted);font-size:.88rem;">'+n.summary+'</p></div>' +
+  '<a href="notices.html?id='+n.id+'" class="btn btn-line btn-sm">View</a></div>';
+}
+function renderList(cat){
+  var list = cat==='All'? notices : notices.filter(function(n){return n.category===cat;});
+  document.getElementById('notice-list').innerHTML = list.map(card).join('') || '<div class="empty-msg">No notices found.</div>';
+}
+document.getElementById('notice-filters').querySelectorAll('.gf-btn').forEach(function(b){
+  b.onclick=function(){ document.querySelectorAll('#notice-filters .gf-btn').forEach(function(x){x.classList.remove('active');}); b.classList.add('active'); renderList(b.dataset.c); };
+});
+function showDetail(n){
+  document.getElementById('notice-list-wrap').style.display='none';
+  var d = document.getElementById('notice-detail'); d.style.display='block';
+  d.innerHTML = '<a href="notices.html" class="btn btn-line btn-sm" style="margin-bottom:18px;"><i class="fa-solid fa-arrow-left"></i> Back to Notices</a>' +
+    '<span class="tag tag-blue">'+n.category+'</span><h2 style="margin-top:12px;">'+n.title+'</h2>' +
+    '<div class="card-date" style="margin-bottom:18px;"><i class="fa-regular fa-calendar"></i>Published: '+KCU.fmtDate(n.date)+' &nbsp;|&nbsp; Valid till: '+KCU.fmtDate(n.expiry)+'</div>' +
+    (n.image? '<img src="'+n.image+'" style="border-radius:12px;margin-bottom:18px;">':'') +
+    n.content + (n.file? '<p style="margin-top:20px;"><a href="'+n.file+'" target="_blank" class="btn btn-accent"><i class="fa-solid fa-download"></i> Download Attachment</a></p>':'');
+}
+if(openId){ var found = notices.find(function(n){return n.id===openId;}); if(found) showDetail(found); else renderList('All'); }
+else { renderList('All'); }
+
+};
+</script>
+</body>
+</html>

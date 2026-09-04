@@ -1,0 +1,13 @@
+.ksr-hint { color: #777; font-size: .88rem; margin: 0; }
+table.ksr-result-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+table.ksr-result-table th, table.ksr-result-table td { border: 1px solid #e2e2e2; padding: 8px 10px; text-align: left; }
+table.ksr-result-table th { background: #f5f6f8; }
+
+/* Session/batch "pick and view" widget - shared by Students List and
+   Alumni Directory. */
+.ksr-batch-box { max-width: 640px; margin: 0 auto; background: #fff; border: 1px solid #e2e2e2; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+.ksr-batch-row { display: flex; gap: 10px; }
+.ksr-batch-row select { flex: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 6px; font-size: .95rem; background: #fff; }
+.ksr-batch-row button { background: var(--primary, #012D58); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.ksr-batch-row button:hover { background: var(--primary-d, #001A33); }
+.ksr-batch-results { margin-top: 16px; }

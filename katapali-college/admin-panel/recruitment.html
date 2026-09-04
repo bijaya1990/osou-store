@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/admin.css">
+<title>Recruitment Management | Admin Panel</title>
+</head>
+<body data-title="Recruitment Management">
+<div class="admin-shell">
+  <aside class="sidebar" id="kc-sidebar"></aside>
+  <div class="main">
+    <div class="topbar-admin" id="kc-topbar-admin"></div>
+    <div class="content">
+
+<div class="section-title-row">
+  <div><h2 style="margin-bottom:2px;"><i class="fa-solid fa-briefcase" style="color:var(--acc);"></i> Recruitment Management</h2><p style="color:var(--muted);font-size:.85rem;margin:0;">Add, edit, delete and search recruitment management records.</p></div>
+  <button class="btn btn-primary" id="modAdd"><i class="fa-solid fa-plus"></i> Add Job Posting</button>
+</div>
+<div class="toolbar">
+  <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="modSearch" placeholder="Search recruitment management..."></div>
+  <select id="modFilter"><option>All</option><option>Open</option><option>Closed</option></select>
+</div>
+<div class="table-wrap">
+<table class="data-table">
+<thead><tr><th style="width:90px;">Actions</th><th>Title</th><th>Department</th><th>Type</th><th>Last Date</th><th>Status</th></tr></thead>
+<tbody id="modBody"></tbody>
+</table>
+</div>
+
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="kc-modal-overlay"><div class="modal" id="kc-modal"></div></div>
+
+<script src="../frontend/js/data.js"></script>
+<script src="js/admin.js"></script>
+<script>
+
+KCAdmin.crud({
+  key: 'recruitment', itemName: 'Job Posting',
+  tableBodyId: 'modBody', searchId: 'modSearch', filterId: 'modFilter', addBtnId: 'modAdd',
+  searchKeys: ['title','dept'], filterField: 'status', emptyIcon: 'fa-briefcase',
+  columns: [
+    { render: function(r){ return '<strong>'+KCAdmin.esc(r.title)+'</strong>'; } },
+    { render: function(r){ return r.dept; } },
+    { render: function(r){ return r.type; } },
+    { render: function(r){ return r.lastDate; } },
+    { render: function(r){ return '<span class="badge '+(r.status==='Open'?'badge-green':'badge-red')+'">'+r.status+'</span>'; } }
+  ],
+  fields: [
+    { name:'title', label:'Job Title', required:true },
+    { name:'dept', label:'Department', required:true, pairWith:undefined },
+    { name:'type', label:'Type', type:'select', options:['Guest Faculty','Contractual','Permanent','Part-Time'], pairWith:'dept' },
+    { name:'vacancies', label:'Vacancies', type:'number', default:1, pairWith:undefined },
+    { name:'salary', label:'Salary / Remuneration', pairWith:'vacancies' },
+    { name:'qualification', label:'Qualification Required', type:'textarea', required:true },
+    { name:'date', label:'Publish Date', type:'date', pairWith:undefined },
+    { name:'lastDate', label:'Last Date to Apply', type:'date', required:true, pairWith:'date' },
+    { name:'status', label:'Status', type:'select', options:['Open','Closed'] },
+    { name:'content', label:'Full Details (HTML)', type:'richtext' },
+    { name:'file', label:'Notification PDF', type:'image' }
+  ]
+});
+
+</script>
+</body>
+</html>

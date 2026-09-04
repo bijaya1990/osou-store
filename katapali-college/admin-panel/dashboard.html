@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/admin.css">
+<title>Dashboard | Admin Panel</title>
+</head>
+<body data-title="Dashboard">
+<div class="admin-shell">
+  <aside class="sidebar" id="kc-sidebar"></aside>
+  <div class="main">
+    <div class="topbar-admin" id="kc-topbar-admin"></div>
+    <div class="content">
+
+<div class="stat-cards" id="dashStats"></div>
+<div class="panel">
+  <h3>Quick Actions</h3>
+  <div class="quick-actions">
+    <a class="qa-btn" href="notices.html"><i class="fa-solid fa-bullhorn"></i> Add Notice</a>
+    <a class="qa-btn" href="recruitment.html"><i class="fa-solid fa-briefcase"></i> Add Recruitment</a>
+    <a class="qa-btn" href="tenders.html"><i class="fa-solid fa-file-contract"></i> Add Tender</a>
+    <a class="qa-btn" href="gallery.html"><i class="fa-solid fa-images"></i> Upload Photo</a>
+    <a class="qa-btn" href="faculty.html"><i class="fa-solid fa-chalkboard-user"></i> Add Faculty</a>
+    <a class="qa-btn" href="homepage.html"><i class="fa-solid fa-house"></i> Edit Homepage</a>
+    <a class="qa-btn" href="map.html"><i class="fa-solid fa-map-location-dot"></i> Edit Map</a>
+    <a class="qa-btn" href="theme.html"><i class="fa-solid fa-palette"></i> Theme Colors</a>
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:1.2fr 1fr;gap:22px;">
+  <div class="panel">
+    <h3>Recent Notices</h3>
+    <div class="table-wrap"><table class="data-table"><thead><tr><th>Title</th><th>Category</th><th>Date</th></tr></thead><tbody id="dashNotices"></tbody></table></div>
+  </div>
+  <div class="panel">
+    <h3>Recent Messages</h3>
+    <div class="table-wrap"><table class="data-table"><thead><tr><th>Name</th><th>Subject</th></tr></thead><tbody id="dashMsgs"></tbody></table></div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="kc-modal-overlay"><div class="modal" id="kc-modal"></div></div>
+
+<script src="../frontend/js/data.js"></script>
+<script src="js/admin.js"></script>
+<script>
+
+var counts = [
+  ['Notices', KC.Store.get('notices').length, 'fa-bullhorn', '#1e40af'],
+  ['Recruitment', KC.Store.get('recruitment').length, 'fa-briefcase', '#f59e0b'],
+  ['Tenders', KC.Store.get('tenders').length, 'fa-file-contract', '#0f766e'],
+  ['Faculty', KC.Store.get('faculty').length, 'fa-chalkboard-user', '#be123c'],
+  ['Gallery Images', KC.Store.get('gallery').length, 'fa-images', '#7c3aed']
+];
+document.getElementById('dashStats').innerHTML = counts.map(function(c){
+  return '<div class="stat-card2"><div class="ic" style="background:'+c[3]+';"><i class="fa-solid '+c[2]+'"></i></div><div><div class="num">'+c[1]+'</div><div class="lbl">'+c[0]+'</div></div></div>';
+}).join('');
+document.getElementById('dashNotices').innerHTML = KC.Store.get('notices').slice(0,5).map(function(n){
+  return '<tr><td>'+KCAdmin.esc(n.title)+'</td><td><span class="badge badge-blue">'+n.category+'</span></td><td>'+n.date+'</td></tr>';
+}).join('');
+var msgs = KC.Store.get('messages');
+document.getElementById('dashMsgs').innerHTML = msgs.length ? msgs.slice(0,5).map(function(m){
+  return '<tr><td>'+KCAdmin.esc(m.name)+'</td><td>'+KCAdmin.esc(m.subject)+'</td></tr>';
+}).join('') : '<tr class="empty-row"><td colspan="2">No messages yet.</td></tr>';
+
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/admin.css">
+<title>Notices Management | Admin Panel</title>
+</head>
+<body data-title="Notices Management">
+<div class="admin-shell">
+  <aside class="sidebar" id="kc-sidebar"></aside>
+  <div class="main">
+    <div class="topbar-admin" id="kc-topbar-admin"></div>
+    <div class="content">
+
+<div class="section-title-row">
+  <div><h2 style="margin-bottom:2px;"><i class="fa-solid fa-bullhorn" style="color:var(--acc);"></i> Notices Management</h2><p style="color:var(--muted);font-size:.85rem;margin:0;">Add, edit, delete and search notices management records.</p></div>
+  <button class="btn btn-primary" id="modAdd"><i class="fa-solid fa-plus"></i> Add Notice</button>
+</div>
+<div class="toolbar">
+  <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="modSearch" placeholder="Search notices management..."></div>
+  <select id="modFilter"><option>All</option><option>General</option><option>Admission</option><option>Examination</option><option>Event</option><option>Scholarship</option></select>
+</div>
+<div class="table-wrap">
+<table class="data-table">
+<thead><tr><th style="width:90px;">Actions</th><th>Title</th><th>Category</th><th>Date</th><th>Expiry</th><th>New</th></tr></thead>
+<tbody id="modBody"></tbody>
+</table>
+</div>
+
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="kc-modal-overlay"><div class="modal" id="kc-modal"></div></div>
+
+<script src="../frontend/js/data.js"></script>
+<script src="js/admin.js"></script>
+<script>
+
+KCAdmin.crud({
+  key: 'notices', itemName: 'Notice',
+  tableBodyId: 'modBody', searchId: 'modSearch', filterId: 'modFilter', addBtnId: 'modAdd',
+  searchKeys: ['title','summary'], filterField: 'category', emptyIcon: 'fa-bullhorn',
+  columns: [
+    { render: function(n){ return '<strong>'+KCAdmin.esc(n.title)+'</strong><br><small style="color:var(--muted);">'+KCAdmin.esc((n.summary||'').slice(0,60))+'…</small>'; } },
+    { render: function(n){ return '<span class="badge badge-blue">'+n.category+'</span>'; } },
+    { render: function(n){ return n.date; } },
+    { render: function(n){ return n.expiry||'-'; } },
+    { render: function(n){ return n.isNew? '<span class="badge badge-green">Yes</span>':'<span class="badge badge-red">No</span>'; } }
+  ],
+  fields: [
+    { name:'title', label:'Notice Title', required:true },
+    { name:'category', label:'Category', type:'select', options:['General','Admission','Examination','Event','Scholarship'], required:true },
+    { name:'date', label:'Publish Date', type:'date', required:true, pairWith:undefined },
+    { name:'expiry', label:'Expiry Date', type:'date', pairWith:'date' },
+    { name:'summary', label:'Short Summary', type:'textarea', required:true },
+    { name:'content', label:'Full Content (HTML)', type:'richtext', required:true },
+    { name:'file', label:'Attachment (PDF path/upload)', type:'image' },
+    { name:'image', label:'Notice Image (optional)', type:'image' },
+    { name:'isNew', label:'Mark as NEW', type:'checkbox', default:true }
+  ]
+});
+
+</script>
+</body>
+</html>

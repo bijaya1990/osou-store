@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/admin.css">
+<title>Google Map Settings | Admin Panel</title>
+</head>
+<body data-title="Google Map Settings">
+<div class="admin-shell">
+  <aside class="sidebar" id="kc-sidebar"></aside>
+  <div class="main">
+    <div class="topbar-admin" id="kc-topbar-admin"></div>
+    <div class="content">
+
+<div class="section-title-row"><div><h2><i class="fa-solid fa-map-location-dot" style="color:var(--acc);"></i> Google Map Settings</h2><p style="color:var(--muted);font-size:.85rem;margin:0;">Update the map embed shown on the homepage and contact page.</p></div></div>
+<div class="panel">
+  <div class="form-group"><label>Address Text (shown beside map)</label><input type="text" id="mapAddr"></div>
+  <div class="form-group"><label>Location Note</label><textarea id="mapNote" rows="3"></textarea></div>
+  <div class="form-group"><label>Google Map Embed Code (iframe)</label><textarea id="mapEmbed" rows="4" style="font-family:monospace;font-size:.8rem;"></textarea>
+  <span class="small-note">Paste the full &lt;iframe&gt; embed code from Google Maps "Share &gt; Embed a map".</span></div>
+  <button class="btn btn-primary" id="mapSave"><i class="fa-solid fa-floppy-disk"></i> Save Map Settings</button>
+</div>
+<div class="panel"><h3>Live Preview</h3><div id="mapPrev" style="border-radius:10px;overflow:hidden;"></div></div>
+
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="kc-modal-overlay"><div class="modal" id="kc-modal"></div></div>
+
+<script src="../frontend/js/data.js"></script>
+<script src="js/admin.js"></script>
+<script>
+
+var m = KC.Store.get('map');
+document.getElementById('mapAddr').value = m.address;
+document.getElementById('mapNote').value = m.note;
+document.getElementById('mapEmbed').value = m.embed;
+document.getElementById('mapPrev').innerHTML = m.embed;
+document.getElementById('mapSave').onclick = function(){
+  var data = { address: document.getElementById('mapAddr').value, note: document.getElementById('mapNote').value, embed: document.getElementById('mapEmbed').value };
+  KC.Store.set('map', data);
+  document.getElementById('mapPrev').innerHTML = data.embed;
+  KCAdmin.toast('Map settings saved.');
+};
+
+</script>
+</body>
+</html>

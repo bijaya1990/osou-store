@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<title>About Us | KATAPALI +3 COLLEGE, KATAPALI</title>
+</head>
+<body data-page="about">
+<div id="kc-topbar" class="topbar"></div>
+<header class="site-header" id="kc-header"></header>
+
+<section class="page-banner">
+  <div class="container">
+    <h1>About Us</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; About Us</div>
+  </div>
+</section>
+<section class="section">
+  <div class="container side-layout">
+    <div>
+      <div class="content-block fade-in" id="sec-about-college"></div>
+    </div>
+    <aside>
+      <div class="side-box"><h4>About Us</h4><ul>
+        <li><a href="#about-college">About College</a></li>
+        <li><a href="#vision-mission">Vision & Mission</a></li>
+        <li><a href="#governing-body">Governing Body / College Committee</a></li>
+        <li><a href="#principal-desk">Principal's Desk</a></li>
+      </ul></div>
+      <div class="side-box"><h4>College at a Glance</h4><ul>
+        <li>Established: <strong>1985</strong></li>
+        <li>Streams: <strong>Arts, Science, Commerce</strong></li>
+        <li>Students: <strong>1,284+</strong></li>
+        <li>Faculty: <strong>42</strong></li>
+      </ul></div>
+    </aside>
+  </div>
+</section>
+<section class="section section-alt" id="vision-mission"><div class="container"><div class="content-block fade-in" id="sec-vision-mission"></div></div></section>
+<section class="section" id="governing-body"><div class="container"><div class="content-block fade-in" id="sec-governing-body"></div></div></section>
+<section class="section section-alt" id="principal-desk"><div class="container"><div class="content-block fade-in" id="sec-principal-desk"></div></div></section>
+
+
+<footer class="site-footer" id="kc-footer"></footer>
+
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+
+<script>
+window.KCPageInit = function() {
+  [
+    ['about-college', '#sec-about-college'],
+    ['vision-mission', '#sec-vision-mission'],
+    ['governing-body', '#sec-governing-body'],
+    ['principal-desk', '#sec-principal-desk']
+  ].forEach(function(p) { KCU.injectPageContent(p[0], p[1]); });
+  
+};
+</script>
+</body>
+</html>

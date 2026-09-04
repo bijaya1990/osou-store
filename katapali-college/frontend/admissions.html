@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../images/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<title>Admissions | KATAPALI +3 COLLEGE, KATAPALI</title>
+</head>
+<body data-page="admissions">
+<div id="kc-topbar" class="topbar"></div>
+<header class="site-header" id="kc-header"></header>
+
+<section class="page-banner">
+  <div class="container">
+    <h1>Admissions</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Admissions</div>
+  </div>
+</section>
+<section class="section" id="admission-process"><div class="container"><div class="content-block fade-in" id="sec-admission-process"></div></div></section>
+<section class="section section-alt" id="eligibility"><div class="container"><div class="content-block fade-in" id="sec-eligibility"></div></div></section>
+<section class="section" id="fee-structure"><div class="container"><div class="content-block fade-in" id="sec-fee-structure"></div></div></section>
+<section class="section section-alt" id="apply">
+  <div class="container">
+    <div class="section-head fade-in"><span class="eyebrow">Apply Now</span><h2>Online Admission Enquiry Form</h2><p>Fill this demo form to raise an admission enquiry. Submissions are stored in the Admin Panel.</p></div>
+    <div class="content-block fade-in" style="max-width:760px;margin:0 auto;">
+      <div class="form-note" id="admForm-note">Thank you! Your admission enquiry has been submitted. Our office will contact you soon.</div>
+      <form class="kc-form" id="admForm">
+        <div class="frow">
+          <div class="fgroup"><label>Full Name *</label><input type="text" name="name" required></div>
+          <div class="fgroup"><label>Stream Applying For *</label>
+            <select name="stream" required><option>+3 Arts</option><option>+3 Science</option><option>+3 Commerce</option></select></div>
+        </div>
+        <div class="frow">
+          <div class="fgroup"><label>Phone Number *</label><input type="tel" name="phone" required></div>
+          <div class="fgroup"><label>Email Address</label><input type="email" name="email"></div>
+        </div>
+        <div class="fgroup"><label>+2 Marks (%) *</label><input type="text" name="marks" required></div>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Submit Enquiry</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+
+<footer class="site-footer" id="kc-footer"></footer>
+
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+
+<script>
+window.KCPageInit = function() {
+  [
+    ['admission-process', '#sec-admission-process'],
+    ['eligibility', '#sec-eligibility'],
+    ['fee-structure', '#sec-fee-structure']
+  ].forEach(function(p) { KCU.injectPageContent(p[0], p[1]); });
+  
+var admForm = document.getElementById('admForm');
+if (admForm) admForm.addEventListener('submit', function(e){
+  e.preventDefault();
+  var f = new FormData(admForm);
+  KC.Store.add('admissions', { name: f.get('name'), stream: f.get('stream'), phone: f.get('phone'), email: f.get('email')||'', marks: f.get('marks'), date: new Date().toISOString().slice(0,10), status: 'Pending' });
+  document.getElementById('admForm-note').classList.add('show');
+  admForm.reset();
+});
+
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+.ksr-wrap .ksr-filters { margin: 14px 0; display: flex; gap: 8px; }
+.ksr-wrap .ksr-filters input[type="search"] { min-width: 240px; }
+.ksr-table .ksr-thumb { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; display: block; }
+.ksr-table .ksr-thumb-empty { background: #eee; display: block; }
+.ksr-table .ksr-actions a { text-decoration: none; }
+.ksr-table .ksr-actions a.ksr-del { color: #b32d2e; }
+.ksr-edit-grid { display: flex; gap: 30px; align-items: flex-start; margin-bottom: 20px; }
+.ksr-edit-photo img { width: 160px; height: 200px; object-fit: cover; border: 1px solid #ccd0d4; background: #f6f7f7; display: block; }
+.ksr-edit-fields { flex: 1; }
+.ksr-readonly-fields td { color: #555; }

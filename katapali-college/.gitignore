@@ -1,0 +1,2 @@
+# Built zips are packaged artifacts of the source directories; not tracked.
+*.zip
