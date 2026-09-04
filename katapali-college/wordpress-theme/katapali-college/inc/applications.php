@@ -83,7 +83,7 @@ add_action( 'wp_ajax_nopriv_kc_save_application', 'kc_ajax_save_application' );
 
 /* ------------------------------- admin list ------------------------------- */
 function kc_apps_admin_menu() {
-	add_submenu_page( 'katapali-college', 'Applications', 'Applications', 'manage_options', 'kc-applications', 'kc_apps_admin_page' );
+	add_submenu_page( 'katapali-college', 'Applications', 'Applications', 'edit_posts', 'kc-applications', 'kc_apps_admin_page' );
 }
 add_action( 'admin_menu', 'kc_apps_admin_menu' );
 
@@ -139,7 +139,7 @@ add_filter( 'query_vars', 'kc_apps_query_vars' );
 function kc_apps_maybe_render_view() {
 	$id = absint( get_query_var( 'kc_app_view' ) );
 	if ( ! $id ) return;
-	if ( ! current_user_can( 'manage_options' ) || ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_GET['_wpnonce'] ) ), 'kc_app_view_' . $id ) ) {
+	if ( ! current_user_can( 'edit_posts' ) || ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_GET['_wpnonce'] ) ), 'kc_app_view_' . $id ) ) {
 		status_header( 403 );
 		echo 'Not allowed.';
 		exit;

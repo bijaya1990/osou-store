@@ -17,7 +17,7 @@ class KSR_Admin {
 
 	public static function maybe_render_card() {
 		if ( ( $_GET['page'] ?? '' ) !== 'ksr-students' || ! isset( $_GET['ksr_card'], $_GET['id'] ) ) return;
-		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Not allowed.' );
+		if ( ! current_user_can( 'edit_posts' ) ) wp_die( 'Not allowed.' );
 		$type = sanitize_key( $_GET['ksr_card'] );
 		$id   = (int) $_GET['id'];
 		check_admin_referer( 'ksr_card_' . $type . '_' . $id );
@@ -32,7 +32,7 @@ class KSR_Admin {
 	}
 
 	public static function menu() {
-		$cap = 'manage_options';
+		$cap = 'edit_posts';
 		add_menu_page( 'Student Records', 'Student Records', $cap, 'ksr-students', array( __CLASS__, 'page_list' ), 'dashicons-groups', 27 );
 		add_submenu_page( 'ksr-students', 'All Students', 'All Students', $cap, 'ksr-students', array( __CLASS__, 'page_list' ) );
 		add_submenu_page( 'ksr-students', 'Import Students', 'Import Students', $cap, 'ksr-import', array( __CLASS__, 'page_import' ) );
@@ -153,7 +153,7 @@ class KSR_Admin {
 	}
 
 	public static function handle_import() {
-		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Not allowed.' );
+		if ( ! current_user_can( 'edit_posts' ) ) wp_die( 'Not allowed.' );
 		check_admin_referer( 'ksr_import' );
 
 		$batch_year = isset( $_POST['batch_year'] ) ? sanitize_text_field( wp_unslash( $_POST['batch_year'] ) ) : '';
@@ -228,7 +228,7 @@ class KSR_Admin {
 	}
 
 	public static function handle_save_student() {
-		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Not allowed.' );
+		if ( ! current_user_can( 'edit_posts' ) ) wp_die( 'Not allowed.' );
 		check_admin_referer( 'ksr_save_student' );
 		global $wpdb;
 		$id = (int) ( $_POST['id'] ?? 0 );
@@ -251,7 +251,7 @@ class KSR_Admin {
 	}
 
 	public static function handle_delete_student() {
-		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Not allowed.' );
+		if ( ! current_user_can( 'edit_posts' ) ) wp_die( 'Not allowed.' );
 		$id = (int) ( $_GET['id'] ?? 0 );
 		check_admin_referer( 'ksr_delete_' . $id );
 		global $wpdb;

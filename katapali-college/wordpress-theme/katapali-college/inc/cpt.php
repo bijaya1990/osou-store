@@ -106,7 +106,11 @@ add_action( 'init', 'kc_register_cpts' );
 
 /* top-level admin menu that groups every CPT together */
 function kc_admin_menu() {
-	add_menu_page( 'Katapali College', 'Katapali College', 'manage_options', 'katapali-college', 'kc_admin_dashboard_page', 'dashicons-admin-multisite', 3 );
+	/* edit_posts (not manage_options) so the limited "College Staff Admin"
+	   role - see the Katapali Admin Panel plugin - can reach this menu and
+	   every CPT nested under it; full site administrators always have
+	   edit_posts too, so nothing changes for them. */
+	add_menu_page( 'Katapali College', 'Katapali College', 'edit_posts', 'katapali-college', 'kc_admin_dashboard_page', 'dashicons-admin-multisite', 3 );
 }
 add_action( 'admin_menu', 'kc_admin_menu' );
 
