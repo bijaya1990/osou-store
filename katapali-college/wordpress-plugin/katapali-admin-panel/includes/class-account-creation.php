@@ -124,11 +124,20 @@ class KAP_Account_Creation {
 		), self::OTP_TTL );
 
 		$college = self::college_name();
-		wp_mail(
+		$mail_error = '';
+		add_action( 'wp_mail_failed', function ( $wp_error ) use ( &$mail_error ) { $mail_error = $wp_error->get_error_message(); } );
+		$sent = wp_mail(
 			$email,
 			'Your OTP for ' . $college . ' Admin Panel',
 			"Hello $name,\n\nYour OTP to activate your College Staff Admin account for $college is:\n\n$otp\n\nThis code expires in 10 minutes. If you did not request this, you can ignore this email.\n\nThank you."
 		);
+
+		if ( ! $sent ) {
+			delete_transient( 'kap_pending_' . $token );
+			$msg = 'Could not send the OTP email' . ( $mail_error ? ' (' . $mail_error . ')' : '' ) . '. This is usually a hosting/mail setup issue - see the plugin README for fixing email delivery (an SMTP plugin is normally needed on shared hosting).';
+			wp_safe_redirect( admin_url( 'admin.php?page=kap-add-admin&kap_error=' . rawurlencode( $msg ) ) );
+			exit;
+		}
 
 		wp_safe_redirect( admin_url( 'admin.php?page=kap-add-admin&token=' . $token ) );
 		exit;
