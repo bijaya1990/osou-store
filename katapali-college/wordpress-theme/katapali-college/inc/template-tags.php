@@ -138,6 +138,31 @@ function kc_notice_link( $post_id ) {
 	return $file ? $file : get_permalink( $post_id );
 }
 
+/* Same "straight to the attachment" behaviour as kc_notice_link(), for
+   recruitment notifications. */
+function kc_recruitment_link( $post_id ) {
+	$file = get_post_meta( $post_id, 'kc_file_url', true );
+	return $file ? $file : get_permalink( $post_id );
+}
+
+/* IDs of the most recently published recruitment posts - flashes a
+   blinking "New" badge, same idea as kc_recent_notice_ids(). */
+function kc_recent_recruitment_ids( $n = 5 ) {
+	static $cache = array();
+	if ( ! isset( $cache[ $n ] ) ) {
+		$cache[ $n ] = get_posts( array( 'post_type' => 'kc_recruitment', 'posts_per_page' => $n, 'fields' => 'ids' ) );
+	}
+	return $cache[ $n ];
+}
+
+/* True once a recruitment post's "Last Date to Apply" (kc_last_date,
+   stored as YYYY-MM-DD by its <input type="date"> field) has passed. */
+function kc_recruitment_is_expired( $post_id ) {
+	$last_date = get_post_meta( $post_id, 'kc_last_date', true );
+	if ( ! $last_date ) return false;
+	return strtotime( $last_date ) < strtotime( 'today' );
+}
+
 /* Compact list-row versions of the notice/tender cards, used in the
    homepage's boxed Notice/Tenders columns (icon bullet + title + date,
    no card chrome - matches a typical government-college notice list). */

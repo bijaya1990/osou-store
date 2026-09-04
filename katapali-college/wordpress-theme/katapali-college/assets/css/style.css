@@ -170,6 +170,13 @@ nav.main-nav li:hover .submenu{opacity:1;visibility:visible;transform:translateY
 @keyframes kc-ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 @media(prefers-reduced-motion: reduce){.ticker-track{animation:none;overflow-x:auto;}}
 
+/* Recruitment ticker - same scrolling black bar as the notice ticker,
+   directly below it, with its own label colour so the two are easy to
+   tell apart at a glance. */
+.recruitment-ticker{border-top:1px solid rgba(255,255,255,.08);}
+.recruitment-ticker .ticker-label{background:var(--primary);}
+.rec-expired{display:inline-block;background:#555;color:#fff;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.03em;padding:2px 7px;border-radius:3px;margin-left:6px;vertical-align:2px;}
+
 /* Blue title-bar boxes: used for About/Principal and the Notice/Tenders/
    Quick Links three-column block. Fixed equal-height columns (grid
    align-items:stretch + height:100% + flex body) so a row never

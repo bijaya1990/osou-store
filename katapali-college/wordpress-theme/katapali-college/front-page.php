@@ -77,6 +77,37 @@ $ticker_loops = count( $ticker_notices ) > 3;
 	</div>
 </section>
 
+<?php
+$ticker_recruitment = get_posts( array( 'post_type' => 'kc_recruitment', 'posts_per_page' => 6 ) );
+$rec_ticker_loops = count( $ticker_recruitment ) > 3;
+$rec_recent_ids = kc_recent_recruitment_ids( 5 );
+?>
+<section class="notice-ticker recruitment-ticker">
+	<div class="container ticker-wrap">
+		<span class="ticker-label"><i class="fa-solid fa-briefcase"></i> Recruitment</span>
+		<div class="ticker-track-wrap">
+			<div class="ticker-track<?php echo $rec_ticker_loops ? '' : ' ticker-static'; ?>">
+				<?php
+				if ( $ticker_recruitment ) {
+					$rec_ticker_html = '';
+					foreach ( $ticker_recruitment as $rn ) {
+						$rn_file    = get_post_meta( $rn->ID, 'kc_file_url', true );
+						$rn_extra   = $rn_file ? ' target="_blank" rel="noopener"' : '';
+						$rn_expired = kc_recruitment_is_expired( $rn->ID );
+						$rn_new     = ! $rn_expired && in_array( $rn->ID, $rec_recent_ids, true );
+						$rn_badge   = $rn_expired ? '<span class="rec-expired">Expired</span>' : ( $rn_new ? '<span class="new-blink">New</span>' : '' );
+						$rec_ticker_html .= '<a href="' . esc_url( kc_recruitment_link( $rn->ID ) ) . '"' . $rn_extra . '><i class="fa-solid fa-hand-point-right"></i>' . esc_html( get_the_title( $rn ) ) . ' <span>(' . esc_html( get_the_date( 'd M Y', $rn ) ) . ')</span>' . $rn_badge . '</a>';
+					}
+					echo $rec_ticker_loops ? $rec_ticker_html . $rec_ticker_html : $rec_ticker_html;
+				} else {
+					echo '<a href="' . esc_url( get_post_type_archive_link( 'kc_recruitment' ) ) . '">No recruitment notifications published yet - add one under Katapali College &rarr; Recruitment.</a>';
+				}
+				?>
+			</div>
+		</div>
+	</div>
+</section>
+
 <section class="kc-apply-bar-section" id="kc-apply-page" data-college="<?php echo esc_attr( get_theme_mod( 'kc_college_name', kc_default( 'kc_college_name' ) ) ); ?>" data-address="<?php echo esc_attr( get_theme_mod( 'kc_address', kc_default( 'kc_address' ) ) . ' - ' . get_theme_mod( 'kc_pin', kc_default( 'kc_pin' ) ) ); ?>">
 	<div class="container">
 		<div class="kc-apply-bar-label">Online Applications</div>
