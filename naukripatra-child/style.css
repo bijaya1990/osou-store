@@ -4,7 +4,7 @@
  Description:  NaukriPatra — premium corporate job portal child theme for GeneratePress. Government and private listings, automatic state-wise views, a fully dashboard-controlled design system (colours, fonts, letter sizes) and a dashboard-controlled ad system with image banners or network ad code per slot. No tracking, 100% yours.
  Author:       NaukriPatra
  Template:     generatepress
- Version:      3.8
+ Version:      3.9
  Tags:         jobs, portal, corporate, dark-mode, customizable
  Text Domain:  naukripatra
 */
@@ -855,6 +855,26 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 .np-apply-count strong{font-family:var(--np-font-head);font-size:var(--np-size-h3);color:var(--np-accent);display:inline-block;margin-right:4px}
 .np-apply-closed{color:rgba(255,255,255,.65)}
 .np-apply-note{margin:12px 0 0;font-size:var(--np-size-small);color:rgba(255,255,255,.75);text-align:center}
+
+/* Apply Now, with the Notification PDF beside it when the post has one.
+   Side by side while both fit; they stack on a narrow sidebar rather
+   than squeezing the labels. */
+.np-apply-actions{display:grid;gap:8px}
+.np-apply-actions .np-btn{width:100%}
+.np-apply-actions-2{grid-template-columns:1fr auto}
+.np-apply-actions-2 .np-btn{padding-left:14px;padding-right:14px}
+.np-apply-actions-2 .np-i{width:15px;height:15px}
+@media(max-width:1200px) and (min-width:1025px){
+	.np-apply-actions-2{grid-template-columns:1fr}
+}
+
+.np-howto-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.np-howto .np-btn{margin-top:0}
+
+/* Compact PDF button in the sticky mobile bar. */
+.np-applybar-pdf{margin-left:auto;padding:10px 13px;gap:6px}
+.np-applybar-pdf + .np-btn{margin-left:0}
+.np-applybar-pdf .np-i{width:15px;height:15px}
 .np-apply-card .np-i{width:15px;height:15px}
 
 .np-quickinfo{margin:0;display:grid;gap:11px}

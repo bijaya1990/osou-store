@@ -1008,3 +1008,55 @@ REST
 job_details gains apply_url_resolved: the link the button actually
 uses. The existing apply_url field keeps its exact old meaning
 (the raw field), so nothing the Android app already reads changes.
+
+=====================================================
+ VERSION 3.9 — NOTIFICATION BUTTON NEXT TO APPLY NOW
+=====================================================
+
+A second button sits beside Apply Now and opens the official
+notification PDF. Like the apply link, it is found in the post
+automatically — the PDF is already there in the links table, so
+it does not have to be typed again.
+
+Order of preference, same as the apply link:
+  1. The new "Notification PDF Link" field in the Job Details box.
+  2. The best PDF / notification link found in the post content.
+  3. Nothing — the button simply does not render. It never
+     appears pointing at a dead or wrong file.
+
+HOW THE PDF IS CHOSEN
+  + the URL ends in .pdf
+  + anchor text saying Notification / Official Notification
+  + anchor text saying Advertisement / Detailed Advertisement
+  + anchor text saying Notice / Brochure / Prospectus
+  + the host ends in .gov.in or .nic.in
+  - anchor text saying Apply / Registration / Login / Online Form
+    (that link belongs to the Apply button)
+  REJECTED OUTRIGHT: Admit Card, Hall Ticket, Result, Answer Key
+  and Merit List links. Those are a different document, and a
+  points penalty was not enough — a .gov.in admit-card PDF still
+  scraped over the threshold on the PDF and .gov.in bonuses alone.
+  A button labelled "Notification" that opens an admit card is
+  worse than no button.
+
+ONE DIFFERENCE FROM THE APPLY DETECTION
+Your own domain is ALLOWED here. Notification PDFs are very often
+uploaded straight into the Media Library, so the file genuinely
+lives on naukripatra.in. The apply scorer must reject the own
+domain; this one must not.
+
+Tested against: a normal links table (picks the notification PDF,
+not the apply link), a PDF in our own uploads folder, a
+notification page with no .pdf extension, an apply-only post, a
+social-links-only post, and an admit-card PDF.
+
+WHERE IT APPEARS
+  - Sidebar, right beside Apply Now
+  - Under "How to Apply", as "Read the official notification"
+  - In the sticky mobile bar, as a compact PDF button
+All open in a new tab with rel="noopener nofollow".
+
+REST
+job_details gains notification_url (the raw field) and
+notification_url_resolved (what the button actually uses). Both
+are new keys; nothing the Android app already reads has changed.

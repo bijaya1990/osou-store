@@ -41,6 +41,9 @@ while ( have_posts() ) :
 	   otherwise the official link detected in the post content, so the
 	   button works on old posts too instead of sitting there dead. */
 	$np_apply  = np_get_apply_url( $np_id );
+	/* The official notification PDF, from the field if filled, else the
+	   one detected in the post content. */
+	$np_notif  = np_get_notification_url( $np_id );
 	$np_emp    = np_employment_types();
 	$np_emp_l  = get_post_meta( $np_id, '_np_employment_type', true );
 	$np_emp_l  = isset( $np_emp[ $np_emp_l ] ) ? $np_emp[ $np_emp_l ] : '';
@@ -197,10 +200,19 @@ while ( have_posts() ) :
 						<li><span>3</span><p>Fill the online application form on the official website and pay the fee if one applies.</p></li>
 						<li><span>4</span><p>Submit before the last date and save a printed copy of the confirmation page for your records.</p></li>
 					</ol>
-					<?php if ( $np_apply ) : ?>
-						<a class="np-btn np-btn-accent np-btn-lg" href="<?php echo esc_url( $np_apply ); ?>"
-							target="_blank" rel="noopener nofollow">
-							<?php echo np_icon( 'link' ); ?> Go to the official application page</a>
+					<?php if ( $np_apply || $np_notif ) : ?>
+						<div class="np-howto-actions">
+							<?php if ( $np_apply ) : ?>
+								<a class="np-btn np-btn-accent np-btn-lg" href="<?php echo esc_url( $np_apply ); ?>"
+									target="_blank" rel="noopener nofollow">
+									<?php echo np_icon( 'link' ); ?> Go to the official application page</a>
+							<?php endif; ?>
+							<?php if ( $np_notif ) : ?>
+								<a class="np-btn np-btn-outline np-btn-lg" href="<?php echo esc_url( $np_notif ); ?>"
+									target="_blank" rel="noopener nofollow">
+									<?php echo np_icon( 'file' ); ?> Read the official notification</a>
+							<?php endif; ?>
+						</div>
 					<?php endif; ?>
 				</section>
 
@@ -265,10 +277,19 @@ while ( have_posts() ) :
 							<p class="np-apply-count">Check the notification for the deadline</p>
 						<?php endif; ?>
 
-						<a class="np-btn np-btn-accent np-btn-block np-btn-lg"
-							href="<?php echo esc_url( $np_apply ? $np_apply : '#np-how-to-apply' ); ?>"
-							<?php echo $np_apply ? 'target="_blank" rel="noopener nofollow"' : ''; ?>>
-							Apply Now <?php echo np_icon( 'chevron' ); ?></a>
+						<div class="np-apply-actions<?php echo $np_notif ? ' np-apply-actions-2' : ''; ?>">
+							<a class="np-btn np-btn-accent np-btn-lg"
+								href="<?php echo esc_url( $np_apply ? $np_apply : '#np-how-to-apply' ); ?>"
+								<?php echo $np_apply ? 'target="_blank" rel="noopener nofollow"' : ''; ?>>
+								Apply Now <?php echo np_icon( 'chevron' ); ?></a>
+
+							<?php if ( $np_notif ) : ?>
+								<a class="np-btn np-btn-outline-light np-btn-lg"
+									href="<?php echo esc_url( $np_notif ); ?>"
+									target="_blank" rel="noopener nofollow">
+									<?php echo np_icon( 'file' ); ?> Notification</a>
+							<?php endif; ?>
+						</div>
 
 						<?php if ( $np_last ) : ?>
 							<p class="np-apply-note">Last date: <strong><?php echo esc_html( $np_last ); ?></strong></p>
@@ -355,6 +376,11 @@ while ( have_posts() ) :
 			<?php endif; ?>
 			<?php if ( $np_last ) : ?><span><?php echo esc_html( $np_last ); ?></span><?php endif; ?>
 		</div>
+		<?php if ( $np_notif ) : ?>
+			<a class="np-btn np-btn-outline-light np-applybar-pdf" href="<?php echo esc_url( $np_notif ); ?>"
+				target="_blank" rel="noopener nofollow" aria-label="Official notification PDF">
+				<?php echo np_icon( 'file' ); ?><span>PDF</span></a>
+		<?php endif; ?>
 		<a class="np-btn np-btn-accent" href="<?php echo esc_url( $np_apply ? $np_apply : '#np-how-to-apply' ); ?>"
 			<?php echo $np_apply ? 'target="_blank" rel="noopener nofollow"' : ''; ?>>Apply Now</a>
 	</div>

@@ -379,6 +379,107 @@ function np_get_apply_url( $post_id ) {
 }
 
 /* =========================================================
+ * 0B3. NOTIFICATION PDF — automatic detection
+ * =======================================================
+ * Same idea as the apply link, with the scoring turned around: here
+ * the PDF is the prize, not the thing to avoid.
+ *
+ * One deliberate difference from np_score_apply_link(): the site's OWN
+ * domain is allowed. An official notification is very often uploaded
+ * straight into the Media Library, so the PDF legitimately lives on
+ * naukripatra.in. Rejecting the own domain, as the apply scorer must,
+ * would throw away the most common case.
+ */
+function np_score_notification_link( $href, $text, $home_host ) {
+	$host = strtolower( (string) wp_parse_url( $href, PHP_URL_HOST ) );
+	if ( '' === $host ) return 0;
+
+	foreach ( np_apply_link_blocklist() as $bad ) {
+		if ( $host === $bad || substr( $host, -strlen( '.' . $bad ) ) === '.' . $bad ) return 0;
+	}
+
+	$text  = strtolower( wp_strip_all_tags( $text ) );
+	$is_pdf = (bool) preg_match( '/\.pdf($|\?)/i', $href );
+	$score  = 0;
+
+	// A PDF is what we are looking for.
+	if ( $is_pdf ) $score += 60;
+
+	// What the link says.
+	if ( preg_match( '/\b(official\s*)?notification\b/', $text ) )       $score += 50;
+	if ( preg_match( '/\b(detailed\s*)?advertisement\b/', $text ) )      $score += 45;
+	if ( preg_match( '/\b(notice|brochure|prospectus)\b/', $text ) )      $score += 30;
+	if ( preg_match( '/\bdownload\b/', $text ) )                          $score += 12;
+
+	// These belong to the Apply button, not this one.
+	if ( preg_match( '/\bapply\s*(online|now|here)?\b/', $text ) )       $score -= 45;
+	if ( preg_match( '/\b(registration|register|login|online\s*form)\b/', $text ) ) $score -= 35;
+	/* An admit card / result / answer key PDF is a DIFFERENT document
+	   from a recruitment notification, so it is rejected outright
+	   rather than merely penalised. A points deduction was not enough:
+	   a .gov.in admit-card PDF still scraped over the threshold on the
+	   PDF and .gov.in bonuses alone, and a button labelled
+	   "Notification" that opens an admit card is worse than no button.
+	   An editor who does want that link can paste it into the
+	   Notification PDF Link field, which always wins. */
+	if ( preg_match( '/\b(admit\s*card|hall\s*ticket|result|answer\s*key|merit\s*list)\b/', $text ) ) return 0;
+
+	if ( preg_match( '/\.(gov|nic)\.in$/', $host ) ) $score += 15;
+
+	// A non-PDF link needs the wording to carry it on its own.
+	if ( ! $is_pdf && $score < 45 ) return 0;
+
+	return $score;
+}
+
+/** Best notification PDF found inside a post's content, or ''. */
+function np_detect_notification_url( $post_id ) {
+	$content = get_post_field( 'post_content', $post_id );
+	if ( ! $content ) return '';
+
+	if ( ! preg_match_all( '/<a\s[^>]*href=["\']([^"\']+)["\'][^>]*>(.*?)<\/a>/is', $content, $m, PREG_SET_ORDER ) ) {
+		return '';
+	}
+
+	$home_host = strtolower( (string) wp_parse_url( home_url( '/' ), PHP_URL_HOST ) );
+	$home_host = preg_replace( '/^www\./', '', $home_host );
+
+	$best = '';
+	$best_score = 0;
+	foreach ( $m as $hit ) {
+		$href = trim( html_entity_decode( $hit[1], ENT_QUOTES ) );
+		if ( 0 !== stripos( $href, 'http' ) ) continue;
+
+		$score = np_score_notification_link( $href, $hit[2], $home_host );
+		if ( $score > $best_score ) {
+			$best_score = $score;
+			$best       = $href;
+		}
+	}
+
+	return ( $best_score >= 45 ) ? esc_url_raw( $best ) : '';
+}
+
+/** Refresh the cached notification detection for one post. */
+function np_sync_notification_url( $post_id ) {
+	$found = np_detect_notification_url( $post_id );
+	update_post_meta( $post_id, '_np_notification_url_auto', $found ? $found : '-' );
+	return $found;
+}
+
+/** The URL the Notification button should use. '' when there is none. */
+function np_get_notification_url( $post_id ) {
+	$manual = trim( (string) get_post_meta( $post_id, '_np_notification_url', true ) );
+	if ( $manual ) return $manual;
+
+	$auto = (string) get_post_meta( $post_id, '_np_notification_url_auto', true );
+	if ( '-' === $auto ) return '';
+	if ( $auto ) return $auto;
+
+	return np_sync_notification_url( $post_id );
+}
+
+/* =========================================================
  * 0C. INLINE STROKE SVG ICONS (no emoji anywhere in the UI)
  * ======================================================= */
 function np_icon( $name, $class = '' ) {
@@ -616,6 +717,8 @@ function np_job_details_box( $post ) {
 	$sector   = np_get_sector( $post->ID );
 	$apply    = get_post_meta( $post->ID, '_np_apply_url', true );
 	$auto     = $apply ? '' : np_get_apply_url( $post->ID );
+	$notif      = get_post_meta( $post->ID, '_np_notification_url', true );
+	$notif_auto = $notif ? '' : np_get_notification_url( $post->ID );
 	$fee      = get_post_meta( $post->ID, '_np_app_fee', true );
 	if ( '' === $emp_type ) $emp_type = 'FULL_TIME';
 	?>
@@ -664,6 +767,21 @@ function np_job_details_box( $post ) {
 					<?php else : ?>
 						No official link found in this post yet. Add an "Apply Online" or
 						"Official Website" link to the content, or paste it here.
+					<?php endif; ?>
+				</p>
+			<?php endif; ?>
+		</div>
+		<div>
+			<label for="np_notification_url">Notification PDF Link</label>
+			<input type="url" id="np_notification_url" name="np_notification_url"
+				value="<?php echo esc_attr( $notif ); ?>"
+				placeholder="<?php echo esc_attr( $notif_auto ? $notif_auto : 'https://....pdf (optional)' ); ?>">
+			<?php if ( ! $notif ) : ?>
+				<p class="np-mb-hint">
+					<?php if ( $notif_auto ) : ?>
+						Detected in this post and already in use by the Notification button.
+					<?php else : ?>
+						No notification PDF found in this post yet.
 					<?php endif; ?>
 				</p>
 			<?php endif; ?>
@@ -741,6 +859,9 @@ add_action( 'save_post', function ( $post_id ) {
 	if ( isset( $_POST['np_apply_url'] ) ) {
 		update_post_meta( $post_id, '_np_apply_url', esc_url_raw( wp_unslash( $_POST['np_apply_url'] ) ) );
 	}
+	if ( isset( $_POST['np_notification_url'] ) ) {
+		update_post_meta( $post_id, '_np_notification_url', esc_url_raw( wp_unslash( $_POST['np_notification_url'] ) ) );
+	}
 
 	// Employment type: validated against the whitelist (tamper-safe),
 	// falling back to FULL_TIME for an invalid or blank value.
@@ -765,8 +886,10 @@ add_action( 'save_post', function ( $post_id ) {
 	// the "Ending soon" panel. `_np_last_date` itself is untouched.
 	np_sync_last_date_ts( $post_id );
 
-	// Re-detect the official apply link from the freshly saved content.
+	// Re-detect the official apply link and notification PDF from the
+	// freshly saved content.
 	np_sync_apply_url( $post_id );
+	np_sync_notification_url( $post_id );
 } );
 
 /** Keep the mirror correct for edits made through the REST API too. */
@@ -1458,7 +1581,7 @@ add_action( 'init', function () {
 		'_np_qualification', '_np_last_date', '_np_posts_count',
 		'_np_organization', '_np_salary', '_np_employment_type',
 		'_np_locality', '_np_street', '_np_postal_code',
-		'_np_job_sector', '_np_apply_url', '_np_app_fee',
+		'_np_job_sector', '_np_apply_url', '_np_app_fee', '_np_notification_url',
 	) as $key ) {
 		register_post_meta( 'post', $key, array(
 			'type'          => 'string',
@@ -1502,6 +1625,8 @@ add_action( 'rest_api_init', function () {
 				// detected in the post content. `apply_url` keeps its exact
 				// old meaning (the raw field) so nothing the app reads changes.
 				'apply_url_resolved' => np_get_apply_url( $id ),
+				'notification_url'          => (string) get_post_meta( $id, '_np_notification_url', true ),
+				'notification_url_resolved' => np_get_notification_url( $id ),
 				'app_fee'          => (string) get_post_meta( $id, '_np_app_fee', true ),
 			);
 		},
