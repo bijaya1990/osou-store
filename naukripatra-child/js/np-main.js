@@ -64,8 +64,35 @@
 		document.documentElement.style.setProperty('--np-header-h', (h || 64) + 'px');
 	}
 
+	/* =========================================================
+	 * 2B. STICKY GUARD
+	 * =========================================================
+	 * position:sticky is silently cancelled when any ancestor is a
+	 * scroll container. `overflow-x:hidden` on html or body does
+	 * exactly that: it forces overflow-y to `auto`. A leftover copy of
+	 * the old stylesheet — or a plugin setting it inline — therefore
+	 * breaks the single-post sidebar even though the CSS here is
+	 * correct.
+	 *
+	 * An inline style beats every stylesheet, so this repairs it at
+	 * runtime. `clip` clips identically but creates no scroll
+	 * container. Browsers without `clip` are left alone rather than
+	 * having their horizontal-overflow guard removed.
+	 */
+	function guardSticky() {
+		if (!(window.CSS && CSS.supports && CSS.supports('overflow', 'clip'))) return;
+
+		[document.documentElement, document.body].forEach(function (el) {
+			var ox = getComputedStyle(el).overflowX;
+			if (ox === 'hidden' || ox === 'auto' || ox === 'scroll') {
+				el.style.setProperty('overflow-x', 'clip', 'important');
+			}
+		});
+	}
+
 	document.addEventListener('DOMContentLoaded', function () {
 
+		guardSticky();
 		measureHeader();
 		window.addEventListener('resize', debounce(measureHeader, 150), { passive: true });
 

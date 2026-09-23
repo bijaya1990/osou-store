@@ -4,7 +4,7 @@
  Description:  NaukriPatra — premium corporate job portal child theme for GeneratePress. Government and private listings, automatic state-wise views, a fully dashboard-controlled design system (colours, fonts, letter sizes) and a dashboard-controlled ad system with image banners or network ad code per slot. No tracking, 100% yours.
  Author:       NaukriPatra
  Template:     generatepress
- Version:      4.0
+ Version:      4.1
  Tags:         jobs, portal, corporate, dark-mode, customizable
  Text Domain:  naukripatra
 */
@@ -122,7 +122,17 @@ a:hover{color:var(--np-primary)}
 html,body{max-width:100%}
 html,body{overflow-x:hidden}
 @supports (overflow:clip){
-	html,body{overflow-x:clip}
+	/* !important on purpose. A leftover copy of the pre-v3 stylesheet
+	   sets html,body{overflow-x:hidden}, and because it loads after
+	   this file it wins — which turns html and body into SCROLL
+	   CONTAINERS (overflow-y resolves to auto) and silently cancels
+	   position:sticky on the single-post sidebar. `clip` clips exactly
+	   the same way without creating a scroll container. This is a
+	   layout-critical rule, so it is protected rather than left to
+	   whichever stylesheet happens to load last.
+	   np-main.js carries a runtime guard for the same thing, in case a
+	   plugin sets it inline. */
+	html,body{overflow-x:clip!important}
 }
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 img,video,iframe,embed{max-width:100%;height:auto}
@@ -844,7 +854,7 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 }
 /* position:sticky is silently cancelled by overflow on ANY ancestor,
    so every ancestor of .np-sticky is pinned to visible here. */
-.np-single,.np-single-grid,.np-single-side{overflow:visible}
+.np-single,.np-single-grid,.np-single-side{overflow:visible!important}
 
 .np-side-card{
 	background:var(--np-surface);border:1px solid var(--np-border);border-radius:var(--np-radius);padding:18px

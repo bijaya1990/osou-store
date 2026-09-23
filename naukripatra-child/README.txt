@@ -1123,3 +1123,46 @@ down, and the panel's bottom padding cut hardest (22 -> 14px on
 desktop, 14 -> 10px on mobile) since that was the dead space.
 Both tickers, the "Browse by category" heading AND the first row
 of category tiles now fit on a 390x727 phone with no scrolling.
+
+=====================================================
+ VERSION 4.1 — STICKY SIDEBAR, MADE UNBREAKABLE
+=====================================================
+
+THE SYMPTOM
+On a live post the right sidebar scrolled away instead of
+staying pinned, even though v3.0 fixed the sticky bug and the
+fix tested clean.
+
+THE CAUSE, REPRODUCED
+position:sticky is silently cancelled when ANY ancestor is a
+scroll container, and `overflow-x: hidden` on html or body makes
+them exactly that — the browser resolves overflow-y to `auto`.
+The leftover pre-v3 stylesheet sets html,body{overflow-x:hidden},
+and because it loads after this theme's CSS it wins.
+
+Loading that old stylesheet on top of the new one in a browser
+reproduced it exactly: computed overflow went from clip/visible
+to hidden/auto, and the sidebar detached at every scroll
+position. So the CSS here was right and was simply being
+overruled.
+
+THE FIX — TWO LAYERS
+1. The `overflow-x: clip` rule is now !important. `clip` clips
+   horizontally exactly like `hidden` but creates NO scroll
+   container, so sticky survives. This is layout-critical, so it
+   is protected rather than left to whichever stylesheet loads
+   last. The `.np-single`, `.np-single-grid` and
+   `.np-single-side` overflow:visible rules are protected too.
+2. np-main.js adds a runtime guard: if html or body still
+   computes to a scrolling overflow-x, it sets overflow-x: clip
+   inline, which beats every stylesheet. Browsers with no `clip`
+   support are left alone rather than losing their
+   horizontal-overflow guard.
+
+VERIFIED IN A BROWSER
+  - Normal sidebar, 4000px article: pinned at every scroll point
+  - Sidebar TALLER than the viewport: pinned, scrolls internally
+  - With the old stylesheet loaded after ours: pinned (was
+    detached before this fix)
+  - Mobile 390px and 320px: sticky correctly OFF, sidebar reflows
+    below the article, no horizontal scroll anywhere
