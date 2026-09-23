@@ -1060,3 +1060,66 @@ REST
 job_details gains notification_url (the raw field) and
 notification_url_resolved (what the button actually uses). Both
 are new keys; nothing the Android app already reads has changed.
+
+=====================================================
+ VERSION 4.0 — POST A JOB ACTUALLY WORKS
+=====================================================
+
+THE PROBLEM
+The "Post a Job" button opened a blank page. It pointed at
+/contact-us/, which does not exist on this install, and there was
+no form behind it — v3.0 added the button without the feature.
+
+WHAT IS THERE NOW
+A real submission form, in a new file inc/post-job.php:
+  - Shortcode [naukripatra_post_job]
+  - A "Post a Job" page created automatically on activation (it
+    reuses an existing /post-a-job/ page rather than duplicating
+    it), and both buttons now point at that page.
+  - Submissions create a PENDING post. NOTHING is ever published
+    automatically — it lands in Posts > Pending like a draft,
+    with every Job Details field already filled in, so an editor
+    just reads it and hits Publish.
+
+FIELDS
+  Job title*, Organisation, Job sector, Section, State/UT,
+  City, Employment type, Qualification, Number of posts,
+  Last date, Salary, Official application link,
+  Job description*, Your email*          (* = required)
+
+They write into the SAME meta keys the Job Details box uses, so a
+submitted job behaves like any other post everywhere — lists,
+JobPosting schema, REST, the Android app. The deadline mirror and
+the apply/notification detection are run on it too.
+
+SPAM AND ABUSE
+  - WordPress nonce on every submission
+  - A honeypot field, positioned off-screen rather than
+    display:none, since some bots skip explicitly hidden fields
+  - One submission per IP per 10 minutes
+  - The description passes through wp_kses with a tiny allow-list
+    (p, br, strong, em, ul, ol, li, a) — this is public input
+  - Post/redirect/get, so refreshing cannot file the same job twice
+
+CONTACT
+The form shows info@naukripatra.in for anyone who would rather
+email, and submission alerts are sent to that address (falling
+back to the WordPress admin address if it is ever emptied), with
+Reply-To set to the submitter so a reply reaches them directly.
+The address is filterable:
+  add_filter( 'np_contact_email', fn() => 'jobs@example.com' );
+
+IN THE ADMIN
+A pending job submitted through the form carries a "Submitted
+through Post a Job" box showing the sender's email and IP.
+
+-----------------------------------------------------
+ 4.0 — HERO SMALLER AGAIN
+-----------------------------------------------------
+  phone    455px -> 373px   (776px before v3.6)
+  desktop  439px -> 379px   (512px before v3.6)
+Default H1 34 -> 28px, mobile H1 21 -> 18px, subtext one step
+down, and the panel's bottom padding cut hardest (22 -> 14px on
+desktop, 14 -> 10px on mobile) since that was the dead space.
+Both tickers, the "Browse by category" heading AND the first row
+of category tiles now fit on a 390x727 phone with no scrolling.

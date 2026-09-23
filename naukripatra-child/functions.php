@@ -16,6 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 require_once get_stylesheet_directory() . '/inc/appearance.php';
 /** Ad slots — dashboard driven, image banner or ad code per slot */
 require_once get_stylesheet_directory() . '/inc/ads.php';
+/** "Post a Job" public submission form */
+require_once get_stylesheet_directory() . '/inc/post-job.php';
 /** Power features: SEO schema, ticker, trending, related posts, security */
 require_once get_stylesheet_directory() . '/inc/features.php';
 
@@ -1238,7 +1240,7 @@ add_action( 'generate_after_header', function () {
 					aria-label="Search" aria-expanded="false"><?php echo np_icon( 'search' ); ?></button>
 				<a class="np-btn np-btn-ghost np-nav-app" href="<?php echo esc_url( $social['playstore'] ); ?>"
 					target="_blank" rel="noopener"><?php echo np_icon( 'download' ); ?> Download App</a>
-				<a class="np-btn np-btn-accent" href="<?php echo esc_url( home_url( '/contact-us/' ) ); ?>">Post a Job</a>
+				<a class="np-btn np-btn-accent" href="<?php echo esc_url( np_post_job_page_url() ); ?>">Post a Job</a>
 			</div>
 		</div>
 
@@ -1281,7 +1283,7 @@ add_action( 'wp_footer', function () {
 			<a class="np-btn np-btn-accent np-btn-block" href="<?php echo esc_url( $social['playstore'] ); ?>"
 				target="_blank" rel="noopener"><?php echo np_icon( 'download' ); ?> Download App</a>
 			<?php /* Kept here because the bar drops this button below 600px. */ ?>
-			<a class="np-btn np-btn-outline np-btn-block" href="<?php echo esc_url( home_url( '/contact-us/' ) ); ?>">Post a Job</a>
+			<a class="np-btn np-btn-outline np-btn-block" href="<?php echo esc_url( np_post_job_page_url() ); ?>">Post a Job</a>
 			<a class="np-btn np-btn-outline np-btn-block" href="<?php echo esc_url( wp_login_url() ); ?>">Login / Register</a>
 		</div>
 	</aside>

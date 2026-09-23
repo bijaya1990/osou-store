@@ -4,7 +4,7 @@
  Description:  NaukriPatra — premium corporate job portal child theme for GeneratePress. Government and private listings, automatic state-wise views, a fully dashboard-controlled design system (colours, fonts, letter sizes) and a dashboard-controlled ad system with image banners or network ad code per slot. No tracking, 100% yours.
  Author:       NaukriPatra
  Template:     generatepress
- Version:      3.9
+ Version:      4.0
  Tags:         jobs, portal, corporate, dark-mode, customizable
  Text Domain:  naukripatra
 */
@@ -44,12 +44,12 @@
 
 	--np-size-base:16px;
 	--np-size-small:13px;
-	--np-size-h1:34px;
+	--np-size-h1:28px;
 	--np-size-h2:28px;
 	--np-size-h3:20px;
 	--np-size-button:15px;
 	--np-size-nav:15px;
-	--np-size-h1-mobile:21px;
+	--np-size-h1-mobile:18px;
 
 	--np-line:1.65;
 	--np-track-head:-0.4px;
@@ -315,14 +315,14 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 .np-hero{
 	margin-top:var(--np-gap);
 	background:linear-gradient(135deg,var(--np-primary-dark) 0%,var(--np-primary) 55%,var(--np-primary-mid) 100%);
-	border-radius:var(--np-radius);color:#fff;padding:26px 28px 22px
+	border-radius:var(--np-radius);color:#fff;padding:22px 28px 14px
 }
 .np-hero-inner{
 	max-width:760px;margin:0 auto;text-align:center;
 	display:flex;flex-direction:column;align-items:center
 }
 .np-hero-eyebrow{
-	display:inline-flex;align-items:center;gap:7px;margin:0 0 7px;
+	display:inline-flex;align-items:center;gap:7px;margin:0 0 6px;
 	font-size:var(--np-size-small);font-weight:600;letter-spacing:.5px;text-transform:uppercase;
 	color:var(--np-accent)
 }
@@ -331,8 +331,8 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
    headline flow there and keep the tidy two-line split on desktop. */
 @media(max-width:782px){.np-br-desk{display:none}}
 .np-hero-sub{
-	color:rgba(255,255,255,.8);margin:0 0 15px;
-	font-size:var(--np-size-base);max-width:580px
+	color:rgba(255,255,255,.8);margin:0 0 13px;
+	font-size:var(--np-size-small);max-width:560px
 }
 
 .np-hero-search{
@@ -358,13 +358,13 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 .np-seg.is-active{background:var(--np-accent);color:var(--np-primary-dark)}
 
 .np-stats{
-	display:flex;justify-content:center;gap:40px;margin:16px 0 0;padding:14px 0 0;
+	display:flex;justify-content:center;gap:40px;margin:12px 0 0;padding:11px 0 0;
 	border-top:1px solid rgba(255,255,255,.15);width:100%;max-width:600px;text-align:center
 }
 .np-stats dt{font-size:var(--np-size-small);color:rgba(255,255,255,.7);margin:0}
 .np-stats dd{
-	margin:1px 0 0;font-family:var(--np-font-head);font-weight:var(--np-weight-head);
-	font-size:calc(var(--np-size-h3) + 3px);color:#fff
+	margin:0;font-family:var(--np-font-head);font-weight:var(--np-weight-head);
+	font-size:var(--np-size-h3);color:#fff;line-height:1.25
 }
 
 /* =========================================================
@@ -912,6 +912,86 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 .np-applybar .np-btn{margin-left:auto}
 
 /* =========================================================
+   POST A JOB FORM
+   ======================================================= */
+.np-jobform-wrap{max-width:860px;margin:0 auto}
+.np-jobform-intro{color:var(--np-muted);font-size:var(--np-size-small);margin:0 0 12px}
+.np-jobform-contact{
+	display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 20px;
+	padding:12px 15px;border-radius:var(--np-radius-sm);
+	background:var(--np-surface);border:1px solid var(--np-border);
+	font-size:var(--np-size-small);color:var(--np-muted)
+}
+.np-jobform-contact .np-i{width:17px;height:17px;flex:none;color:var(--np-primary-light)}
+.np-jobform-contact a{font-weight:600}
+
+.np-formnote{
+	display:flex;align-items:flex-start;gap:11px;padding:15px 17px;border-radius:var(--np-radius);
+	margin-bottom:20px;font-size:var(--np-size-small)
+}
+.np-formnote p{margin:0}
+.np-formnote .np-i{width:19px;height:19px;flex:none;margin-top:1px}
+.np-formnote-ok{
+	background:var(--np-bg);
+	background:color-mix(in srgb,var(--np-govt) 12%,transparent);
+	color:var(--np-govt);border:1px solid var(--np-govt)
+}
+.np-formnote-bad{
+	background:var(--np-bg);
+	background:color-mix(in srgb,var(--np-danger) 10%,transparent);
+	color:var(--np-danger);border:1px solid var(--np-danger)
+}
+
+.np-jobform{
+	background:var(--np-surface);border:1px solid var(--np-border);
+	border-radius:var(--np-radius);padding:24px
+}
+.np-jobform-legend{
+	font-size:var(--np-size-h3);margin:0 0 15px;padding-bottom:12px;
+	border-bottom:1px solid var(--np-border)
+}
+.np-jobform-legend:not(:first-of-type){margin-top:28px}
+
+.np-jobform-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.np-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.np-field-wide{grid-column:1 / -1}
+.np-field > span{font-size:var(--np-size-small);font-weight:600;color:var(--np-text)}
+.np-field > span b{color:var(--np-danger);font-weight:600}
+.np-field input,
+.np-field select,
+.np-field textarea{
+	width:100%;background:var(--np-bg);border:1px solid var(--np-border);
+	border-radius:var(--np-radius-sm);padding:12px 14px;
+	font:inherit;font-size:var(--np-size-small);color:var(--np-text)
+}
+.np-field textarea{resize:vertical;min-height:140px;line-height:1.6}
+.np-field input:focus,
+.np-field select:focus,
+.np-field textarea:focus{
+	outline:none;border-color:var(--np-primary-light);
+	box-shadow:0 0 0 3px color-mix(in srgb,var(--np-primary-light) 18%,transparent)
+}
+.np-field-help{font-style:normal;font-size:calc(var(--np-size-small) - 1px);color:var(--np-muted)}
+
+/* Honeypot: off-screen rather than display:none, because some bots
+   skip anything that is explicitly hidden. */
+.np-hp{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+
+.np-jobform-submit{
+	display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+	margin-top:24px;padding-top:20px;border-top:1px solid var(--np-border)
+}
+.np-jobform-note{font-size:var(--np-size-small);color:var(--np-muted)}
+.np-jobform-submit .np-i{width:15px;height:15px}
+
+@media(max-width:782px){
+	.np-jobform{padding:17px}
+	.np-jobform-grid{grid-template-columns:minmax(0,1fr)}
+	.np-jobform-submit .np-btn{width:100%;justify-content:center}
+	.np-jobform-note{text-align:center;width:100%}
+}
+
+/* =========================================================
    FOOTER
    ======================================================= */
 .np-footer{background:var(--np-primary-dark);color:rgba(255,255,255,.75);padding:52px 16px 40px}
@@ -1054,21 +1134,21 @@ html.np-dark .np-empty{border-color:var(--np-border)}
 	   was visible without scrolling. Everything is still here — it is
 	   just packed tighter, and the search stays on ONE row instead of
 	   wrapping the button onto a second. */
-	.np-hero{padding:16px 14px 14px;border-radius:var(--np-radius)}
+	.np-hero{padding:14px 14px 10px;border-radius:var(--np-radius)}
 	.np-hero-eyebrow{margin-bottom:5px;font-size:calc(var(--np-size-small) - 1px)}
 	.np-hero-title{margin-bottom:6px;line-height:1.2}
-	.np-hero-sub{font-size:var(--np-size-small);margin-bottom:12px;line-height:1.5}
+	.np-hero-sub{font-size:calc(var(--np-size-small) - 1px);margin-bottom:10px;line-height:1.45}
 
 	.np-hero-search{flex-wrap:nowrap;padding:5px 5px 5px 12px;gap:6px}
 	.np-hero-search input{flex:1 1 auto;min-width:0;padding:9px 0;font-size:var(--np-size-small)}
 	.np-hero-search .np-btn{flex:none;padding:10px 13px;white-space:nowrap}
 
-	.np-segment{display:flex;width:100%;justify-content:space-between;margin-top:10px;padding:3px}
+	.np-segment{display:flex;width:100%;justify-content:space-between;margin-top:9px;padding:3px}
 	.np-seg{flex:1;text-align:center;padding:8px 4px;font-size:calc(var(--np-size-small) - 1px)}
 
-	.np-stats{gap:10px;justify-content:space-between;margin-top:10px;padding-top:9px}
+	.np-stats{gap:10px;justify-content:space-between;margin-top:9px;padding-top:8px}
 	.np-stats dt{font-size:calc(var(--np-size-small) - 2px);line-height:1.3}
-	.np-stats dd{font-size:calc(var(--np-size-h3) - 2px);line-height:1.2}
+	.np-stats dd{font-size:calc(var(--np-size-h3) - 3px);line-height:1.2}
 
 	.np-tiles{grid-template-columns:repeat(3,1fr);gap:10px}
 	.np-tile{padding:16px 8px}
