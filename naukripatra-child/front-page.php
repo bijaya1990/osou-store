@@ -224,16 +224,35 @@ $np_cats      = count( np_main_sections() );
 	<!-- ============ 5. FREE CAREER TOOLS ============ -->
 	<?php
 	/**
-	 * SCOPE NOTE (see README v3.0 and the brief, section 5):
-	 * these four tools do not exist anywhere in the theme. This is the
-	 * card UI only — each card links to a placeholder page. No backend
-	 * logic is implemented until the scope is confirmed.
+	 * Live tool URLs, supplied by the site owner. A tool with an empty
+	 * URL renders as a non-clickable "Coming soon" card instead of a
+	 * link, so nothing on this row can ever point at a 404.
 	 */
 	$np_tools = array(
-		array( 'Resume Maker',   'pen',      'Build a clean, ATS-friendly resume in minutes.',   '/tools/resume-maker/' ),
-		array( 'Photo Resizer',  'image',    'Resize a photo to any exam form specification.',   '/tools/photo-resizer/' ),
-		array( 'Signature Maker','pen',      'Create a signature image in the required size.',   '/tools/signature-maker/' ),
-		array( 'PDF Compressor', 'compress', 'Shrink a PDF below the upload limit of any form.', '/tools/pdf-compressor/' ),
+		array(
+			'name' => 'Resume Maker',
+			'icon' => 'file',
+			'desc' => 'Build a clean, ATS-friendly resume in minutes.',
+			'url'  => 'https://naukripatra.in/resume-builder/',
+		),
+		array(
+			'name' => 'Photo Resizer',
+			'icon' => 'image',
+			'desc' => 'Resize a photo to any exam form specification.',
+			'url'  => 'https://naukripatra.in/image-tools',
+		),
+		array(
+			'name' => 'Signature Scanner',
+			'icon' => 'pen',
+			'desc' => 'Scan and size a signature for an online form.',
+			'url'  => 'https://naukripatra.in/image-tools',
+		),
+		array(
+			'name' => 'PDF Compressor',
+			'icon' => 'compress',
+			'desc' => 'Shrink a PDF below the upload limit of any form.',
+			'url'  => '', // coming soon
+		),
 	);
 	?>
 	<section class="np-section np-tools-section">
@@ -242,15 +261,22 @@ $np_cats      = count( np_main_sections() );
 			<p class="np-section-sub">Everything you need while filling an application form.</p>
 		</header>
 		<div class="np-tools">
-			<?php foreach ( $np_tools as $tool ) : ?>
-				<a class="np-tool" href="<?php echo esc_url( home_url( $tool[3] ) ); ?>">
-					<span class="np-tool-ico"><?php echo np_icon( $tool[1] ); ?></span>
+			<?php foreach ( $np_tools as $np_tool ) :
+				$np_live = ! empty( $np_tool['url'] );
+				$np_el   = $np_live ? 'a' : 'span';
+				?>
+				<<?php echo $np_el; ?> class="np-tool<?php echo $np_live ? '' : ' np-tool-soon'; ?>"
+					<?php if ( $np_live ) : ?>href="<?php echo esc_url( $np_tool['url'] ); ?>"<?php endif; ?>>
+					<span class="np-tool-ico"><?php echo np_icon( $np_tool['icon'] ); ?></span>
 					<span class="np-tool-body">
-						<span class="np-tool-name"><?php echo esc_html( $tool[0] ); ?></span>
-						<span class="np-tool-desc"><?php echo esc_html( $tool[2] ); ?></span>
+						<span class="np-tool-name">
+							<?php echo esc_html( $np_tool['name'] ); ?>
+							<?php if ( ! $np_live ) : ?><span class="np-soon">Coming soon</span><?php endif; ?>
+						</span>
+						<span class="np-tool-desc"><?php echo esc_html( $np_tool['desc'] ); ?></span>
 					</span>
-					<?php echo np_icon( 'chevron', 'np-i-end' ); ?>
-				</a>
+					<?php if ( $np_live ) echo np_icon( 'chevron', 'np-i-end' ); ?>
+				</<?php echo $np_el; ?>>
 			<?php endforeach; ?>
 		</div>
 	</section>

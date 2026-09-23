@@ -678,3 +678,25 @@ np_sync_last_date_ts()   refresh one post's mirror
 np_backfill_last_date_ts() batched back-fill for old posts
 single.php now uses np_days_left() for its countdown too,
 instead of parsing the date a second time itself.
+
+=====================================================
+ VERSION 3.2 — CAREER TOOLS GO LIVE
+=====================================================
+The Free Career Tools row on the homepage now points at the
+real tools instead of placeholder paths:
+
+  Resume Maker       https://naukripatra.in/resume-builder/
+  Photo Resizer      https://naukripatra.in/image-tools
+  Signature Scanner  https://naukripatra.in/image-tools
+  PDF Compressor     coming soon
+
+- "Signature Maker" renamed to "Signature Scanner", with its
+  description updated to match.
+- Resume Maker now uses the document icon rather than the pen,
+  so it no longer shares an icon with Signature Scanner.
+- PDF Compressor has no URL yet, so it renders as a
+  NON-CLICKABLE card with a "Coming soon" badge — a <span>,
+  not a link. Nothing in this row can point at a 404.
+- To switch PDF Compressor on later, put its URL in the `url`
+  key of the $np_tools array in front-page.php. The card turns
+  itself back into a link automatically; no other edit needed.

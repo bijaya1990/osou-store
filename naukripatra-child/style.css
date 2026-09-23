@@ -4,7 +4,7 @@
  Description:  NaukriPatra — premium corporate job portal child theme for GeneratePress. Government and private listings, automatic state-wise views, a fully dashboard-controlled design system (colours, fonts, letter sizes) and a dashboard-controlled ad system with image banners or network ad code per slot. No tracking, 100% yours.
  Author:       NaukriPatra
  Template:     generatepress
- Version:      3.1
+ Version:      3.2
  Tags:         jobs, portal, corporate, dark-mode, customizable
  Text Domain:  naukripatra
 */
@@ -495,9 +495,21 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 }
 .np-tool-ico .np-i{width:22px;height:22px}
 .np-tool-body{display:flex;flex-direction:column;gap:3px;min-width:0}
-.np-tool-name{font-family:var(--np-font-head);font-weight:600;font-size:var(--np-size-base)}
+.np-tool-name{font-family:var(--np-font-head);font-weight:600;font-size:var(--np-size-base);display:flex;align-items:center;flex-wrap:wrap;gap:2px}
 .np-tool-desc{font-size:var(--np-size-small);color:var(--np-muted)}
 .np-tool .np-i-end{width:16px;height:16px;color:var(--np-muted);flex:none}
+
+/* A tool that is not live yet renders as a <span>, not a link: muted,
+   not hoverable, and clearly labelled rather than pointing at a 404. */
+.np-tool-soon{cursor:default;opacity:.72}
+.np-tool-soon:hover{border-color:var(--np-border)}
+.np-tool-soon .np-tool-ico{background:var(--np-bg);color:var(--np-muted)}
+.np-soon{
+	display:inline-flex;align-items:center;margin-left:8px;padding:3px 8px;border-radius:5px;
+	background:var(--np-bg);border:1px solid var(--np-border);color:var(--np-muted);
+	font-family:var(--np-font-body);font-size:calc(var(--np-size-small) - 2px);
+	font-weight:700;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap
+}
 
 /* =========================================================
    APP BAND
