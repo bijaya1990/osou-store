@@ -944,3 +944,67 @@ stylesheets share. See the v3.4 notes above for how to clear it.
    If the plugin is ever deactivated the shortcode stops existing
    and the theme falls back to its own Result-category ticker, so
    the bar never silently disappears.
+
+=====================================================
+ VERSION 3.8 — APPLY NOW FINDS THE OFFICIAL LINK
+=====================================================
+
+THE PROBLEM
+The sidebar "Apply Now" button was dead on every post published
+before v3.0. The Apply / Official Link field did not exist back
+then, and nobody is going to reopen a thousand old posts to fill
+it in by hand.
+
+THE FIX
+The official link is almost always already IN the post — the
+"Apply Online" or "Official Website" row of the links table. The
+theme now reads it out of the content instead of asking for it
+to be typed a second time.
+
+Order of preference:
+  1. The Apply / Official Link field in the Job Details box.
+     An explicit choice always wins.
+  2. The best external link found in the post content.
+  3. Nothing — the button then scrolls to "How to Apply", which
+     is what it did before. It is never left pointing nowhere.
+
+HOW A LINK IS CHOSEN
+Each external link in the content is scored:
+  + anchor text saying Apply / Apply Online / Apply Here
+  + anchor text saying Official Website / Official Link
+  + anchor text saying Registration / Register / Online Form
+  + the host ends in .gov.in or .nic.in
+  - anchor text saying Notification / Advertisement / Syllabus
+  - the URL ends in .pdf
+Rejected outright: your own domain, and WhatsApp, Telegram,
+Facebook, X, Instagram, YouTube, LinkedIn, Play Store and similar.
+A plain external link with no telling words is NOT used — a wrong
+Apply button is worse than none, so the theme stays quiet unless
+it has a real signal.
+
+Tested against: a normal table post (picks Apply Online over both
+the PDF and the bare official site), an Apply Online link, a
+social-links-only post, a PDF-only post, a no-signal post, and an
+Official Website link. Manual field override confirmed.
+
+WHERE IT APPLIES
+All three Apply buttons use it: the sidebar CTA, the button under
+How to Apply, and the sticky apply bar on mobile. Each opens in a
+new tab with rel="noopener nofollow".
+
+PERFORMANCE
+The detected URL is cached in _np_apply_url_auto and recalculated
+on every save, so content is parsed once, not on each page view.
+A post where nothing was found stores "-" so it is not re-scanned
+forever. Older posts are scanned once, the first time they are
+viewed after this update.
+
+EDITOR HINT
+The Job Details box now shows, under the Apply / Official Link
+field, which URL was detected and is in use — or says none was
+found. Filling the field overrides the detection.
+
+REST
+job_details gains apply_url_resolved: the link the button actually
+uses. The existing apply_url field keeps its exact old meaning
+(the raw field), so nothing the Android app already reads changes.

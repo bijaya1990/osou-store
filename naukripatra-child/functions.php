@@ -253,6 +253,132 @@ add_action( 'after_switch_theme', function () {
 } );
 
 /* =========================================================
+ * 0B2. APPLY LINK — automatic detection
+ * =======================================================
+ * The sidebar "Apply Now" button was dead on every post published
+ * before v3.0, because the _np_apply_url field did not exist then and
+ * nobody has gone back to fill 1,000 old posts by hand.
+ *
+ * The official link is almost always already IN the post — the "Apply
+ * Online" / "Official Website" row of the links table. So the theme
+ * now reads it out of the content instead of demanding it be typed a
+ * second time.
+ *
+ * Order of preference:
+ *   1. The Apply / Official Link field in the Job Details box, if the
+ *      editor filled it. An explicit choice always wins.
+ *   2. The best external link found in the post content.
+ *   3. Nothing — the button then scrolls to "How to Apply" rather
+ *      than going nowhere, which is what it did before.
+ *
+ * The detected URL is cached in _np_apply_url_auto and recalculated
+ * whenever the post is saved, so the content is parsed once, not on
+ * every page view.
+ */
+
+/** Hosts that are never the official application site. */
+function np_apply_link_blocklist() {
+	return array(
+		'facebook.com', 'fb.com', 'twitter.com', 'x.com', 'instagram.com',
+		'youtube.com', 'youtu.be', 'whatsapp.com', 'wa.me', 't.me', 'telegram.me',
+		'linkedin.com', 'pinterest.com', 'play.google.com', 'apps.apple.com',
+		'google.com', 'blogspot.com', 'amazon.in', 'amzn.to',
+	);
+}
+
+/**
+ * Score one candidate link. Higher is better; 0 or less = reject.
+ *
+ * @param string $href Absolute URL.
+ * @param string $text The anchor's visible text.
+ * @param string $home_host The site's own host.
+ */
+function np_score_apply_link( $href, $text, $home_host ) {
+	$host = strtolower( (string) wp_parse_url( $href, PHP_URL_HOST ) );
+	if ( '' === $host ) return 0;
+
+	// Our own site is never the official application site.
+	if ( false !== strpos( $host, $home_host ) ) return 0;
+
+	foreach ( np_apply_link_blocklist() as $bad ) {
+		if ( $host === $bad || substr( $host, -strlen( '.' . $bad ) ) === '.' . $bad ) return 0;
+	}
+
+	$text  = strtolower( wp_strip_all_tags( $text ) );
+	$score = 1;
+
+	// What the link SAYS is the strongest signal.
+	if ( preg_match( '/\bapply\s*(online|now|here)?\b/', $text ) )      $score += 60;
+	if ( preg_match( '/\bofficial\s*(website|site|link)\b/', $text ) )  $score += 55;
+	if ( preg_match( '/\b(registration|register|online\s*form)\b/', $text ) ) $score += 40;
+	if ( preg_match( '/\blogin\b/', $text ) )                            $score += 15;
+
+	// A notification or advertisement link is usually the PDF, not the form.
+	if ( preg_match( '/\b(notification|advertisement|notice|syllabus|admit|result)\b/', $text ) ) $score -= 25;
+	if ( preg_match( '/\.pdf($|\?)/i', $href ) )                         $score -= 35;
+
+	// Indian government domains are very likely the real thing.
+	if ( preg_match( '/\.(gov|nic)\.in$/', $host ) ) $score += 30;
+	elseif ( preg_match( '/\.(ac|edu)\.in$/', $host ) ) $score += 15;
+
+	return $score;
+}
+
+/** Best official link found inside a post's content, or '' if none. */
+function np_detect_apply_url( $post_id ) {
+	$content = get_post_field( 'post_content', $post_id );
+	if ( ! $content ) return '';
+
+	// NOTE: the raw content is parsed on purpose. Running it through
+	// the_content would re-enter this theme's own content filter.
+	if ( ! preg_match_all( '/<a\s[^>]*href=["\']([^"\']+)["\'][^>]*>(.*?)<\/a>/is', $content, $m, PREG_SET_ORDER ) ) {
+		return '';
+	}
+
+	$home_host = strtolower( (string) wp_parse_url( home_url( '/' ), PHP_URL_HOST ) );
+	$home_host = preg_replace( '/^www\./', '', $home_host );
+
+	$best = '';
+	$best_score = 0;
+	foreach ( $m as $hit ) {
+		$href = trim( html_entity_decode( $hit[1], ENT_QUOTES ) );
+		if ( 0 !== stripos( $href, 'http' ) ) continue; // skip #, mailto:, tel:, relative
+
+		$score = np_score_apply_link( $href, $hit[2], $home_host );
+		if ( $score > $best_score ) {
+			$best_score = $score;
+			$best       = $href;
+		}
+	}
+
+	// A bare external link with no telling words is a weak guess, so
+	// require at least one real signal before offering it as "Apply".
+	return ( $best_score >= 15 ) ? esc_url_raw( $best ) : '';
+}
+
+/** Refresh the cached detection for one post. */
+function np_sync_apply_url( $post_id ) {
+	$found = np_detect_apply_url( $post_id );
+	// '-' records "looked, found nothing", so it is not re-parsed forever.
+	update_post_meta( $post_id, '_np_apply_url_auto', $found ? $found : '-' );
+	return $found;
+}
+
+/**
+ * The URL the Apply Now button should use. '' when there is none.
+ */
+function np_get_apply_url( $post_id ) {
+	$manual = trim( (string) get_post_meta( $post_id, '_np_apply_url', true ) );
+	if ( $manual ) return $manual;
+
+	$auto = (string) get_post_meta( $post_id, '_np_apply_url_auto', true );
+	if ( '-' === $auto ) return '';          // already searched, nothing there
+	if ( $auto ) return $auto;
+
+	return np_sync_apply_url( $post_id );    // first look for an older post
+}
+
+/* =========================================================
  * 0C. INLINE STROKE SVG ICONS (no emoji anywhere in the UI)
  * ======================================================= */
 function np_icon( $name, $class = '' ) {
@@ -489,6 +615,7 @@ function np_job_details_box( $post ) {
 	$postal   = get_post_meta( $post->ID, '_np_postal_code', true );
 	$sector   = np_get_sector( $post->ID );
 	$apply    = get_post_meta( $post->ID, '_np_apply_url', true );
+	$auto     = $apply ? '' : np_get_apply_url( $post->ID );
 	$fee      = get_post_meta( $post->ID, '_np_app_fee', true );
 	if ( '' === $emp_type ) $emp_type = 'FULL_TIME';
 	?>
@@ -497,6 +624,7 @@ function np_job_details_box( $post ) {
 		.np-mb label{font-weight:600;display:block;margin-bottom:4px}
 		.np-mb input,.np-mb select{width:100%;padding:8px;border:1px solid #8c8f94;border-radius:6px;font:inherit}
 		.np-mb-sub{margin:18px 0 4px;font-weight:700;border-top:1px solid #dcdcde;padding-top:14px}
+		.np-mb-hint{margin:5px 0 0;font-size:12px;color:#646970;line-height:1.4}
 		@media(max-width:782px){.np-mb{grid-template-columns:1fr}}
 	</style>
 	<div class="np-mb">
@@ -526,7 +654,19 @@ function np_job_details_box( $post ) {
 		<div>
 			<label for="np_apply_url">Apply / Official Link</label>
 			<input type="url" id="np_apply_url" name="np_apply_url"
-				value="<?php echo esc_attr( $apply ); ?>" placeholder="https://... (optional)">
+				value="<?php echo esc_attr( $apply ); ?>"
+				placeholder="<?php echo esc_attr( $auto ? $auto : 'https://... (optional)' ); ?>">
+			<?php if ( ! $apply ) : ?>
+				<p class="np-mb-hint">
+					<?php if ( $auto ) : ?>
+						Detected in this post and already in use by the Apply Now button.
+						Fill this field only to override it.
+					<?php else : ?>
+						No official link found in this post yet. Add an "Apply Online" or
+						"Official Website" link to the content, or paste it here.
+					<?php endif; ?>
+				</p>
+			<?php endif; ?>
 		</div>
 		<div>
 			<label for="np_app_fee">Application Fee</label>
@@ -624,6 +764,9 @@ add_action( 'save_post', function ( $post_id ) {
 	// Refresh the numeric deadline mirror used by the active count and
 	// the "Ending soon" panel. `_np_last_date` itself is untouched.
 	np_sync_last_date_ts( $post_id );
+
+	// Re-detect the official apply link from the freshly saved content.
+	np_sync_apply_url( $post_id );
 } );
 
 /** Keep the mirror correct for edits made through the REST API too. */
@@ -1354,6 +1497,11 @@ add_action( 'rest_api_init', function () {
 				'job_sector'       => np_get_sector( $id ),
 				'job_sector_label' => np_job_sectors()[ np_get_sector( $id ) ],
 				'apply_url'        => (string) get_post_meta( $id, '_np_apply_url', true ),
+				// NEW in v3.8: the link the Apply button actually uses —
+				// the field above when filled, otherwise the official link
+				// detected in the post content. `apply_url` keeps its exact
+				// old meaning (the raw field) so nothing the app reads changes.
+				'apply_url_resolved' => np_get_apply_url( $id ),
 				'app_fee'          => (string) get_post_meta( $id, '_np_app_fee', true ),
 			);
 		},

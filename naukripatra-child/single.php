@@ -37,7 +37,10 @@ while ( have_posts() ) :
 	$np_salary = get_post_meta( $np_id, '_np_salary', true );
 	$np_org    = get_post_meta( $np_id, '_np_organization', true );
 	$np_fee    = get_post_meta( $np_id, '_np_app_fee', true );
-	$np_apply  = get_post_meta( $np_id, '_np_apply_url', true );
+	/* The Apply / Official Link field when the editor filled it,
+	   otherwise the official link detected in the post content, so the
+	   button works on old posts too instead of sitting there dead. */
+	$np_apply  = np_get_apply_url( $np_id );
 	$np_emp    = np_employment_types();
 	$np_emp_l  = get_post_meta( $np_id, '_np_employment_type', true );
 	$np_emp_l  = isset( $np_emp[ $np_emp_l ] ) ? $np_emp[ $np_emp_l ] : '';
