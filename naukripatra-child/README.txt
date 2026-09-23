@@ -801,3 +801,39 @@ the old copy loads later. Remove the source:
      enqueued stylesheet and always wins.
   c. Check no second copy of the old theme folder is left in
      wp-content/themes.
+
+=====================================================
+ VERSION 3.5 — SECTION LISTS RESTORED
+=====================================================
+
+WHAT WAS LOST AND IS NOW BACK
+v2.8's homepage ended with one card per section, each listing
+that section's 6 newest posts with a NEW badge, the last date
+and a "View All" link. That is how Result, Admit Card, Answer
+Key, Syllabus and Admission were surfaced on the front page.
+
+v3.0 replaced that block with icon-only category tiles showing
+just a name and a post count, and dropped the lists entirely.
+That was a regression, not an intentional trade — the tiles
+tell a visitor a section exists but never show what is in it.
+
+v3.5 brings the lists back, restyled to the new design:
+- One card per section, its 6 newest posts, NEW badge, last
+  date in alert red, and a "View all" link to the category.
+- Sits directly below "Latest jobs", above the app band.
+- 3 columns on desktop, 2 on tablet, 1 on phone.
+- Latest Jobs is intentionally NOT repeated here, because the
+  full "Latest jobs" list sits directly above it. To include
+  it anyway, delete the `unset( $np_sec_lists['Latest Jobs'] );`
+  line in front-page.php and all 6 cards render.
+- The icon-only tiles stay where they are, higher up the page,
+  as quick navigation.
+
+NOTE ON THE TICKER
+The live ticker was never removed. np_render_ticker() is
+unchanged in inc/features.php and is still called on the
+homepage, directly under the hero. If it is not appearing on
+the live site, that is the leftover v2.8 stylesheet again:
+.np-ticker, .np-ticker-label, .np-ticker-track and
+.np-ticker-move are four of the 50 class names the two
+stylesheets share. See the v3.4 notes above for how to clear it.

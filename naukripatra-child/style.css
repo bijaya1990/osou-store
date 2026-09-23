@@ -4,7 +4,7 @@
  Description:  NaukriPatra — premium corporate job portal child theme for GeneratePress. Government and private listings, automatic state-wise views, a fully dashboard-controlled design system (colours, fonts, letter sizes) and a dashboard-controlled ad system with image banners or network ad code per slot. No tracking, 100% yours.
  Author:       NaukriPatra
  Template:     generatepress
- Version:      3.4
+ Version:      3.5
  Tags:         jobs, portal, corporate, dark-mode, customizable
  Text Domain:  naukripatra
 */
@@ -484,6 +484,37 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 .np-countdown .np-i{width:13px;height:13px}
 .np-countdown-hot{background:var(--np-danger);color:#fff}
 
+/* ---------- Section lists (Result, Admit Card, ...) ---------- */
+.np-seclists{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.np-seclist{
+	background:var(--np-surface);border:1px solid var(--np-border);border-radius:var(--np-radius);
+	padding:18px;display:flex;flex-direction:column
+}
+.np-seclist-head{display:flex;align-items:center;gap:10px;padding-bottom:13px;border-bottom:1px solid var(--np-border)}
+.np-seclist-head h3{margin:0;font-size:var(--np-size-h3)}
+.np-seclist-ico{
+	width:34px;height:34px;flex:none;border-radius:9px;display:flex;align-items:center;justify-content:center;
+	background:var(--np-bg);color:var(--np-primary)
+}
+.np-seclist-ico .np-i{width:18px;height:18px}
+.np-seclist-items{list-style:none;margin:0;padding:0;display:grid;gap:2px;flex:1}
+.np-seclist-items li{border-bottom:1px solid var(--np-border)}
+.np-seclist-items li:last-child{border-bottom:0}
+.np-seclist-items a{
+	display:flex;flex-direction:column;gap:3px;padding:11px 0;text-decoration:none;color:var(--np-text)
+}
+.np-seclist-items a:hover .np-seclist-title{color:var(--np-primary)}
+.np-seclist-title{font-size:var(--np-size-small);font-weight:500;line-height:1.45}
+.np-seclist-title .np-new{margin-left:6px;vertical-align:1px}
+.np-seclist-meta{font-size:calc(var(--np-size-small) - 1px);color:var(--np-danger)}
+.np-seclist-empty{padding:16px 0;font-size:var(--np-size-small);color:var(--np-muted)}
+.np-seclist-more{
+	margin-top:14px;padding-top:13px;border-top:1px solid var(--np-border);
+	display:inline-flex;align-items:center;gap:6px;
+	font-size:var(--np-size-small);font-weight:600;text-decoration:none
+}
+.np-seclist-more .np-i{width:14px;height:14px}
+
 /* =========================================================
    STATE GRID
    ======================================================= */
@@ -889,6 +920,7 @@ html.np-dark .np-empty{border-color:var(--np-border)}
 @media(max-width:1024px){
 	.np-tiles{grid-template-columns:repeat(3,1fr)}
 	.np-cards,.np-cards-2,.np-cards-3{grid-template-columns:repeat(2,1fr)}
+	.np-seclists{grid-template-columns:repeat(2,1fr)}
 	.np-tools{grid-template-columns:repeat(2,1fr)}
 	.np-state-grid{grid-template-columns:repeat(4,1fr)}
 	.np-chips{grid-template-columns:repeat(2,1fr)}
@@ -935,7 +967,7 @@ html.np-dark .np-empty{border-color:var(--np-border)}
 	.np-tile{padding:16px 8px}
 	.np-tile-ico{width:40px;height:40px}
 
-	.np-cards,.np-cards-2,.np-cards-3,.np-tools{grid-template-columns:minmax(0,1fr)}
+	.np-cards,.np-cards-2,.np-cards-3,.np-tools,.np-seclists{grid-template-columns:minmax(0,1fr)}
 
 	/* Job rows become stacked cards — no horizontal scroll. */
 	.np-job{flex-direction:column;align-items:stretch;gap:14px;padding:16px}

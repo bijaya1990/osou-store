@@ -303,6 +303,74 @@ $np_cats      = count( np_main_sections() );
 		?>
 	</section>
 
+	<!-- ============ 6B. SECTION LISTS (Result, Admit Card, ...) ============ -->
+	<?php
+	/**
+	 * RESTORED in v3.5. v2.8's homepage ended with one card per section,
+	 * each listing that section's 6 newest posts — which is how Result,
+	 * Admit Card, Answer Key, Syllabus and Admission were surfaced on
+	 * the front page. v3.0 replaced it with icon-only tiles and dropped
+	 * the lists; that was a regression and this brings them back.
+	 *
+	 * Latest Jobs is skipped here because the full "Latest jobs" list
+	 * sits directly above — no point printing it twice.
+	 */
+	$np_sec_lists = np_main_sections();
+	unset( $np_sec_lists['Latest Jobs'] );
+	?>
+	<section class="np-section">
+		<header class="np-section-head">
+			<h2>Results, admit cards &amp; more</h2>
+			<p class="np-section-sub">The newest update in every section, straight from the front page.</p>
+		</header>
+
+		<div class="np-seclists">
+			<?php foreach ( $np_sec_lists as $np_sname => $np_sslug ) :
+				$np_sterm = get_term_by( 'slug', $np_sslug, 'category' );
+				$np_slink = $np_sterm ? get_category_link( $np_sterm ) : '#';
+				$np_sq = new WP_Query( array(
+					'category_name'       => $np_sslug,
+					'posts_per_page'      => 6,
+					'ignore_sticky_posts' => true,
+					'no_found_rows'       => true,
+				) );
+				?>
+				<div class="np-seclist">
+					<div class="np-seclist-head">
+						<span class="np-seclist-ico"><?php echo np_icon( np_section_icon( $np_sslug ) ); ?></span>
+						<h3><?php echo esc_html( $np_sname ); ?></h3>
+					</div>
+
+					<ul class="np-seclist-items">
+						<?php if ( $np_sq->have_posts() ) :
+							while ( $np_sq->have_posts() ) : $np_sq->the_post();
+								$np_slast = get_post_meta( get_the_ID(), '_np_last_date', true );
+								$np_snew  = ( time() - get_post_time( 'U', true ) ) < 3 * DAY_IN_SECONDS;
+								?>
+								<li>
+									<a href="<?php the_permalink(); ?>">
+										<span class="np-seclist-title">
+											<?php the_title(); ?>
+											<?php if ( $np_snew ) echo '<span class="np-new">NEW</span>'; ?>
+										</span>
+										<?php if ( $np_slast ) : ?>
+											<span class="np-seclist-meta">Last date: <?php echo esc_html( $np_slast ); ?></span>
+										<?php endif; ?>
+									</a>
+								</li>
+							<?php endwhile; wp_reset_postdata();
+						else : ?>
+							<li class="np-seclist-empty">New updates are added here every day.</li>
+						<?php endif; ?>
+					</ul>
+
+					<a class="np-seclist-more" href="<?php echo esc_url( $np_slink ); ?>">
+						View all <?php echo np_icon( 'chevron' ); ?></a>
+				</div>
+			<?php endforeach; ?>
+		</div>
+	</section>
+
 	<!-- ============ 7. APP + CHANNELS BAND ============ -->
 	<section class="np-appbar">
 		<div class="np-appbar-info">
