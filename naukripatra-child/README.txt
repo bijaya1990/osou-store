@@ -888,3 +888,59 @@ stylesheets share. See the v3.4 notes above for how to clear it.
      np_render_ticker( array(
        'label' => 'LIVE ADMIT CARD', 'category' => 'admit-card',
        'class' => 'np-ticker-result', 'icon' => 'card' ) );
+
+=====================================================
+ VERSION 3.7 — LIVE VIEWS, SHARE PANEL, NEW ORDER
+=====================================================
+
+1. ENGAGEMENT PANEL UNDER EVERY POST
+   A panel at the end of each job post showing how many people
+   have viewed it, with a pulsing LIVE badge, plus WhatsApp,
+   Telegram, Facebook and Copy Link buttons — each with its own
+   icon. The number flashes green when it goes up.
+   On a phone the four share buttons become a 2x2 grid.
+
+2. THE VIEW COUNT IS NOW REAL, AND LIVE
+   v2.8 incremented _np_views from wp_head. That stops counting
+   completely once a full-page cache is on, because a cached page
+   never runs PHP — which is why counts on a cached site sit far
+   below the real traffic.
+   Counting moved to a REST route:
+     GET  /wp-json/naukripatra/v1/views/<id>
+     POST /wp-json/naukripatra/v1/views/<id>
+   np-main.js counts one view on load and then re-reads the number
+   every 30 seconds, so it ticks up while the page is open. Polling
+   pauses while the tab is in the background.
+   Guards: logged-in users are never counted (as before), one
+   browser tab counts once, and the server allows one view per IP
+   per post per hour so refreshing cannot inflate it.
+   The wp_head increment was REMOVED, not kept as a fallback —
+   running both would double-count every uncached view. The meta
+   key, np_get_views() and np_trending_query() are unchanged, so
+   Trending and the REST job_details.views field carry on as is.
+
+3. SMALLER SECTION TITLES AND BUTTONS
+   "Trending this month" and "Ending soon" were taking a third of
+   the screen before the first card appeared.
+   - Section titles: H2 size -> H3 + 4px.
+   - "View all" links and their chevrons: one step smaller.
+   - Card titles in those grids: 3px smaller.
+   - The Ending soon clock icon: 22px -> 18px.
+
+4. HOMEPAGE ORDER CHANGED, AS REQUESTED
+     Hero > tickers > Browse by category > Browse by state >
+     Trending this month > Ending soon > Free career tools >
+     Latest jobs > section lists > app band
+
+5. LIVE RESULTS TICKER NOW USES YOUR PLUGIN
+   v3.6 built its own Result ticker from the "result" category.
+   That was the wrong source: the data belongs to the
+   "NaukriPatra Live Results Ticker" plugin (v1.1.1), which reads
+   the Result Management System and exposes it as
+   [naukripatra_results_ticker].
+   The homepage now renders that shortcode, so the bar shows the
+   same results the plugin has always shown — including its own
+   "LIVE RESULTS -> Coming Soon" state.
+   If the plugin is ever deactivated the shortcode stops existing
+   and the theme falls back to its own Result-category ticker, so
+   the bar never silently disappears.

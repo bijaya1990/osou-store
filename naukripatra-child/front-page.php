@@ -71,19 +71,34 @@ $np_cats      = count( np_main_sections() );
 
 	<!-- ============ LIVE TICKERS ============ -->
 	<?php
-	/* Two tickers, as the site had before: the newest listings of any
-	   kind, then a Result-only one. Each prints nothing at all if its
-	   category is empty, so neither can leave a blank bar. */
-	np_render_ticker( array(
-		'label' => 'LIVE',
-		'icon'  => 'bolt',
-	) );
-	np_render_ticker( array(
-		'label'    => 'LIVE RESULT',
-		'category' => 'result',
-		'class'    => 'np-ticker-result',
-		'icon'     => 'trophy',
-	) );
+	/* Ticker 1 — newest listings of any kind, from this theme. */
+	np_render_ticker( array( 'label' => 'LIVE', 'icon' => 'bolt' ) );
+
+	/*
+	 * Ticker 2 — LIVE RESULTS.
+	 *
+	 * This one is NOT the theme's own query: the data belongs to the
+	 * "NaukriPatra Live Results Ticker" plugin, which reads the Result
+	 * Management System and exposes it as [naukripatra_results_ticker].
+	 * Rendering the plugin's shortcode is the only correct source —
+	 * querying a "result" category here would show different posts.
+	 *
+	 * If the plugin is deactivated the shortcode stops existing, so the
+	 * theme falls back to its own Result-category ticker rather than
+	 * leaving a gap where the bar used to be.
+	 */
+	if ( shortcode_exists( 'naukripatra_results_ticker' ) ) {
+		echo '<div class="np-ticker-plugin">'
+			. do_shortcode( '[naukripatra_results_ticker]' )
+			. '</div>';
+	} else {
+		np_render_ticker( array(
+			'label'    => 'LIVE RESULT',
+			'category' => 'result',
+			'class'    => 'np-ticker-result',
+			'icon'     => 'trophy',
+		) );
+	}
 	?>
 
 	<!-- ============ 2. QUICK CATEGORY TILES ============ -->
@@ -107,85 +122,7 @@ $np_cats      = count( np_main_sections() );
 
 	<?php np_ad_slot( 'home_top', 'np-ad-leaderboard' ); ?>
 
-	<!-- ============ 3. TRENDING JOBS ============ -->
-	<section class="np-section">
-		<header class="np-section-head">
-			<h2>Trending this month</h2>
-			<a class="np-section-link" href="<?php echo esc_url( $np_latest_link ); ?>">
-				View all <?php echo np_icon( 'chevron' ); ?></a>
-		</header>
-
-		<?php $np_trending = np_trending_query( 6 ); ?>
-		<?php if ( $np_trending->have_posts() ) : ?>
-			<div class="np-cards">
-				<?php while ( $np_trending->have_posts() ) : $np_trending->the_post();
-					$np_id   = get_the_ID();
-					$np_last = get_post_meta( $np_id, '_np_last_date', true ); ?>
-					<a class="np-card" href="<?php the_permalink(); ?>">
-						<span class="np-card-top">
-							<?php echo np_sector_badge( $np_id ); ?>
-							<span class="np-card-views"><?php echo np_icon( 'bolt' ); ?>
-								<?php echo esc_html( number_format_i18n( np_get_views( $np_id ) ) ); ?> views</span>
-						</span>
-						<span class="np-card-title"><?php the_title(); ?></span>
-						<span class="np-card-meta">
-							<span><?php echo np_icon( 'pin' ); ?><?php echo esc_html( np_location_text( $np_id ) ); ?></span>
-							<?php if ( $np_last ) : ?>
-								<span class="np-red"><?php echo np_icon( 'calendar' ); ?>Last date: <?php echo esc_html( $np_last ); ?></span>
-							<?php endif; ?>
-						</span>
-					</a>
-				<?php endwhile; wp_reset_postdata(); ?>
-			</div>
-		<?php else : ?>
-			<div class="np-empty"><?php echo np_icon( 'bolt' ); ?><p>Trending jobs appear here once listings start collecting views.</p></div>
-		<?php endif; ?>
-	</section>
-
-	<!-- ============ 3B. ENDING SOON ============ -->
-	<?php
-	/* Jobs whose last date falls inside the next 15 days, soonest
-	   first. The panel renders nothing at all when nothing is closing,
-	   so it never leaves an empty box on the page. */
-	$np_ending = np_ending_soon_query( 6, 15 );
-	?>
-	<?php if ( $np_ending->have_posts() ) : ?>
-		<section class="np-section np-ending">
-			<header class="np-section-head">
-				<h2><?php echo np_icon( 'clock' ); ?> Ending soon</h2>
-				<p class="np-section-sub">Applications closing in the next 15 days — apply before the window shuts.</p>
-			</header>
-
-			<div class="np-cards np-cards-3">
-				<?php while ( $np_ending->have_posts() ) : $np_ending->the_post();
-					$np_eid   = get_the_ID();
-					$np_elast = get_post_meta( $np_eid, '_np_last_date', true );
-					$np_edays = np_days_left( $np_eid );
-					// Guard: if the mirror is stale and the deadline can no
-					// longer be read, the post does not belong in this panel.
-					if ( null === $np_edays || $np_edays < 0 ) continue;
-					?>
-					<a class="np-card np-card-urgent" href="<?php the_permalink(); ?>">
-						<span class="np-card-top">
-							<?php echo np_sector_badge( $np_eid ); ?>
-							<span class="np-countdown<?php echo ( null !== $np_edays && $np_edays <= 3 ) ? ' np-countdown-hot' : ''; ?>">
-								<?php echo np_icon( 'clock' ); ?><?php echo esc_html( np_days_left_label( $np_edays ) ); ?>
-							</span>
-						</span>
-						<span class="np-card-title"><?php the_title(); ?></span>
-						<span class="np-card-meta">
-							<span><?php echo np_icon( 'pin' ); ?><?php echo esc_html( np_location_text( $np_eid ) ); ?></span>
-							<?php if ( $np_elast ) : ?>
-								<span class="np-red"><?php echo np_icon( 'calendar' ); ?>Last date: <?php echo esc_html( $np_elast ); ?></span>
-							<?php endif; ?>
-						</span>
-					</a>
-				<?php endwhile; wp_reset_postdata(); ?>
-			</div>
-		</section>
-	<?php endif; ?>
-
-	<!-- ============ 4. BROWSE BY STATE ============ -->
+	<!-- ============ 3. BROWSE BY STATE ============ -->
 	<section class="np-section np-states" id="npStates">
 		<header class="np-section-head">
 			<h2>Browse by state</h2>
@@ -233,9 +170,89 @@ $np_cats      = count( np_main_sections() );
 		</div>
 	</section>
 
+	<!-- ============ 4. TRENDING JOBS ============ -->
+	<section class="np-section">
+		<header class="np-section-head">
+			<h2>Trending this month</h2>
+			<a class="np-section-link" href="<?php echo esc_url( $np_latest_link ); ?>">
+				View all <?php echo np_icon( 'chevron' ); ?></a>
+		</header>
+
+		<?php $np_trending = np_trending_query( 6 ); ?>
+		<?php if ( $np_trending->have_posts() ) : ?>
+			<div class="np-cards">
+				<?php while ( $np_trending->have_posts() ) : $np_trending->the_post();
+					$np_id   = get_the_ID();
+					$np_last = get_post_meta( $np_id, '_np_last_date', true ); ?>
+					<a class="np-card" href="<?php the_permalink(); ?>">
+						<span class="np-card-top">
+							<?php echo np_sector_badge( $np_id ); ?>
+							<span class="np-card-views"><?php echo np_icon( 'bolt' ); ?>
+								<?php echo esc_html( number_format_i18n( np_get_views( $np_id ) ) ); ?> views</span>
+						</span>
+						<span class="np-card-title"><?php the_title(); ?></span>
+						<span class="np-card-meta">
+							<span><?php echo np_icon( 'pin' ); ?><?php echo esc_html( np_location_text( $np_id ) ); ?></span>
+							<?php if ( $np_last ) : ?>
+								<span class="np-red"><?php echo np_icon( 'calendar' ); ?>Last date: <?php echo esc_html( $np_last ); ?></span>
+							<?php endif; ?>
+						</span>
+					</a>
+				<?php endwhile; wp_reset_postdata(); ?>
+			</div>
+		<?php else : ?>
+			<div class="np-empty"><?php echo np_icon( 'bolt' ); ?><p>Trending jobs appear here once listings start collecting views.</p></div>
+		<?php endif; ?>
+	</section>
+
+	<!-- ============ 5. ENDING SOON ============ -->
+	<?php
+	/* Jobs whose last date falls inside the next 15 days, soonest
+	   first. The panel renders nothing at all when nothing is closing,
+	   so it never leaves an empty box on the page. */
+	$np_ending = np_ending_soon_query( 6, 15 );
+	?>
+	<?php if ( $np_ending->have_posts() ) : ?>
+		<section class="np-section np-ending">
+			<header class="np-section-head">
+				<h2><?php echo np_icon( 'clock' ); ?> Ending soon</h2>
+				<p class="np-section-sub">Applications closing in the next 15 days — apply before the window shuts.</p>
+			</header>
+
+			<div class="np-cards np-cards-3">
+				<?php while ( $np_ending->have_posts() ) : $np_ending->the_post();
+					$np_eid   = get_the_ID();
+					$np_elast = get_post_meta( $np_eid, '_np_last_date', true );
+					$np_edays = np_days_left( $np_eid );
+					// Guard: if the mirror is stale and the deadline can no
+					// longer be read, the post does not belong in this panel.
+					if ( null === $np_edays || $np_edays < 0 ) continue;
+					?>
+					<a class="np-card np-card-urgent" href="<?php the_permalink(); ?>">
+						<span class="np-card-top">
+							<?php echo np_sector_badge( $np_eid ); ?>
+							<span class="np-countdown<?php echo ( null !== $np_edays && $np_edays <= 3 ) ? ' np-countdown-hot' : ''; ?>">
+								<?php echo np_icon( 'clock' ); ?><?php echo esc_html( np_days_left_label( $np_edays ) ); ?>
+							</span>
+						</span>
+						<span class="np-card-title"><?php the_title(); ?></span>
+						<span class="np-card-meta">
+							<span><?php echo np_icon( 'pin' ); ?><?php echo esc_html( np_location_text( $np_eid ) ); ?></span>
+							<?php if ( $np_elast ) : ?>
+								<span class="np-red"><?php echo np_icon( 'calendar' ); ?>Last date: <?php echo esc_html( $np_elast ); ?></span>
+							<?php endif; ?>
+						</span>
+					</a>
+				<?php endwhile; wp_reset_postdata(); ?>
+			</div>
+		</section>
+	<?php endif; ?>
+
+
+
 	<?php np_ad_slot( 'home_infeed', 'np-ad-infeed' ); ?>
 
-	<!-- ============ 5. FREE CAREER TOOLS ============ -->
+	<!-- ============ 6. FREE CAREER TOOLS ============ -->
 	<?php
 	/**
 	 * Live tool URLs, supplied by the site owner. A tool with an empty
@@ -295,7 +312,7 @@ $np_cats      = count( np_main_sections() );
 		</div>
 	</section>
 
-	<!-- ============ 6. LATEST JOBS ============ -->
+	<!-- ============ 7. LATEST JOBS ============ -->
 	<section class="np-section">
 		<header class="np-section-head">
 			<h2>Latest jobs</h2>
@@ -317,7 +334,7 @@ $np_cats      = count( np_main_sections() );
 		?>
 	</section>
 
-	<!-- ============ 6B. SECTION LISTS (Result, Admit Card, ...) ============ -->
+	<!-- ============ 8. SECTION LISTS (Result, Admit Card, ...) ============ -->
 	<?php
 	/**
 	 * RESTORED in v3.5. v2.8's homepage ended with one card per section,
@@ -385,7 +402,7 @@ $np_cats      = count( np_main_sections() );
 		</div>
 	</section>
 
-	<!-- ============ 7. APP + CHANNELS BAND ============ -->
+	<!-- ============ 9. APP + CHANNELS BAND ============ -->
 	<section class="np-appbar">
 		<div class="np-appbar-info">
 			<span class="np-appbar-ico"><?php echo np_icon( 'phone' ); ?></span>

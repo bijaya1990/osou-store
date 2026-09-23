@@ -4,7 +4,7 @@
  Description:  NaukriPatra — premium corporate job portal child theme for GeneratePress. Government and private listings, automatic state-wise views, a fully dashboard-controlled design system (colours, fonts, letter sizes) and a dashboard-controlled ad system with image banners or network ad code per slot. No tracking, 100% yours.
  Author:       NaukriPatra
  Template:     generatepress
- Version:      3.6
+ Version:      3.7
  Tags:         jobs, portal, corporate, dark-mode, customizable
  Text Domain:  naukripatra
 */
@@ -296,13 +296,16 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 .np-section-head{
 	display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:16px
 }
-.np-section-head h2{font-size:var(--np-size-h2);margin:0}
+/* Section titles sit between H2 and H3: big enough to lead the
+   section, small enough that Trending and Ending soon stop eating
+   a third of the screen before the first card. */
+.np-section-head h2{font-size:calc(var(--np-size-h3) + 4px);margin:0;line-height:1.25}
 .np-section-sub{margin:0;color:var(--np-muted);font-size:var(--np-size-small);width:100%}
 .np-section-link{
-	margin-left:auto;display:inline-flex;align-items:center;gap:6px;
-	font-size:var(--np-size-small);font-weight:600;text-decoration:none
+	margin-left:auto;display:inline-flex;align-items:center;gap:5px;
+	font-size:calc(var(--np-size-small) - 1px);font-weight:600;text-decoration:none
 }
-.np-section-link .np-i{width:14px;height:14px}
+.np-section-link .np-i{width:13px;height:13px}
 
 /* =========================================================
    HERO
@@ -386,6 +389,11 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 /* Second ticker: Result feed. Green label so the two bars are
    instantly distinguishable from each other. */
 .np-ticker-result{margin-top:8px}
+/* Wrapper around the Result plugin's own ticker markup. It only
+   supplies the spacing between the two bars; the plugin keeps full
+   control of what it renders inside. */
+.np-ticker-plugin{margin-top:8px}
+.np-ticker-plugin > *{margin-top:0!important}
 .np-ticker-result .np-ticker-label{background:var(--np-govt)}
 .np-ticker-result .np-ticker-move a .np-i{color:var(--np-govt)}
 @keyframes np-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
@@ -475,7 +483,7 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 .np-card-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .np-card-views{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:var(--np-size-small);color:var(--np-muted)}
 .np-card-views .np-i{width:14px;height:14px}
-.np-card-title{font-size:var(--np-size-h3);color:var(--np-text);line-height:1.35}
+.np-card-title{font-size:calc(var(--np-size-h3) - 3px);color:var(--np-text);line-height:1.35}
 .np-card:hover .np-card-title{color:var(--np-primary)}
 .np-card-meta{display:flex;flex-direction:column;gap:5px;font-size:var(--np-size-small);color:var(--np-muted);margin-top:auto}
 .np-card-meta span{display:inline-flex;align-items:center;gap:6px}
@@ -483,7 +491,7 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 
 /* ---------- Ending soon ---------- */
 .np-ending .np-section-head h2{display:flex;align-items:center;gap:10px}
-.np-ending .np-section-head .np-i{color:var(--np-danger);width:22px;height:22px}
+.np-ending .np-section-head .np-i{color:var(--np-danger);width:18px;height:18px}
 .np-card-urgent{border-left:3px solid var(--np-danger)}
 .np-countdown{
 	margin-left:auto;display:inline-flex;align-items:center;gap:5px;
@@ -758,6 +766,64 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 	text-decoration:none;font-size:var(--np-size-small);font-weight:600;cursor:pointer;font-family:inherit
 }
 .np-sh:hover{border-color:var(--np-primary);color:var(--np-primary)}
+
+/* ---------- Engagement panel: live views + share ---------- */
+.np-engage{
+	margin-top:24px;background:var(--np-surface);border:1px solid var(--np-border);
+	border-radius:var(--np-radius);padding:18px;display:grid;gap:16px
+}
+.np-engage-views{display:flex;align-items:center;gap:12px}
+.np-engage-eye{
+	width:40px;height:40px;flex:none;border-radius:10px;display:flex;align-items:center;justify-content:center;
+	background:var(--np-bg);
+	background:color-mix(in srgb,var(--np-primary) 9%,transparent);
+	color:var(--np-primary)
+}
+.np-engage-eye .np-i{width:20px;height:20px}
+.np-engage-num{display:flex;flex-direction:column;line-height:1.3;min-width:0}
+.np-engage-num strong{
+	font-family:var(--np-font-head);font-weight:var(--np-weight-head);
+	font-size:var(--np-size-h3);color:var(--np-text)
+}
+.np-engage-num em{font-style:normal;font-size:var(--np-size-small);color:var(--np-muted)}
+.np-engage-live{
+	margin-left:auto;display:inline-flex;align-items:center;gap:6px;flex:none;
+	padding:5px 11px;border-radius:999px;
+	background:var(--np-bg);
+	background:color-mix(in srgb,var(--np-govt) 12%,transparent);
+	color:var(--np-govt);
+	font-size:calc(var(--np-size-small) - 2px);font-weight:700;letter-spacing:.6px;text-transform:uppercase
+}
+.np-engage-live i{width:7px;height:7px;border-radius:50%;background:var(--np-govt);animation:np-pulse 1.8s ease-in-out infinite}
+@keyframes np-pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* The number flashes when a new view arrives from the poll. */
+.np-views-bump{animation:np-bump .5s ease}
+@keyframes np-bump{0%{color:var(--np-govt);transform:translateY(-2px)}100%{color:var(--np-text);transform:none}}
+
+@media(prefers-reduced-motion:reduce){
+	.np-engage-live i,.np-views-bump{animation:none}
+}
+
+.np-engage-share{border-top:1px solid var(--np-border);padding-top:15px}
+.np-engage-label{display:block;font-size:var(--np-size-small);font-weight:600;color:var(--np-muted);margin-bottom:10px}
+.np-engage .np-share{margin:0;padding:0;border:0;gap:8px}
+.np-engage .np-sh{padding:10px 14px}
+.np-engage .np-sh .np-i{width:16px;height:16px}
+
+/* Brand colours on hover, so each button is recognisable. */
+.np-sh-wa:hover{border-color:#25D366;color:#128C4A}
+.np-sh-tg:hover{border-color:#229ED9;color:#1B7FAE}
+.np-sh-fb:hover{border-color:#1877F2;color:#145FC0}
+.np-sh-done{border-color:var(--np-govt);color:var(--np-govt)}
+
+@media(max-width:782px){
+	.np-engage{padding:15px}
+	.np-engage-live{margin-left:0}
+	.np-engage-views{flex-wrap:wrap;gap:10px}
+	.np-engage .np-share{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+	.np-engage .np-sh{justify-content:center}
+}
 
 /* ---------- Sidebar + the v2.8 sticky fix ---------- */
 .np-single-side{min-width:0}

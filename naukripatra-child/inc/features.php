@@ -10,12 +10,25 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /* =========================================================
  * A. POST VIEW COUNTER + TRENDING
  * ======================================================= */
-add_action( 'wp_head', function () {
-	if ( ! is_single() || is_user_logged_in() || is_preview() ) return;
-	$id    = get_the_ID();
-	$views = (int) get_post_meta( $id, '_np_views', true );
-	update_post_meta( $id, '_np_views', $views + 1 );
-} );
+/**
+ * v3.7: the counter no longer runs here.
+ *
+ * This used to increment _np_views straight from wp_head. That stops
+ * counting entirely the moment a full-page cache is switched on,
+ * because a cached page never executes PHP — so on a cached site the
+ * numbers drifted far below the real traffic.
+ *
+ * Counting moved to the REST route in functions.php
+ * (naukripatra/v1/views/<id>), which np-main.js calls on every real
+ * visit whether the HTML came from cache or not. It keeps the same
+ * rules as before — logged-in users are not counted — and adds an
+ * hourly per-IP guard so a refresh cannot inflate the number.
+ *
+ * Leaving the old increment in place alongside the new one would
+ * double-count every uncached view, which is why it is gone rather
+ * than kept as a fallback. The meta key, np_get_views() and
+ * np_trending_query() are all unchanged.
+ */
 
 function np_get_views( $id ) {
 	return (int) get_post_meta( $id, '_np_views', true );

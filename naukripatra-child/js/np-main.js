@@ -216,16 +216,78 @@
 		}
 
 		/* =========================================================
+		 * 6B. LIVE VIEW COUNTER
+		 * =========================================================
+		 * Counts one view over REST (works even when a caching plugin
+		 * is serving this page, which the old PHP counter did not),
+		 * then refreshes the number every 30s so it keeps ticking up
+		 * while the page is open.
+		 */
+		var engage = document.querySelector('[data-np-post]');
+		if (engage && window.npData && npData.viewsRoot) {
+			var postId = engage.getAttribute('data-np-post');
+			var url    = npData.viewsRoot + encodeURIComponent(postId);
+			var out    = engage.querySelector('[data-np-views]');
+
+			var show = function (n) {
+				if (!out || typeof n !== 'number') return;
+				var old = out.textContent;
+				var next = n.toLocaleString();
+				if (old === next) return;
+				out.textContent = next;
+				out.classList.remove('np-views-bump');
+				void out.offsetWidth;          // restart the animation
+				out.classList.add('np-views-bump');
+			};
+
+			var read = function () {
+				fetch(url, { credentials: 'same-origin' })
+					.then(function (r) { return r.ok ? r.json() : null; })
+					.then(function (d) { if (d) show(d.views); })
+					.catch(function () {});
+			};
+
+			// One count per browser tab; the server also holds an
+			// IP guard, so a refresh cannot inflate the number.
+			var seen = false;
+			try { seen = sessionStorage.getItem('np-viewed-' + postId) === '1'; } catch (e) {}
+
+			if (seen) {
+				read();
+			} else {
+				fetch(url, { method: 'POST', credentials: 'same-origin' })
+					.then(function (r) { return r.ok ? r.json() : null; })
+					.then(function (d) {
+						if (d) show(d.views);
+						try { sessionStorage.setItem('np-viewed-' + postId, '1'); } catch (e) {}
+					})
+					.catch(read);
+			}
+
+			// Keep it live, but pause while the tab is in the background.
+			setInterval(function () {
+				if (!document.hidden) read();
+			}, 30000);
+		}
+
+		/* =========================================================
 		 * 7. COPY LINK
 		 * ======================================================= */
 		document.addEventListener('click', function (e) {
 			var t = e.target.closest ? e.target.closest('[data-np-copy]') : null;
 			if (!t) return;
 			var url = t.getAttribute('data-np-copy');
+			// The button holds an icon plus a <span> label, so only the
+			// label is swapped — replacing textContent would wipe the icon.
+			var label = t.querySelector('span') || t;
 			var done = function () {
-				var old = t.textContent;
-				t.textContent = 'Copied';
-				setTimeout(function () { t.textContent = old; }, 1800);
+				var old = label.textContent;
+				label.textContent = 'Copied';
+				t.classList.add('np-sh-done');
+				setTimeout(function () {
+					label.textContent = old;
+					t.classList.remove('np-sh-done');
+				}, 1800);
 			};
 			if (navigator.clipboard && navigator.clipboard.writeText) {
 				navigator.clipboard.writeText(url).then(done, function () {});

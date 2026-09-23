@@ -290,6 +290,12 @@ function np_icon( $name, $class = '' ) {
 		'globe'      => '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 2.5 15.2 0 18-2.5-2.8-2.5-15.2 0-18z"/>',
 		'filter'     => '<path d="M3 5h18l-7 8v6l-4 2v-8L3 5z"/>',
 		'rupee'      => '<path d="M7 4h10M7 8h10M16 4c0 4-3.5 5.5-7 5.5h-1L16 20"/>',
+		'eye'        => '<path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/>',
+		// Brand marks, drawn as strokes so they inherit currentColor like
+		// every other icon here.
+		'whatsapp'   => '<path d="M3.5 20.5l1.3-4.3A8.2 8.2 0 1 1 8 19.3l-4.5 1.2z"/><path d="M9 9.2c.2 1 .7 2 1.5 2.8s1.8 1.3 2.8 1.5l.9-1.2 1.9.9c-.2.9-1 1.5-1.9 1.4a7.6 7.6 0 0 1-6.3-6.3c-.1-.9.5-1.7 1.4-1.9l.9 1.9-1.2.9z"/>',
+		'telegram'   => '<path d="M21.5 4.3L2.9 11.4c-.7.3-.7.8 0 1l4.6 1.4L19 6.6c.5-.3.9 0 .6.3l-9.2 8.3-.3 4.3c.4 0 .6-.2.8-.4l2-1.9 4.2 3.1c.8.4 1.3.2 1.5-.7l2.7-12.7c.2-1-.4-1.5-1.1-1.2z"/>',
+		'facebook'   => '<path d="M15 3h-2.2A3.8 3.8 0 0 0 9 6.8V9H7v3h2v9h3v-9h2.4l.6-3H12V7a1 1 0 0 1 1-1h2V3z"/>',
 	);
 
 	if ( ! isset( $paths[ $name ] ) ) return '';
@@ -368,6 +374,10 @@ add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_script( 'np-main',
 		get_stylesheet_directory_uri() . '/js/np-main.js',
 		array(), np_asset_version( 'js/np-main.js' ), true );
+
+	wp_localize_script( 'np-main', 'npData', array(
+		'viewsRoot' => esc_url_raw( rest_url( 'naukripatra/v1/views/' ) ),
+	) );
 }, 999 );
 
 // Core Web Vitals: keep our JS deferred (never render-blocking).
@@ -1098,26 +1108,119 @@ add_filter( 'the_content', function ( $content ) {
 	return $box . $content . np_share_buttons_html();
 } );
 
-/** Social share buttons. */
+/**
+ * Post engagement panel — live view count + working share buttons.
+ *
+ * Printed under the article body on every single post. The view number
+ * is filled in and refreshed by np-main.js from the REST endpoint
+ * below, so it keeps ticking up while the page is open and is correct
+ * even when a caching plugin is serving the page.
+ */
 function np_share_buttons_html() {
-	$url   = rawurlencode( get_permalink() );
-	$title = rawurlencode( get_the_title() );
-	$wa = "https://api.whatsapp.com/send?text={$title}%20-%20{$url}";
-	$tg = "https://t.me/share/url?url={$url}&text={$title}";
-	$fb = "https://www.facebook.com/sharer/sharer.php?u={$url}";
-	$tw = "https://twitter.com/intent/tweet?url={$url}&text={$title}";
+	$id    = get_the_ID();
+	$url   = get_permalink( $id );
+	$eurl  = rawurlencode( $url );
+	$title = rawurlencode( get_the_title( $id ) );
+
+	$wa = "https://api.whatsapp.com/send?text={$title}%20-%20{$eurl}";
+	$tg = "https://t.me/share/url?url={$eurl}&text={$title}";
+	$fb = "https://www.facebook.com/sharer/sharer.php?u={$eurl}";
+
 	ob_start();
 	?>
-	<div class="np-share">
-		<span class="np-share-label"><?php echo np_icon( 'share' ); ?> Share this job</span>
-		<a class="np-sh np-sh-wa" href="<?php echo esc_url( $wa ); ?>" target="_blank" rel="noopener nofollow" aria-label="Share on WhatsApp">WhatsApp</a>
-		<a class="np-sh np-sh-tg" href="<?php echo esc_url( $tg ); ?>" target="_blank" rel="noopener nofollow" aria-label="Share on Telegram">Telegram</a>
-		<a class="np-sh np-sh-fb" href="<?php echo esc_url( $fb ); ?>" target="_blank" rel="noopener nofollow" aria-label="Share on Facebook">Facebook</a>
-		<a class="np-sh np-sh-tw" href="<?php echo esc_url( $tw ); ?>" target="_blank" rel="noopener nofollow" aria-label="Share on X">X</a>
-		<button class="np-sh np-sh-copy" type="button" data-np-copy="<?php echo esc_attr( get_permalink() ); ?>">Copy Link</button>
-	</div>
+	<section class="np-engage" data-np-post="<?php echo (int) $id; ?>">
+		<div class="np-engage-views">
+			<span class="np-engage-eye"><?php echo np_icon( 'eye' ); ?></span>
+			<span class="np-engage-num">
+				<strong data-np-views><?php echo esc_html( number_format_i18n( np_get_views( $id ) ) ); ?></strong>
+				<em>people have viewed this job</em>
+			</span>
+			<span class="np-engage-live" aria-hidden="true"><i></i>live</span>
+		</div>
+
+		<div class="np-engage-share">
+			<span class="np-engage-label">Share this job</span>
+			<div class="np-share">
+				<a class="np-sh np-sh-wa" href="<?php echo esc_url( $wa ); ?>"
+					target="_blank" rel="noopener nofollow" aria-label="Share on WhatsApp">
+					<?php echo np_icon( 'whatsapp' ); ?><span>WhatsApp</span></a>
+				<a class="np-sh np-sh-tg" href="<?php echo esc_url( $tg ); ?>"
+					target="_blank" rel="noopener nofollow" aria-label="Share on Telegram">
+					<?php echo np_icon( 'telegram' ); ?><span>Telegram</span></a>
+				<a class="np-sh np-sh-fb" href="<?php echo esc_url( $fb ); ?>"
+					target="_blank" rel="noopener nofollow" aria-label="Share on Facebook">
+					<?php echo np_icon( 'facebook' ); ?><span>Facebook</span></a>
+				<button class="np-sh np-sh-copy" type="button"
+					data-np-copy="<?php echo esc_attr( $url ); ?>" aria-label="Copy link">
+					<?php echo np_icon( 'link' ); ?><span>Copy Link</span></button>
+			</div>
+		</div>
+	</section>
 	<?php
 	return ob_get_clean();
+}
+
+/* =========================================================
+ * 8B. LIVE VIEW COUNTER (REST)
+ * =======================================================
+ * v2.8 incremented _np_views straight from wp_head. That silently
+ * stopped counting the moment a full-page cache was switched on,
+ * because a cached page never runs PHP — which is why counts on a
+ * cached site drift far below reality.
+ *
+ * The count is now registered and read over a tiny REST route that
+ * runs on every real visit, cached page or not:
+ *   GET  /wp-json/naukripatra/v1/views/<id>   read the count
+ *   POST /wp-json/naukripatra/v1/views/<id>   count one view, return it
+ *
+ * Guards: logged-in users are never counted (same as v2.8), and one IP
+ * can only add one view per post per hour, so a refresh or a cleared
+ * browser cannot inflate the number.
+ */
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'naukripatra/v1', '/views/(?P<id>\d+)', array(
+		array(
+			'methods'             => 'GET',
+			'permission_callback' => '__return_true',
+			'callback'            => function ( $request ) {
+				$id = (int) $request['id'];
+				if ( 'publish' !== get_post_status( $id ) ) {
+					return new WP_Error( 'np_not_found', 'No such post', array( 'status' => 404 ) );
+				}
+				return array( 'id' => $id, 'views' => np_get_views( $id ) );
+			},
+		),
+		array(
+			'methods'             => 'POST',
+			'permission_callback' => '__return_true',
+			'callback'            => 'np_rest_count_view',
+		),
+	) );
+} );
+
+function np_rest_count_view( $request ) {
+	$id = (int) $request['id'];
+	if ( 'publish' !== get_post_status( $id ) ) {
+		return new WP_Error( 'np_not_found', 'No such post', array( 'status' => 404 ) );
+	}
+
+	// Editors reading their own posts are not an audience.
+	if ( is_user_logged_in() ) {
+		return array( 'id' => $id, 'views' => np_get_views( $id ), 'counted' => false );
+	}
+
+	$ip  = isset( $_SERVER['REMOTE_ADDR'] ) ? (string) $_SERVER['REMOTE_ADDR'] : '';
+	$key = 'np_v_' . $id . '_' . md5( $ip );
+
+	if ( get_transient( $key ) ) {
+		return array( 'id' => $id, 'views' => np_get_views( $id ), 'counted' => false );
+	}
+	set_transient( $key, 1, HOUR_IN_SECONDS );
+
+	$views = np_get_views( $id ) + 1;
+	update_post_meta( $id, '_np_views', $views );
+
+	return array( 'id' => $id, 'views' => $views, 'counted' => true );
 }
 
 /* =========================================================
