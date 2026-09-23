@@ -742,3 +742,62 @@ IF IT STILL LOOKS OLD, CHECK IN THIS ORDER
      Reset them so this theme's Design page controls the look.
   d. Hard-reload once (Ctrl+F5, or a private window) to rule out
      the browser's own copy.
+
+=====================================================
+ VERSION 3.4 — ONE MENU, AND THE MOBILE BAR FITS
+=====================================================
+
+1. TWO MENUS WERE SHOWING — FIXED
+   The site displayed this theme's .np-navbar AND, stacked
+   under it, GeneratePress' own header with its "MENU" toggle.
+   Both were real; only the GP one responded, because the
+   parent theme's script drives it.
+   .np-navbar already carries the logo, the nav, search, the
+   CTAs and the mobile drawer, so GP's navigation is redundant.
+   It is now switched off with the generate_navigation_location
+   filter, with a CSS fallback (.main-navigation, #mobile-header,
+   .menu-toggle) for any GP setting that prints one anyway.
+   Result: one header, one hamburger, and it works.
+
+2. MOBILE BAR NO LONGER COLLIDES
+   "NaukriPatra" was wrapping to two lines and "Download App"
+   and "Post a Job" were printing on top of each other.
+   - The brand is now white-space: nowrap and never wraps.
+   - Below 900px, Download App lives in the drawer, not the bar.
+   - Below 600px the bar holds only the hamburger, the brand and
+     the search icon. Post a Job moved into the drawer, which
+     now offers Download App / Post a Job / Login-Register.
+   Verified with no overflow at 1280, 390, 360 and 320px.
+
+3. UPLOADED LOGO IS USED
+   The navbar shows the image from Customize > Site Identity
+   when one is set, falling back to the NaukriPatra wordmark.
+   The navbar is the site header now, so the logo belongs in it.
+
+4. FLOATING "JOIN" BUTTON PINNED
+   It was stretching across the screen. It now sets left:auto
+   and max-width:max-content, so no other stylesheet can pull it
+   out of its pill shape at the right edge.
+
+-----------------------------------------------------
+ STILL SEEING BLUE? THE OLD STYLESHEET IS STILL LOADING
+-----------------------------------------------------
+v2.8 and v3.x share 50 class names — .np-btn, .np-logo,
+.np-hero, .np-float, .np-card and more. If any copy of the OLD
+style.css is still being served, it repaints all of them: the
+wordmark goes blue, buttons go blue gradient, and the floating
+Join button jumps out of place. That is exactly what a blue
+logo on a navy bar means.
+
+This theme CANNOT out-rank it from inside style.css, because
+the old copy loads later. Remove the source:
+  a. Purge the cache plugin (LiteSpeed / Autoptimize / WP
+     Rocket) INCLUDING its combined/minified CSS and JS cache,
+     then purge Cloudflare. A stale combined bundle is the most
+     common cause and also explains a dead hamburger, since the
+     bundle carries the old JS too.
+  b. Appearance > Customize > Additional CSS — if the old theme
+     CSS was ever pasted there, delete it. It prints after every
+     enqueued stylesheet and always wins.
+  c. Check no second copy of the old theme folder is left in
+     wp-content/themes.

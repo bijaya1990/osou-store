@@ -896,6 +896,23 @@ add_filter( 'generate_site_title_output', function () {
 } );
 add_filter( 'generate_site_description_output', '__return_empty_string' );
 
+/**
+ * Switch off GeneratePress' own navigation.
+ *
+ * THE BUG THIS FIXES: the site was showing TWO menus stacked on top of
+ * each other — this theme's .np-navbar with its hamburger, and below it
+ * GeneratePress' own header with its "MENU" toggle. Both were real and
+ * only the GP one responded, because it is the parent theme's script
+ * that drives it.
+ *
+ * .np-navbar carries the logo, the full nav, search, the CTAs and the
+ * mobile drawer, so GP's navigation is redundant. Returning an empty
+ * location from this filter stops GP printing its nav and its mobile
+ * menu toggle altogether. The CSS has a matching fallback for any GP
+ * setting that prints a separate mobile header.
+ */
+add_filter( 'generate_navigation_location', '__return_empty_string', 20 );
+
 /** The nav links shown in the desktop bar and the mobile drawer. */
 function np_nav_items() {
 	$items = array( array( 'Home', home_url( '/' ), 'home' ) );
@@ -918,7 +935,20 @@ add_action( 'generate_after_header', function () {
 			</button>
 
 			<a class="np-nav-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
-				<span class="np-logo">Naukri<span>Patra</span></span>
+				<?php
+				/* Use the logo uploaded in Customize > Site Identity when there
+				   is one, so the real brand mark is used instead of the text
+				   fallback. This navbar IS the site header now, so the logo
+				   belongs here. */
+				$np_logo_id  = get_theme_mod( 'custom_logo' );
+				$np_logo_url = $np_logo_id ? wp_get_attachment_image_url( $np_logo_id, 'full' ) : '';
+				if ( $np_logo_url ) :
+					?>
+					<img class="np-nav-logo" src="<?php echo esc_url( $np_logo_url ); ?>"
+						alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+				<?php else : ?>
+					<span class="np-logo">Naukri<span>Patra</span></span>
+				<?php endif; ?>
 			</a>
 
 			<nav class="np-nav" aria-label="Main">
@@ -974,6 +1004,8 @@ add_action( 'wp_footer', function () {
 		<div class="np-drawer-foot">
 			<a class="np-btn np-btn-accent np-btn-block" href="<?php echo esc_url( $social['playstore'] ); ?>"
 				target="_blank" rel="noopener"><?php echo np_icon( 'download' ); ?> Download App</a>
+			<?php /* Kept here because the bar drops this button below 600px. */ ?>
+			<a class="np-btn np-btn-outline np-btn-block" href="<?php echo esc_url( home_url( '/contact-us/' ) ); ?>">Post a Job</a>
 			<a class="np-btn np-btn-outline np-btn-block" href="<?php echo esc_url( wp_login_url() ); ?>">Login / Register</a>
 		</div>
 	</aside>

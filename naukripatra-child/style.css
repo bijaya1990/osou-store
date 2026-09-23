@@ -4,7 +4,7 @@
  Description:  NaukriPatra — premium corporate job portal child theme for GeneratePress. Government and private listings, automatic state-wise views, a fully dashboard-controlled design system (colours, fonts, letter sizes) and a dashboard-controlled ad system with image banners or network ad code per slot. No tracking, 100% yours.
  Author:       NaukriPatra
  Template:     generatepress
- Version:      3.3
+ Version:      3.4
  Tags:         jobs, portal, corporate, dark-mode, customizable
  Text Domain:  naukripatra
 */
@@ -161,6 +161,27 @@ body{overflow-wrap:break-word}
 .np-btn-lg{padding:15px 22px;font-size:calc(var(--np-size-button) + 1px)}
 
 /* =========================================================
+   ONE HEADER ONLY
+   =========================================================
+   GeneratePress prints its own navigation and, depending on its
+   settings, a separate mobile header with a "MENU" toggle. With
+   .np-navbar in place that was a SECOND menu stacked under ours.
+   The generate_navigation_location filter in functions.php stops
+   GP printing it; these rules are the fallback for any GP option
+   that prints one anyway.
+   ======================================================= */
+.main-navigation,
+#mobile-header,
+.site-header .menu-toggle,
+.site-header .mobile-menu-control-wrapper{display:none!important}
+
+/* If GP's header bar is still shown (it holds the site title for
+   screen readers), keep it in the new palette instead of whatever
+   an older stylesheet painted it. */
+.site-header{background:var(--np-primary-dark);border:0;box-shadow:none}
+.site-header .inside-header{padding-top:10px;padding-bottom:10px}
+
+/* =========================================================
    STICKY NAVBAR + DRAWER
    ======================================================= */
 .np-navbar{
@@ -172,10 +193,14 @@ body{overflow-wrap:break-word}
 	max-width:var(--np-container);margin:0 auto;padding:0 16px;
 	display:flex;align-items:center;gap:14px;min-height:60px
 }
-.np-nav-brand{display:none;text-decoration:none}
+.np-nav-brand{display:none;text-decoration:none;align-items:center;flex:none;min-width:0}
+.np-nav-logo{height:32px;width:auto;max-width:160px;display:block}
 .np-logo{
 	font-family:var(--np-font-head);font-weight:800;font-size:calc(var(--np-size-base) + 6px);
-	color:#fff;letter-spacing:var(--np-track-head);display:inline-block
+	color:#fff;letter-spacing:var(--np-track-head);display:inline-block;
+	/* The brand wrapped to two lines in the mobile bar and pushed the
+	   buttons on top of each other. It must never wrap. */
+	white-space:nowrap
 }
 .np-logo span{color:var(--np-accent)}
 .np-tagline{display:block;font-size:var(--np-size-small);color:var(--np-muted)}
@@ -798,8 +823,12 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 .np-sm-link .np-i{width:20px;height:20px}
 .np-sm-active{color:var(--np-primary)}
 
+/* left:auto and an explicit width stop the button stretching across
+   the screen if any other stylesheet sets a left offset or a width
+   on it — it is a small pill anchored to the right edge, always. */
 .np-float{
-	position:fixed;right:16px;bottom:96px;z-index:70;
+	position:fixed;right:16px;left:auto;bottom:96px;z-index:70;
+	width:auto;max-width:max-content;
 	display:inline-flex;align-items:center;gap:7px;padding:12px 16px;border-radius:999px;
 	background:var(--np-govt);color:#fff;text-decoration:none;font-size:var(--np-size-small);font-weight:700;
 	box-shadow:0 8px 20px rgba(10,22,40,.2)
@@ -873,9 +902,20 @@ html.np-dark .np-empty{border-color:var(--np-border)}
 @media(max-width:900px){
 	.np-nav{display:none}
 	.np-burger{display:inline-flex}
-	.np-nav-brand{display:block}
+	.np-nav-brand{display:flex}
+	/* Download App lives in the drawer at this width, not the bar. */
 	.np-nav-app{display:none}
-	.np-navbar-inner{min-height:56px}
+	.np-navbar-inner{min-height:56px;flex-wrap:nowrap}
+	.np-nav-actions{gap:8px;flex:none}
+}
+
+@media(max-width:600px){
+	/* Below this the bar holds the hamburger, the brand and the search
+	   icon only. "Post a Job" is in the drawer and the footer, so
+	   dropping it here costs nothing and stops the buttons colliding. */
+	.np-nav-actions .np-btn{display:none}
+	.np-nav-logo{height:28px;max-width:130px}
+	.np-logo{font-size:calc(var(--np-size-base) + 3px)}
 }
 
 @media(max-width:782px){
@@ -958,7 +998,6 @@ html.np-dark .np-empty{border-color:var(--np-border)}
 
 @media(max-width:340px){
 	.np-tiles{grid-template-columns:repeat(2,1fr)}
-	.np-nav-actions .np-btn-accent{display:none}
 	.np-stats{gap:14px}
 }
 
