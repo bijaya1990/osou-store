@@ -36,7 +36,7 @@ $np_cats      = count( np_main_sections() );
 	<section class="np-hero">
 		<div class="np-hero-inner">
 			<p class="np-hero-eyebrow"><?php echo np_icon( 'bolt' ); ?> Updated every day</p>
-			<h1 class="np-hero-title">Government &amp; Private Jobs,<br>verified and in one place.</h1>
+			<h1 class="np-hero-title">Government &amp; Private Jobs, <br class="np-br-desk">verified and in one place.</h1>
 			<p class="np-hero-sub">
 				Sarkari and private sector notifications, admit cards, results, answer keys and
 				syllabus updates for every state and union territory in India.
@@ -69,8 +69,22 @@ $np_cats      = count( np_main_sections() );
 
 	<?php np_ad_slot( 'home_hero', 'np-ad-billboard' ); ?>
 
-	<!-- ============ LIVE TICKER ============ -->
-	<?php np_render_ticker(); ?>
+	<!-- ============ LIVE TICKERS ============ -->
+	<?php
+	/* Two tickers, as the site had before: the newest listings of any
+	   kind, then a Result-only one. Each prints nothing at all if its
+	   category is empty, so neither can leave a blank bar. */
+	np_render_ticker( array(
+		'label' => 'LIVE',
+		'icon'  => 'bolt',
+	) );
+	np_render_ticker( array(
+		'label'    => 'LIVE RESULT',
+		'category' => 'result',
+		'class'    => 'np-ticker-result',
+		'icon'     => 'trophy',
+	) );
+	?>
 
 	<!-- ============ 2. QUICK CATEGORY TILES ============ -->
 	<section class="np-section">

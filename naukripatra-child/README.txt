@@ -837,3 +837,54 @@ the live site, that is the leftover v2.8 stylesheet again:
 .np-ticker, .np-ticker-label, .np-ticker-track and
 .np-ticker-move are four of the 50 class names the two
 stylesheets share. See the v3.4 notes above for how to clear it.
+
+=====================================================
+ VERSION 3.6 — SMALLER HERO, SECOND (RESULT) TICKER
+=====================================================
+
+1. HERO PANEL IS MUCH SMALLER
+   It was filling an entire phone screen, so nothing below it
+   was visible without scrolling. Every element is still there
+   — eyebrow, headline, subtext, search, the
+   All/Government/Private toggle and the three stats. They are
+   just packed tighter:
+     phone    776px -> 455px
+     desktop  512px -> 439px
+   What changed:
+   - Default H1 size 42 -> 34px, mobile H1 27 -> 21px.
+   - Padding, margins and the stat block all tightened.
+   - The search bar stays on ONE row on a phone instead of
+     wrapping its button onto a second.
+   - The forced line break in the headline is desktop-only now;
+     on a phone the headline flows and saves a whole line.
+
+   NOTE: if you have already pressed Save on Appearance >
+   NaukriPatra Design, your saved sizes win over these new
+   defaults. Set "H1 / hero headline" to 34 and "H1 on mobile"
+   to 21 there, or press "Reset to defaults".
+
+2. GENERATEPRESS HEADER BAR REMOVED
+   v3.4 hid GP's navigation but left its header bar, which was
+   still printing a second branding band above .np-navbar — the
+   blue strip with a duplicate logo. .np-navbar carries the logo,
+   nav, search and CTAs, so the GP bar is now hidden outright.
+   That also gives back about 60px above the fold.
+
+   RESULT: on a 390x727 phone the hero, BOTH tickers and the
+   "Browse by category" heading are visible with no scrolling.
+
+3. SECOND TICKER — LIVE RESULT
+   The homepage now runs two tickers, as the site did before:
+     LIVE         newest listings of any kind, red label
+     LIVE RESULT  Result category only, green label, trophy icon
+   np_render_ticker() now takes optional arguments —
+   label, category, count, class, icon. Called with NO arguments
+   it behaves exactly as it always has (8 newest posts, red LIVE
+   label), so every existing call site keeps working untouched.
+   A ticker whose category is empty prints nothing at all, so
+   neither bar can ever appear blank.
+
+   To add a third ticker, call it again in front-page.php, e.g.
+     np_render_ticker( array(
+       'label' => 'LIVE ADMIT CARD', 'category' => 'admit-card',
+       'class' => 'np-ticker-result', 'icon' => 'card' ) );

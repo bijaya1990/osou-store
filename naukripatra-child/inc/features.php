@@ -37,16 +37,46 @@ function np_trending_query( $count = 6 ) {
 /* =========================================================
  * B. BREAKING NEWS TICKER (homepage)
  * ======================================================= */
-function np_render_ticker() {
-	$q = new WP_Query( array(
-		'posts_per_page'      => 8,
+/**
+ * Scrolling ticker.
+ *
+ * v3.6: takes optional arguments so the homepage can run more than one
+ * — a general "LIVE" ticker of the newest posts, and a "LIVE RESULT"
+ * ticker limited to the Result category.
+ *
+ * Called with no arguments it behaves exactly as it always has: the 8
+ * newest posts from any category under a red LIVE label. Every existing
+ * call site therefore keeps working untouched.
+ *
+ * @param array $args label | category (slug) | count | class | icon
+ */
+function np_render_ticker( $args = array() ) {
+	$args = wp_parse_args( $args, array(
+		'label'    => 'LIVE',
+		'category' => '',
+		'count'    => 8,
+		'class'    => '',
+		'icon'     => 'bolt',
+	) );
+
+	$query_args = array(
+		'posts_per_page'      => (int) $args['count'],
 		'ignore_sticky_posts' => true,
 		'no_found_rows'       => true,
-	) );
+	);
+	if ( $args['category'] ) {
+		$query_args['category_name'] = $args['category'];
+	}
+
+	$q = new WP_Query( $query_args );
+	// Nothing in this category yet: print nothing rather than an empty bar.
 	if ( ! $q->have_posts() ) return;
-	echo '<div class="np-ticker"><span class="np-ticker-label">LIVE</span><div class="np-ticker-track"><div class="np-ticker-move">';
+
+	echo '<div class="np-ticker ' . esc_attr( $args['class'] ) . '">'
+		. '<span class="np-ticker-label">' . esc_html( $args['label'] ) . '</span>'
+		. '<div class="np-ticker-track"><div class="np-ticker-move">';
 	while ( $q->have_posts() ) { $q->the_post();
-		echo '<a href="' . esc_url( get_permalink() ) . '">' . np_icon( 'bolt' ) . ' ' . esc_html( get_the_title() ) . '</a>';
+		echo '<a href="' . esc_url( get_permalink() ) . '">' . np_icon( $args['icon'] ) . ' ' . esc_html( get_the_title() ) . '</a>';
 	}
 	wp_reset_postdata();
 	echo '</div></div></div>';

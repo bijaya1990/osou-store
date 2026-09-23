@@ -4,7 +4,7 @@
  Description:  NaukriPatra — premium corporate job portal child theme for GeneratePress. Government and private listings, automatic state-wise views, a fully dashboard-controlled design system (colours, fonts, letter sizes) and a dashboard-controlled ad system with image banners or network ad code per slot. No tracking, 100% yours.
  Author:       NaukriPatra
  Template:     generatepress
- Version:      3.5
+ Version:      3.6
  Tags:         jobs, portal, corporate, dark-mode, customizable
  Text Domain:  naukripatra
 */
@@ -44,12 +44,12 @@
 
 	--np-size-base:16px;
 	--np-size-small:13px;
-	--np-size-h1:42px;
+	--np-size-h1:34px;
 	--np-size-h2:28px;
 	--np-size-h3:20px;
 	--np-size-button:15px;
 	--np-size-nav:15px;
-	--np-size-h1-mobile:27px;
+	--np-size-h1-mobile:21px;
 
 	--np-line:1.65;
 	--np-track-head:-0.4px;
@@ -175,11 +175,14 @@ body{overflow-wrap:break-word}
 .site-header .menu-toggle,
 .site-header .mobile-menu-control-wrapper{display:none!important}
 
-/* If GP's header bar is still shown (it holds the site title for
-   screen readers), keep it in the new palette instead of whatever
-   an older stylesheet painted it. */
-.site-header{background:var(--np-primary-dark);border:0;box-shadow:none}
-.site-header .inside-header{padding-top:10px;padding-bottom:10px}
+/* GeneratePress' header bar is hidden outright.
+   .np-navbar now carries the logo, the nav, search and the CTAs, so
+   the GP bar was a SECOND branding band stacked above it — the blue
+   strip with a duplicate logo. Removing it also gives the page back
+   roughly 60px above the fold, which is why more of the homepage is
+   visible without scrolling. The site title stays in the document for
+   screen readers and SEO via .np-navbar's own link. */
+.site-header{display:none!important}
 
 /* =========================================================
    STICKY NAVBAR + DRAWER
@@ -309,27 +312,30 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 .np-hero{
 	margin-top:var(--np-gap);
 	background:linear-gradient(135deg,var(--np-primary-dark) 0%,var(--np-primary) 55%,var(--np-primary-mid) 100%);
-	border-radius:var(--np-radius);color:#fff;padding:34px 32px 30px
+	border-radius:var(--np-radius);color:#fff;padding:26px 28px 22px
 }
 .np-hero-inner{
 	max-width:760px;margin:0 auto;text-align:center;
 	display:flex;flex-direction:column;align-items:center
 }
 .np-hero-eyebrow{
-	display:inline-flex;align-items:center;gap:7px;margin:0 0 10px;
+	display:inline-flex;align-items:center;gap:7px;margin:0 0 7px;
 	font-size:var(--np-size-small);font-weight:600;letter-spacing:.5px;text-transform:uppercase;
 	color:var(--np-accent)
 }
-.np-hero-title{font-size:var(--np-size-h1);color:#fff;margin:0 0 10px;line-height:1.16}
+.np-hero-title{font-size:var(--np-size-h1);color:#fff;margin:0 0 8px;line-height:1.14}
+/* The forced break costs a whole extra line on a phone; let the
+   headline flow there and keep the tidy two-line split on desktop. */
+@media(max-width:782px){.np-br-desk{display:none}}
 .np-hero-sub{
-	color:rgba(255,255,255,.8);margin:0 0 20px;
-	font-size:calc(var(--np-size-base) + 1px);max-width:600px
+	color:rgba(255,255,255,.8);margin:0 0 15px;
+	font-size:var(--np-size-base);max-width:580px
 }
 
 .np-hero-search{
 	display:flex;align-items:center;gap:10px;background:#fff;
-	border-radius:var(--np-radius-sm);padding:7px 7px 7px 16px;
-	width:100%;max-width:600px
+	border-radius:var(--np-radius-sm);padding:6px 6px 6px 14px;
+	width:100%;max-width:580px
 }
 .np-hero-search .np-i{color:var(--np-muted);width:20px;height:20px}
 .np-hero-search input{
@@ -338,24 +344,24 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 }
 
 .np-segment{
-	display:inline-flex;margin-top:16px;background:rgba(255,255,255,.1);
+	display:inline-flex;margin-top:12px;background:rgba(255,255,255,.1);
 	border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:4px;gap:2px
 }
 .np-seg{
-	padding:9px 20px;border-radius:999px;color:rgba(255,255,255,.82);
+	padding:8px 18px;border-radius:999px;color:rgba(255,255,255,.82);
 	text-decoration:none;font-size:var(--np-size-small);font-weight:600;white-space:nowrap
 }
 .np-seg:hover{color:#fff;background:rgba(255,255,255,.1)}
 .np-seg.is-active{background:var(--np-accent);color:var(--np-primary-dark)}
 
 .np-stats{
-	display:flex;justify-content:center;gap:46px;margin:22px 0 0;padding:18px 0 0;
+	display:flex;justify-content:center;gap:40px;margin:16px 0 0;padding:14px 0 0;
 	border-top:1px solid rgba(255,255,255,.15);width:100%;max-width:600px;text-align:center
 }
 .np-stats dt{font-size:var(--np-size-small);color:rgba(255,255,255,.7);margin:0}
 .np-stats dd{
-	margin:2px 0 0;font-family:var(--np-font-head);font-weight:var(--np-weight-head);
-	font-size:calc(var(--np-size-h2) - 2px);color:#fff
+	margin:1px 0 0;font-family:var(--np-font-head);font-weight:var(--np-weight-head);
+	font-size:calc(var(--np-size-h3) + 3px);color:#fff
 }
 
 /* =========================================================
@@ -377,6 +383,11 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 }
 .np-ticker-move a:hover{color:var(--np-primary)}
 .np-ticker:hover .np-ticker-move{animation-play-state:paused}
+/* Second ticker: Result feed. Green label so the two bars are
+   instantly distinguishable from each other. */
+.np-ticker-result{margin-top:8px}
+.np-ticker-result .np-ticker-label{background:var(--np-govt)}
+.np-ticker-result .np-ticker-move a .np-i{color:var(--np-govt)}
 @keyframes np-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){
 	.np-ticker-move{animation:none}
@@ -953,15 +964,25 @@ html.np-dark .np-empty{border-color:var(--np-border)}
 @media(max-width:782px){
 	:root{--np-size-h1:var(--np-size-h1-mobile)}
 
-	.np-hero{padding:24px 18px 22px;border-radius:var(--np-radius)}
-	.np-hero-sub{font-size:var(--np-size-base)}
-	.np-hero-search{flex-wrap:wrap;padding:12px}
-	.np-hero-search input{width:100%;flex:1 1 100%}
-	.np-hero-search .np-btn{width:100%}
-	.np-segment{display:flex;width:100%;justify-content:space-between}
-	.np-seg{flex:1;text-align:center;padding:10px 6px}
-	.np-stats{gap:20px;justify-content:space-between}
-	.np-stats dd{font-size:calc(var(--np-size-h3) + 2px)}
+	/* The hero used to fill an entire phone screen, so nothing below it
+	   was visible without scrolling. Everything is still here — it is
+	   just packed tighter, and the search stays on ONE row instead of
+	   wrapping the button onto a second. */
+	.np-hero{padding:16px 14px 14px;border-radius:var(--np-radius)}
+	.np-hero-eyebrow{margin-bottom:5px;font-size:calc(var(--np-size-small) - 1px)}
+	.np-hero-title{margin-bottom:6px;line-height:1.2}
+	.np-hero-sub{font-size:var(--np-size-small);margin-bottom:12px;line-height:1.5}
+
+	.np-hero-search{flex-wrap:nowrap;padding:5px 5px 5px 12px;gap:6px}
+	.np-hero-search input{flex:1 1 auto;min-width:0;padding:9px 0;font-size:var(--np-size-small)}
+	.np-hero-search .np-btn{flex:none;padding:10px 13px;white-space:nowrap}
+
+	.np-segment{display:flex;width:100%;justify-content:space-between;margin-top:10px;padding:3px}
+	.np-seg{flex:1;text-align:center;padding:8px 4px;font-size:calc(var(--np-size-small) - 1px)}
+
+	.np-stats{gap:10px;justify-content:space-between;margin-top:10px;padding-top:9px}
+	.np-stats dt{font-size:calc(var(--np-size-small) - 2px);line-height:1.3}
+	.np-stats dd{font-size:calc(var(--np-size-h3) - 2px);line-height:1.2}
 
 	.np-tiles{grid-template-columns:repeat(3,1fr);gap:10px}
 	.np-tile{padding:16px 8px}

@@ -65,12 +65,12 @@ function np_token_registry() {
 		/* ---------- Typography: letter sizes (px) ---------- */
 		'size_base'      => array( 'Base body text',          'number', '16', 'sizes', array( 12, 24 ) ),
 		'size_small'     => array( 'Small text / meta',       'number', '13', 'sizes', array( 9,  20 ) ),
-		'size_h1'        => array( 'H1 / hero headline',      'number', '42', 'sizes', array( 20, 80 ) ),
+		'size_h1'        => array( 'H1 / hero headline',      'number', '34', 'sizes', array( 20, 80 ) ),
 		'size_h2'        => array( 'H2 / section title',      'number', '28', 'sizes', array( 16, 60 ) ),
 		'size_h3'        => array( 'H3 / card title',         'number', '20', 'sizes', array( 14, 44 ) ),
 		'size_button'    => array( 'Button text',             'number', '15', 'sizes', array( 10, 26 ) ),
 		'size_nav'       => array( 'Navigation text',         'number', '15', 'sizes', array( 10, 26 ) ),
-		'size_mobile_h1' => array( 'H1 on mobile',            'number', '27', 'sizes', array( 16, 48 ) ),
+		'size_mobile_h1' => array( 'H1 on mobile',            'number', '21', 'sizes', array( 16, 48 ) ),
 
 		/* ---------- Typography: rhythm ---------- */
 		'line_height'    => array( 'Body line height',        'number', '1.65', 'sizes', array( 1, 2.4, 0.05 ) ),
