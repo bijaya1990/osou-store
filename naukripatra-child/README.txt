@@ -700,3 +700,45 @@ real tools instead of placeholder paths:
 - To switch PDF Compressor on later, put its URL in the `url`
   key of the $np_tools array in front-page.php. The card turns
   itself back into a link automatically; no other edit needed.
+
+=====================================================
+ VERSION 3.3 — STOP OLD CSS WINNING
+=====================================================
+Fixes the two reasons a site can keep showing the old look
+after this theme is uploaded.
+
+1. STYLESHEET NOW LOADS LAST
+   The theme's CSS was enqueued at priority 20, which printed
+   it BEFORE most plugin CSS. When two rules have the same
+   specificity, the later stylesheet wins — so any plugin rule
+   that matched as specifically as ours silently overrode the
+   design. It is now enqueued at priority 999, so the theme's
+   own styling comes after plugin styling, where it belongs.
+
+   What this deliberately does NOT override: the Customizer's
+   "Additional CSS" box, and anything a plugin injects straight
+   into wp_head. Both print after every enqueued stylesheet, so
+   they still win. That is correct — those are the site owner's
+   own deliberate overrides and the theme should not fight them.
+   If the old look is coming from there, empty that box.
+
+2. CACHE-PROOF ASSET VERSIONS
+   style.css and np-main.js were versioned by the theme version
+   number, which only changes when the theme is re-versioned.
+   A CDN, a caching plugin or a browser could therefore keep
+   serving the PREVIOUS file after an upload, and the site went
+   on looking like the old theme. Both files are now versioned
+   by their own file modified time, so every upload produces a
+   new URL and nothing can serve a stale copy.
+
+IF IT STILL LOOKS OLD, CHECK IN THIS ORDER
+  a. Purge the cache plugin (LiteSpeed / Autoptimize / WP
+     Rocket), including its CSS/JS "combine" or "minify" cache,
+     then purge Cloudflare if it is in front of the site.
+  b. Appearance > Customize > Additional CSS — old NaukriPatra
+     rules pasted there will beat the theme every time.
+  c. Appearance > Customize > Colors / Typography — values set
+     there are GeneratePress overrides, not theme defaults.
+     Reset them so this theme's Design page controls the look.
+  d. Hard-reload once (Ctrl+F5, or a private window) to rule out
+     the browser's own copy.

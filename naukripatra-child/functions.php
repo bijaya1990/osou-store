@@ -319,6 +319,38 @@ function np_section_icon( $slug ) {
  * Appearance > NaukriPatra Design. Choosing "System UI" for both makes
  * no external font request at all.
  */
+/**
+ * Asset version string.
+ *
+ * The theme version alone is not enough: it only changes when the theme
+ * is re-versioned, so a CDN, a caching plugin or a browser can keep
+ * serving the PREVIOUS style.css after an upload and the site still
+ * looks like the old theme. Using the file's own modified time means
+ * every upload produces a new URL, so nothing can serve a stale copy.
+ * Falls back to the theme version if the file cannot be read.
+ */
+function np_asset_version( $relative_path ) {
+	$file = get_stylesheet_directory() . '/' . ltrim( $relative_path, '/' );
+	$mtime = @filemtime( $file );
+	return $mtime ? (string) $mtime : (string) wp_get_theme()->get( 'Version' );
+}
+
+/**
+ * Priority 999, not 20.
+ *
+ * WordPress prints stylesheets in the order they are enqueued, and when
+ * two rules have the SAME specificity the later stylesheet wins. At
+ * priority 20 this theme's CSS was printed before most plugin CSS, so
+ * any plugin rule that merely matched as specifically as ours quietly
+ * overrode the design. Enqueuing last puts this theme's stylesheet
+ * after them, which is where a theme's own styling belongs.
+ *
+ * Note what this does NOT override, by design: the Customizer's
+ * "Additional CSS" box and anything a plugin injects directly into
+ * wp_head both print after ALL enqueued styles, so they still win.
+ * That is correct — those are the site owner's own deliberate
+ * overrides, and the theme should not fight them.
+ */
 add_action( 'wp_enqueue_scripts', function () {
 
 	$fonts_url = np_google_fonts_url();
@@ -328,15 +360,15 @@ add_action( 'wp_enqueue_scripts', function () {
 
 	wp_enqueue_style( 'np-child',
 		get_stylesheet_directory_uri() . '/style.css',
-		array( 'generate-style' ), wp_get_theme()->get( 'Version' ) );
+		array( 'generate-style' ), np_asset_version( 'style.css' ) );
 
 	// Dashboard design tokens, printed after style.css so they always win.
 	wp_add_inline_style( 'np-child', np_inline_tokens_css() );
 
 	wp_enqueue_script( 'np-main',
 		get_stylesheet_directory_uri() . '/js/np-main.js',
-		array(), wp_get_theme()->get( 'Version' ), true );
-}, 20 );
+		array(), np_asset_version( 'js/np-main.js' ), true );
+}, 999 );
 
 // Core Web Vitals: keep our JS deferred (never render-blocking).
 add_filter( 'script_loader_tag', function ( $tag, $handle ) {
