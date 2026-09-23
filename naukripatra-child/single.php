@@ -53,13 +53,11 @@ while ( have_posts() ) :
 		if ( strlen( $np_initials ) >= 2 ) break;
 	}
 
-	/* Days left — derived from the same parser the schema uses, so the
-	   countdown and validThrough can never disagree. */
-	$np_deadline_ts = np_schema_parse_date( $np_last );
-	$np_days_left   = null;
-	if ( $np_deadline_ts ) {
-		$np_days_left = (int) floor( ( $np_deadline_ts + DAY_IN_SECONDS - 1 - current_time( 'timestamp', true ) ) / DAY_IN_SECONDS );
-	}
+	/* Days left — np_days_left() reads the numeric deadline mirror that
+	   is parsed with np_schema_parse_date(), the same parser the
+	   JobPosting schema uses, so this countdown and validThrough can
+	   never disagree. null means no usable closing date. */
+	$np_days_left = np_days_left( $np_id );
 	?>
 
 	<div class="np-single">

@@ -4,7 +4,7 @@
  Description:  NaukriPatra — premium corporate job portal child theme for GeneratePress. Government and private listings, automatic state-wise views, a fully dashboard-controlled design system (colours, fonts, letter sizes) and a dashboard-controlled ad system with image banners or network ad code per slot. No tracking, 100% yours.
  Author:       NaukriPatra
  Template:     generatepress
- Version:      3.0
+ Version:      3.1
  Tags:         jobs, portal, corporate, dark-mode, customizable
  Text Domain:  naukripatra
 */
@@ -279,23 +279,32 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 /* =========================================================
    HERO
    ======================================================= */
+/* The hero is deliberately compact: it is a banner, not a landing
+   page. Everything inside it is centred on one axis. */
 .np-hero{
 	margin-top:var(--np-gap);
 	background:linear-gradient(135deg,var(--np-primary-dark) 0%,var(--np-primary) 55%,var(--np-primary-mid) 100%);
-	border-radius:var(--np-radius);color:#fff;padding:52px 32px
+	border-radius:var(--np-radius);color:#fff;padding:34px 32px 30px
 }
-.np-hero-inner{max-width:820px}
+.np-hero-inner{
+	max-width:760px;margin:0 auto;text-align:center;
+	display:flex;flex-direction:column;align-items:center
+}
 .np-hero-eyebrow{
-	display:inline-flex;align-items:center;gap:7px;margin:0 0 14px;
+	display:inline-flex;align-items:center;gap:7px;margin:0 0 10px;
 	font-size:var(--np-size-small);font-weight:600;letter-spacing:.5px;text-transform:uppercase;
 	color:var(--np-accent)
 }
-.np-hero-title{font-size:var(--np-size-h1);color:#fff;margin:0 0 14px}
-.np-hero-sub{color:rgba(255,255,255,.8);margin:0 0 26px;font-size:calc(var(--np-size-base) + 1px);max-width:640px}
+.np-hero-title{font-size:var(--np-size-h1);color:#fff;margin:0 0 10px;line-height:1.16}
+.np-hero-sub{
+	color:rgba(255,255,255,.8);margin:0 0 20px;
+	font-size:calc(var(--np-size-base) + 1px);max-width:600px
+}
 
 .np-hero-search{
 	display:flex;align-items:center;gap:10px;background:#fff;
-	border-radius:var(--np-radius-sm);padding:7px 7px 7px 16px;max-width:640px
+	border-radius:var(--np-radius-sm);padding:7px 7px 7px 16px;
+	width:100%;max-width:600px
 }
 .np-hero-search .np-i{color:var(--np-muted);width:20px;height:20px}
 .np-hero-search input{
@@ -304,7 +313,7 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 }
 
 .np-segment{
-	display:inline-flex;margin-top:22px;background:rgba(255,255,255,.1);
+	display:inline-flex;margin-top:16px;background:rgba(255,255,255,.1);
 	border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:4px;gap:2px
 }
 .np-seg{
@@ -314,11 +323,14 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 .np-seg:hover{color:#fff;background:rgba(255,255,255,.1)}
 .np-seg.is-active{background:var(--np-accent);color:var(--np-primary-dark)}
 
-.np-stats{display:flex;gap:40px;margin:30px 0 0;padding:24px 0 0;border-top:1px solid rgba(255,255,255,.15)}
+.np-stats{
+	display:flex;justify-content:center;gap:46px;margin:22px 0 0;padding:18px 0 0;
+	border-top:1px solid rgba(255,255,255,.15);width:100%;max-width:600px;text-align:center
+}
 .np-stats dt{font-size:var(--np-size-small);color:rgba(255,255,255,.7);margin:0}
 .np-stats dd{
-	margin:4px 0 0;font-family:var(--np-font-head);font-weight:var(--np-weight-head);
-	font-size:var(--np-size-h2);color:#fff
+	margin:2px 0 0;font-family:var(--np-font-head);font-weight:var(--np-weight-head);
+	font-size:calc(var(--np-size-h2) - 2px);color:#fff
 }
 
 /* =========================================================
@@ -418,6 +430,7 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 /* Compact cards (trending / similar) */
 .np-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .np-cards-2{grid-template-columns:repeat(2,1fr)}
+.np-cards-3{grid-template-columns:repeat(3,1fr)}
 .np-card{
 	background:var(--np-surface);border:1px solid var(--np-border);border-radius:var(--np-radius);
 	padding:18px;text-decoration:none;display:flex;flex-direction:column;gap:10px
@@ -431,6 +444,20 @@ body.np-drawer-open .np-drawer{transform:translateX(0)}
 .np-card-meta{display:flex;flex-direction:column;gap:5px;font-size:var(--np-size-small);color:var(--np-muted);margin-top:auto}
 .np-card-meta span{display:inline-flex;align-items:center;gap:6px}
 .np-card-meta .np-i{width:14px;height:14px}
+
+/* ---------- Ending soon ---------- */
+.np-ending .np-section-head h2{display:flex;align-items:center;gap:10px}
+.np-ending .np-section-head .np-i{color:var(--np-danger);width:22px;height:22px}
+.np-card-urgent{border-left:3px solid var(--np-danger)}
+.np-countdown{
+	margin-left:auto;display:inline-flex;align-items:center;gap:5px;
+	padding:4px 10px;border-radius:999px;font-size:calc(var(--np-size-small) - 1px);font-weight:700;
+	background:var(--np-bg);
+	background:color-mix(in srgb,var(--np-danger) 12%,transparent);
+	color:var(--np-danger);white-space:nowrap
+}
+.np-countdown .np-i{width:13px;height:13px}
+.np-countdown-hot{background:var(--np-danger);color:#fff}
 
 /* =========================================================
    STATE GRID
@@ -820,7 +847,7 @@ html.np-dark .np-empty{border-color:var(--np-border)}
    ======================================================= */
 @media(max-width:1024px){
 	.np-tiles{grid-template-columns:repeat(3,1fr)}
-	.np-cards,.np-cards-2{grid-template-columns:repeat(2,1fr)}
+	.np-cards,.np-cards-2,.np-cards-3{grid-template-columns:repeat(2,1fr)}
 	.np-tools{grid-template-columns:repeat(2,1fr)}
 	.np-state-grid{grid-template-columns:repeat(4,1fr)}
 	.np-chips{grid-template-columns:repeat(2,1fr)}
@@ -842,7 +869,7 @@ html.np-dark .np-empty{border-color:var(--np-border)}
 @media(max-width:782px){
 	:root{--np-size-h1:var(--np-size-h1-mobile)}
 
-	.np-hero{padding:34px 20px;border-radius:var(--np-radius)}
+	.np-hero{padding:24px 18px 22px;border-radius:var(--np-radius)}
 	.np-hero-sub{font-size:var(--np-size-base)}
 	.np-hero-search{flex-wrap:wrap;padding:12px}
 	.np-hero-search input{width:100%;flex:1 1 100%}
@@ -856,7 +883,7 @@ html.np-dark .np-empty{border-color:var(--np-border)}
 	.np-tile{padding:16px 8px}
 	.np-tile-ico{width:40px;height:40px}
 
-	.np-cards,.np-cards-2,.np-tools{grid-template-columns:minmax(0,1fr)}
+	.np-cards,.np-cards-2,.np-cards-3,.np-tools{grid-template-columns:minmax(0,1fr)}
 
 	/* Job rows become stacked cards — no horizontal scroll. */
 	.np-job{flex-direction:column;align-items:stretch;gap:14px;padding:16px}

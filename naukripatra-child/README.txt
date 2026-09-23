@@ -597,3 +597,84 @@ New:     single.php, inc/appearance.php, inc/ads.php
 Colours / fonts / letter sizes : Appearance > NaukriPatra Design
 Ads (image or ad code)         : Settings > NaukriPatra Ads
 Job sector per post            : Posts > Edit > Job Details box
+
+=====================================================
+ VERSION 3.1 — HERO, LIVE COUNT, ENDING SOON
+=====================================================
+
+-----------------------------------------------------
+ 3.1 — HERO PANEL: SHORTER AND CENTRED
+-----------------------------------------------------
+- Hero padding cut from 52px to 34/30px on desktop and
+  from 34px to 24/22px on mobile.
+- Everything inside the hero is now centred on one axis:
+  eyebrow, headline, subtext, search bar, the
+  All/Government/Private toggle and the stats row.
+- Tighter vertical rhythm between those elements, and the
+  headline line-height pulled in to 1.16.
+- Net effect: the desktop hero is about 130px shorter, so
+  the first job listings sit much higher on the page.
+
+-----------------------------------------------------
+ 3.1 — REAL ACTIVE JOB COUNT
+-----------------------------------------------------
+The hero used to print wp_count_posts()->publish, which is
+every post ever published, expired listings included. It now
+prints a real count of what is live:
+- A published job is ACTIVE while its closing date has not
+  passed. The closing day itself still counts as active.
+- A post with no usable closing date (results, admit cards,
+  answer keys) counts as active too — there is no deadline
+  for it to expire against.
+- The stat is relabelled from "Live listings" to
+  "Active jobs".
+- Cached for 15 minutes and cleared the moment any post is
+  saved, so the homepage never runs the count on every hit.
+
+HOW IT IS COUNTED
+`_np_last_date` is free text an editor types by hand, so it
+cannot be compared or sorted in SQL. v3.1 mirrors it into a
+numeric companion field, `_np_last_date_ts`:
+- Written every time a post is saved, and also when
+  `_np_last_date` is changed through the REST API.
+- Back-filled for older posts in batches of 200 per admin
+  request, so a large site is never asked to do it all at
+  once.
+- Parsed with np_schema_parse_date(), the SAME parser the
+  JobPosting schema uses — so the countdown on screen and
+  validThrough in the structured data can never disagree.
+- Stores the deadline day's 00:00 timestamp, or 0 when no
+  date was given or the text could not be parsed.
+
+`_np_last_date` ITSELF IS NEVER MODIFIED. The Android app,
+the Job Details meta box, the REST fields and the JobPosting
+schema all keep reading the original field exactly as
+before. The mirror is an index, not a replacement.
+
+-----------------------------------------------------
+ 3.1 — "ENDING SOON" PANEL  (NEW)
+-----------------------------------------------------
+New homepage section between Trending and Browse by State:
+- Lists jobs closing within the next 15 days, soonest first,
+  sorted on the numeric mirror.
+- Each card carries a countdown pill: "5 days left",
+  "1 day left", "Closes today". Three days or fewer turns
+  the pill solid red.
+- Sector badge, location and last date on every card, with a
+  red left border to separate it from Trending.
+- Renders NOTHING when nothing is closing, so it never
+  leaves an empty box on the page.
+- A card whose deadline cannot be read is skipped, so a
+  stale mirror can never show "No closing date" here.
+
+-----------------------------------------------------
+ 3.1 — NEW HELPERS
+-----------------------------------------------------
+np_count_active_jobs()   real live count (cached)
+np_ending_soon_query()   WP_Query for closing-soon jobs
+np_days_left()           days to deadline, null if none
+np_days_left_label()     "3 days left" / "Closes today"
+np_sync_last_date_ts()   refresh one post's mirror
+np_backfill_last_date_ts() batched back-fill for old posts
+single.php now uses np_days_left() for its countdown too,
+instead of parsing the date a second time itself.

@@ -104,6 +104,155 @@ function np_sector_badge( $post_id ) {
 }
 
 /* =========================================================
+ * 0D. JOB DEADLINES — active count + "ending soon"
+ * =======================================================
+ * `_np_last_date` is free text an editor types by hand, so it cannot
+ * be compared or sorted in SQL. v3.1 mirrors it into a NUMERIC
+ * companion meta field, `_np_last_date_ts`, written every time a post
+ * is saved and back-filled in batches for older posts.
+ *
+ * ADDITIVE: `_np_last_date` itself is never modified, never read
+ * differently and never removed. The app, the Job Details box and the
+ * JobPosting schema all keep reading the original field exactly as
+ * before. The mirror is an index, not a replacement.
+ *
+ * Parsing goes through np_schema_parse_date(), the same parser the
+ * JobPosting schema uses, so the countdown on screen and validThrough
+ * in the structured data can never disagree.
+ *
+ * Value stored:
+ *   > 0  the deadline day's 00:00 timestamp
+ *   0    a last date was typed but could not be parsed
+ *   0    no last date was given at all
+ * A post is ACTIVE when its deadline day has not passed yet, and a
+ * post with no usable deadline (results, admit cards, answer keys)
+ * counts as active too — it has no closing date to expire against.
+ */
+
+/** Midnight today, in the site's own timezone. */
+function np_today_ts() {
+	return (int) strtotime( current_time( 'Y-m-d' ) . ' 00:00:00' );
+}
+
+/** Write the numeric mirror of `_np_last_date` for one post. */
+function np_sync_last_date_ts( $post_id ) {
+	$raw = get_post_meta( $post_id, '_np_last_date', true );
+	$ts  = np_schema_parse_date( $raw );
+	update_post_meta( $post_id, '_np_last_date_ts', $ts ? (int) $ts : 0 );
+	delete_transient( 'np_active_jobs' );
+	return $ts ? (int) $ts : 0;
+}
+
+/**
+ * Whole days until a post's deadline.
+ * null = no usable deadline, 0 = closes today, negative = closed.
+ */
+function np_days_left( $post_id ) {
+	$ts = (int) get_post_meta( $post_id, '_np_last_date_ts', true );
+	if ( ! $ts ) {
+		// Not mirrored yet (an old post the back-fill has not reached).
+		$ts = np_sync_last_date_ts( $post_id );
+		if ( ! $ts ) return null;
+	}
+	return (int) floor( ( $ts - np_today_ts() ) / DAY_IN_SECONDS );
+}
+
+/**
+ * Real count of active listings — published jobs whose deadline has
+ * not passed. Replaces the old wp_count_posts() total, which counted
+ * every post ever published, expired ones included.
+ * Cached for 15 minutes and cleared whenever a post is saved.
+ */
+function np_count_active_jobs() {
+	$cached = get_transient( 'np_active_jobs' );
+	if ( false !== $cached ) return (int) $cached;
+
+	$q = new WP_Query( array(
+		'post_type'           => 'post',
+		'post_status'         => 'publish',
+		'posts_per_page'      => 1,
+		'fields'              => 'ids',
+		'ignore_sticky_posts' => true,
+		'meta_query'          => array(
+			'relation' => 'OR',
+			// Deadline still ahead (the closing day itself counts).
+			array( 'key' => '_np_last_date_ts', 'value' => np_today_ts(), 'compare' => '>=', 'type' => 'NUMERIC' ),
+			// No usable deadline — nothing to expire against.
+			array( 'key' => '_np_last_date_ts', 'value' => 0, 'compare' => '=', 'type' => 'NUMERIC' ),
+			array( 'key' => '_np_last_date_ts', 'compare' => 'NOT EXISTS' ),
+		),
+	) );
+
+	$count = (int) $q->found_posts;
+	set_transient( 'np_active_jobs', $count, 15 * MINUTE_IN_SECONDS );
+	return $count;
+}
+
+/** Jobs closing within the next $days days, soonest first. */
+function np_ending_soon_query( $count = 6, $days = 15 ) {
+	$today = np_today_ts();
+	return new WP_Query( array(
+		'posts_per_page'      => $count,
+		'ignore_sticky_posts' => true,
+		'no_found_rows'       => true,
+		'meta_key'            => '_np_last_date_ts',
+		'orderby'             => 'meta_value_num',
+		'order'               => 'ASC',
+		'meta_query'          => array(
+			array(
+				'key'     => '_np_last_date_ts',
+				'value'   => array( $today, $today + ( (int) $days * DAY_IN_SECONDS ) ),
+				'compare' => 'BETWEEN',
+				'type'    => 'NUMERIC',
+			),
+		),
+	) );
+}
+
+/** Short label for a deadline, e.g. "3 days left". */
+function np_days_left_label( $days ) {
+	if ( null === $days )  return 'No closing date';
+	if ( $days < 0 )       return 'Closed';
+	if ( 0 === $days )     return 'Closes today';
+	if ( 1 === $days )     return '1 day left';
+	return $days . ' days left';
+}
+
+/**
+ * Back-fill the mirror for posts published before v3.1, 200 at a time
+ * so a large site is never asked to do it all in one request.
+ */
+function np_backfill_last_date_ts() {
+	if ( get_option( 'np_last_date_ts_done' ) ) return;
+
+	$q = new WP_Query( array(
+		'post_type'           => 'post',
+		'post_status'         => 'any',
+		'posts_per_page'      => 200,
+		'fields'              => 'ids',
+		'ignore_sticky_posts' => true,
+		'no_found_rows'       => true,
+		'meta_query'          => array(
+			array( 'key' => '_np_last_date_ts', 'compare' => 'NOT EXISTS' ),
+		),
+	) );
+
+	if ( empty( $q->posts ) ) {
+		update_option( 'np_last_date_ts_done', 1 );
+		delete_transient( 'np_active_jobs' );
+		return;
+	}
+	foreach ( $q->posts as $pid ) {
+		np_sync_last_date_ts( $pid );
+	}
+}
+add_action( 'admin_init', 'np_backfill_last_date_ts' );
+add_action( 'after_switch_theme', function () {
+	delete_option( 'np_last_date_ts_done' );
+	np_backfill_last_date_ts();
+} );
+
+/* =========================================================
  * 0C. INLINE STROKE SVG ICONS (no emoji anywhere in the UI)
  * ======================================================= */
 function np_icon( $name, $class = '' ) {
@@ -429,7 +578,19 @@ add_action( 'save_post', function ( $post_id ) {
 		}
 		update_post_meta( $post_id, '_np_job_sector', $sector );
 	}
+
+	// Refresh the numeric deadline mirror used by the active count and
+	// the "Ending soon" panel. `_np_last_date` itself is untouched.
+	np_sync_last_date_ts( $post_id );
 } );
+
+/** Keep the mirror correct for edits made through the REST API too. */
+add_action( 'updated_post_meta', function ( $meta_id, $post_id, $meta_key ) {
+	if ( '_np_last_date' === $meta_key ) np_sync_last_date_ts( $post_id );
+}, 10, 3 );
+add_action( 'added_post_meta', function ( $meta_id, $post_id, $meta_key ) {
+	if ( '_np_last_date' === $meta_key ) np_sync_last_date_ts( $post_id );
+}, 10, 3 );
 
 /* =========================================================
  * 4. AUTO JOB LOCATION (from the selected categories)

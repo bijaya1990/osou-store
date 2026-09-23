@@ -21,8 +21,12 @@ get_header();
 
 $np_social = np_social_links();
 
-/* Live stats — counted, never invented. */
-$np_live_jobs = (int) wp_count_posts()->publish;
+/* Live stats — counted, never invented.
+   Active = published jobs whose closing date has not passed (plus
+   results / admit cards, which have no closing date to expire
+   against). This is a real count of what is live right now, not the
+   all-time published total. */
+$np_live_jobs = np_count_active_jobs();
 $np_states    = count( np_locations() ) - 1; // "All India" is not a state
 $np_cats      = count( np_main_sections() );
 ?>
@@ -56,7 +60,7 @@ $np_cats      = count( np_main_sections() );
 			</div>
 
 			<dl class="np-stats">
-				<div><dt>Live listings</dt><dd><?php echo esc_html( number_format_i18n( $np_live_jobs ) ); ?></dd></div>
+				<div><dt>Active jobs</dt><dd><?php echo esc_html( number_format_i18n( $np_live_jobs ) ); ?></dd></div>
 				<div><dt>States &amp; UTs</dt><dd><?php echo esc_html( $np_states ); ?></dd></div>
 				<div><dt>Categories</dt><dd><?php echo esc_html( $np_cats ); ?></dd></div>
 			</dl>
@@ -123,6 +127,49 @@ $np_cats      = count( np_main_sections() );
 			<div class="np-empty"><?php echo np_icon( 'bolt' ); ?><p>Trending jobs appear here once listings start collecting views.</p></div>
 		<?php endif; ?>
 	</section>
+
+	<!-- ============ 3B. ENDING SOON ============ -->
+	<?php
+	/* Jobs whose last date falls inside the next 15 days, soonest
+	   first. The panel renders nothing at all when nothing is closing,
+	   so it never leaves an empty box on the page. */
+	$np_ending = np_ending_soon_query( 6, 15 );
+	?>
+	<?php if ( $np_ending->have_posts() ) : ?>
+		<section class="np-section np-ending">
+			<header class="np-section-head">
+				<h2><?php echo np_icon( 'clock' ); ?> Ending soon</h2>
+				<p class="np-section-sub">Applications closing in the next 15 days — apply before the window shuts.</p>
+			</header>
+
+			<div class="np-cards np-cards-3">
+				<?php while ( $np_ending->have_posts() ) : $np_ending->the_post();
+					$np_eid   = get_the_ID();
+					$np_elast = get_post_meta( $np_eid, '_np_last_date', true );
+					$np_edays = np_days_left( $np_eid );
+					// Guard: if the mirror is stale and the deadline can no
+					// longer be read, the post does not belong in this panel.
+					if ( null === $np_edays || $np_edays < 0 ) continue;
+					?>
+					<a class="np-card np-card-urgent" href="<?php the_permalink(); ?>">
+						<span class="np-card-top">
+							<?php echo np_sector_badge( $np_eid ); ?>
+							<span class="np-countdown<?php echo ( null !== $np_edays && $np_edays <= 3 ) ? ' np-countdown-hot' : ''; ?>">
+								<?php echo np_icon( 'clock' ); ?><?php echo esc_html( np_days_left_label( $np_edays ) ); ?>
+							</span>
+						</span>
+						<span class="np-card-title"><?php the_title(); ?></span>
+						<span class="np-card-meta">
+							<span><?php echo np_icon( 'pin' ); ?><?php echo esc_html( np_location_text( $np_eid ) ); ?></span>
+							<?php if ( $np_elast ) : ?>
+								<span class="np-red"><?php echo np_icon( 'calendar' ); ?>Last date: <?php echo esc_html( $np_elast ); ?></span>
+							<?php endif; ?>
+						</span>
+					</a>
+				<?php endwhile; wp_reset_postdata(); ?>
+			</div>
+		</section>
+	<?php endif; ?>
 
 	<!-- ============ 4. BROWSE BY STATE ============ -->
 	<section class="np-section np-states" id="npStates">
