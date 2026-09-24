@@ -2,238 +2,597 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Privé Clubs Miami</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<meta name="description" content="Discover Miami's most exclusive private clubs on an interactive map, with an AI concierge that acts for you.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff;--ink:#16181d;--mute:#6b7280;--line:#e8e8ec;--gold:#b8894a;--navy:#0f1b2d;--card:#fff;--soft:#f6f5f2}
+:root{
+  --bg:#fbfaf7;--panel:#f5f2ec;--card:#ffffff;--ink:#141821;--ink2:#3b4150;--mute:#7a8091;--line:#e7e2d9;
+  --gold:#b98a4b;--gold2:#d8b27a;--goldsoft:#f4ebdc;--navy:#0e1a2c;--navy2:#1f3350;--ok:#15803d;--oksoft:#e6f5ec;--red:#e0435c;
+  --shadow:0 10px 30px rgba(20,24,33,.10);--shadow2:0 24px 60px rgba(14,26,44,.28);
+  --r:18px;--hdr:72px;
+}
+body.dark{
+  --bg:#0b121e;--panel:#0f1828;--card:#142034;--ink:#f3efe8;--ink2:#c9cfdb;--mute:#8d97aa;--line:#22314a;
+  --goldsoft:#2a2a26;--oksoft:#0f2a1c;--shadow:0 10px 30px rgba(0,0,0,.35)
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);height:100vh;overflow:hidden}
-header{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid var(--line);background:#fff;position:relative;z-index:1000}
-.logo{display:flex;align-items:center;gap:10px;font-family:'Playfair Display',serif;font-size:24px;font-weight:700;letter-spacing:.5px}
-.logo .mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--navy),#27405f);color:var(--gold);display:grid;place-items:center;font-size:18px}
-.search{display:flex;align-items:center;border:1px solid var(--line);border-radius:40px;box-shadow:0 2px 10px rgba(0,0,0,.08);padding:6px 6px 6px 20px;gap:16px;font-size:14px}
-.search span{font-weight:600}.search .sep{width:1px;height:22px;background:var(--line)}
-.search .muted{color:var(--mute);font-weight:400}
-.search .go{width:36px;height:36px;border-radius:50%;background:var(--gold);display:grid;place-items:center;color:#fff}
-.nav{display:flex;align-items:center;gap:18px;font-size:14px;font-weight:500}
-.nav a{color:var(--ink);text-decoration:none}.nav a.active{border-bottom:2px solid var(--gold);padding-bottom:4px}
-.me{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:30px;padding:4px 4px 4px 12px}
-.av{width:32px;height:32px;border-radius:50%;background:url(https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&fit=crop) center/cover}
-main{display:flex;height:calc(100vh - 72px)}
-#map{flex:1;height:100%}
-aside{width:500px;overflow:auto;padding:22px 24px 120px;background:var(--soft);border-left:1px solid var(--line)}
-.chips{display:flex;gap:8px;margin:12px 0 18px;flex-wrap:wrap}
-.chip{padding:7px 14px;border-radius:20px;border:1px solid var(--line);background:#fff;font-size:13px;font-weight:500}
+html,body{height:100%}
+body{font-family:Inter,system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--bg);overflow:hidden;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+button{font:inherit;cursor:pointer;color:inherit}
+input,select{font:inherit;color:inherit}
+.serif{font-family:'Playfair Display',Georgia,serif}
+
+/* ---------- header ---------- */
+header{height:var(--hdr);display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 28px;border-bottom:1px solid var(--line);background:var(--bg);position:relative;z-index:50}
+.logo{display:flex;align-items:center;gap:11px;font-family:'Playfair Display',serif;font-size:25px;font-weight:700;letter-spacing:.3px;cursor:pointer;user-select:none}
+.logo .mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(140deg,var(--navy),var(--navy2));display:grid;place-items:center;box-shadow:0 4px 14px rgba(14,26,44,.3)}
+.logo small{display:block;font-family:Inter;font-size:10px;font-weight:600;letter-spacing:2.4px;color:var(--gold);margin-top:-3px}
+.search{display:flex;align-items:center;border:1px solid var(--line);background:var(--card);border-radius:40px;box-shadow:0 3px 14px rgba(0,0,0,.07);padding:6px 6px 6px 22px;gap:14px;font-size:14px;min-width:0}
+.search .seg{display:flex;flex-direction:column;line-height:1.2}
+.search .seg b{font-size:12px;font-weight:700}
+.search .seg span{font-size:13px;color:var(--mute)}
+.search .sep{width:1px;height:28px;background:var(--line)}
+.search input{border:none;outline:none;background:none;font-size:13px;width:150px}
+.search .go{width:40px;height:40px;border-radius:50%;background:linear-gradient(140deg,var(--gold2),var(--gold));display:grid;place-items:center;color:#fff;border:none;flex-shrink:0}
+.nav{display:flex;align-items:center;gap:6px}
+.nav .tab{background:none;border:none;padding:9px 14px;border-radius:22px;font-size:14px;font-weight:600;color:var(--ink2)}
+.nav .tab:hover{background:var(--panel)}
+.nav .tab.active{color:var(--ink);background:var(--panel)}
+.me{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:30px;padding:4px 4px 4px 14px;background:var(--card);margin-left:6px}
+.av{width:34px;height:34px;border-radius:50%;background:#ccc url(https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop) center/cover}
+.iconbtn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:grid;place-items:center}
+
+/* ---------- explore layout ---------- */
+.view{display:none;height:calc(100vh - var(--hdr))}
+.view.show{display:flex}
+#explore{flex-direction:row}
+.mapwrap{flex:1;position:relative;min-width:0}
+#map{position:absolute;inset:0}
+aside.list{width:520px;flex-shrink:0;overflow:auto;padding:24px 26px 140px;background:var(--panel);border-left:1px solid var(--line)}
+.lhead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase}
+h1.title{font-family:'Playfair Display',serif;font-size:30px;line-height:1.15;margin-top:6px}
+.sub{color:var(--mute);font-size:13px;margin-top:6px}
+.chips{display:flex;gap:8px;margin:18px 0 20px;overflow-x:auto;scrollbar-width:none}
+.chip{padding:8px 15px;border-radius:22px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:600;white-space:nowrap;color:var(--ink2);transition:.2s}
+.chip:hover{border-color:var(--gold)}
 .chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
-h2{font-family:'Playfair Display',serif;font-size:26px}
-.sub{color:var(--mute);font-size:13px;margin-top:4px}
-.card{display:flex;gap:14px;background:var(--card);border-radius:18px;padding:12px;margin-bottom:14px;border:1px solid var(--line);transition:.25s;cursor:pointer}
-.card.hover{border-color:var(--gold);box-shadow:0 10px 30px rgba(184,137,74,.25);transform:translateY(-2px)}
-.card .img{width:150px;height:130px;border-radius:12px;background-size:cover;background-position:center;position:relative;flex-shrink:0}
-.badge{position:absolute;top:8px;left:8px;background:rgba(255,255,255,.95);font-size:10px;font-weight:700;padding:4px 8px;border-radius:10px;letter-spacing:.4px;text-transform:uppercase}
-.heart{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.35);display:grid;place-items:center;color:#fff;font-size:14px}
-.heart.on{color:#ff4d6d;background:#fff}
-.card h3{font-size:16px;font-weight:700;margin-top:2px}
-.addr{font-size:12.5px;color:var(--mute);margin:4px 0 8px;display:flex;gap:5px}
-.desc{font-size:12.5px;color:#444;line-height:1.45}
-.tags{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-.tag{font-size:11px;padding:3px 8px;border-radius:8px;background:#f3ede4;color:#8a6532;font-weight:600}
-.row{display:flex;justify-content:space-between;align-items:center}
-.est{font-size:11px;color:var(--mute);font-weight:600}
+body.dark .chip.on{background:var(--gold);border-color:var(--gold);color:#1a1206}
+.hint{display:flex;align-items:center;gap:10px;background:var(--goldsoft);border:1px dashed var(--gold2);color:var(--ink2);padding:10px 14px;border-radius:14px;font-size:12.5px;margin-bottom:16px}
+.hint b{color:var(--gold)}
+
+.card{display:flex;gap:16px;background:var(--card);border-radius:var(--r);padding:12px;margin-bottom:14px;border:1.5px solid var(--line);transition:transform .25s,box-shadow .25s,border-color .25s;cursor:pointer;position:relative}
+.card:hover,.card.hover{border-color:var(--gold);box-shadow:0 14px 34px rgba(185,138,75,.22);transform:translateY(-2px)}
+.card.hover:after{content:'';position:absolute;left:-1.5px;top:22px;bottom:22px;width:4px;border-radius:0 4px 4px 0;background:var(--gold)}
+.card .img{width:168px;height:150px;border-radius:13px;background-size:cover;background-position:center;position:relative;flex-shrink:0;overflow:hidden}
+.card .img:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.35))}
+.badge{position:absolute;top:9px;left:9px;background:rgba(255,255,255,.95);color:#141821;font-size:10px;font-weight:800;padding:4px 8px;border-radius:9px;letter-spacing:.6px;text-transform:uppercase;z-index:1}
+.heart{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.35);backdrop-filter:blur(4px);display:grid;place-items:center;border:none;z-index:1;transition:.2s}
+.heart svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2.2}
+.heart.on{background:#fff}.heart.on svg{fill:var(--red);stroke:var(--red)}
+.dots{position:absolute;bottom:9px;left:0;right:0;display:flex;justify-content:center;gap:4px;z-index:1}
+.dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.6)}.dots i:first-child{background:#fff}
+.cbody{flex:1;min-width:0;display:flex;flex-direction:column}
+.card h3{font-size:17px;font-weight:700;letter-spacing:-.2px}
+.loc{font-size:12px;color:var(--gold);font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+.addr{font-size:12.5px;color:var(--mute);margin:3px 0 8px}
+.desc{font-size:12.8px;color:var(--ink2);line-height:1.5}
+.cfoot{margin-top:auto;padding-top:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tags{display:flex;gap:5px;flex-wrap:wrap}
+.tag{font-size:11px;padding:3px 8px;border-radius:7px;background:var(--goldsoft);color:#8a6532;font-weight:700}
+body.dark .tag{color:var(--gold2)}
+.mini{font-size:12px;font-weight:700;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 10px;white-space:nowrap}
+.mini:hover{border-color:var(--gold);color:var(--gold)}
+.empty{padding:40px 10px;text-align:center;color:var(--mute);font-size:14px}
+
+/* map overlays */
+.mbar{position:absolute;z-index:5;top:18px;left:18px;right:70px;display:flex;gap:10px;pointer-events:none}
+.mbar>*{pointer-events:auto}
+.pill{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:24px;padding:9px 15px;font-size:13px;font-weight:600;box-shadow:var(--shadow);display:flex;align-items:center;gap:8px;white-space:nowrap}
+.pill .live{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.2)}
+button.pill:hover{border-color:var(--gold)}
+.mapcard{position:absolute;z-index:5;left:20px;bottom:24px;width:320px;background:var(--card);border-radius:18px;overflow:hidden;box-shadow:var(--shadow2);transform:translateY(20px);opacity:0;transition:.35s;pointer-events:none}
+.mapcard.show{transform:none;opacity:1;pointer-events:auto}
+.mapcard .ph{height:138px;background-size:cover;background-position:center;position:relative}
+.mapcard .ph span{position:absolute;left:12px;bottom:10px;background:rgba(14,26,44,.85);color:#fff;font-size:11px;font-weight:700;padding:5px 9px;border-radius:9px;letter-spacing:.4px}
+.mapcard .bd{padding:13px 15px 15px}
+.mapcard b{font-size:16px}.mapcard p{font-size:12.5px;color:var(--mute);margin-top:3px}
+.mapcard .btns{display:flex;gap:8px;margin-top:12px}
+.btn{border:none;border-radius:12px;padding:10px 14px;font-weight:700;font-size:13px;background:var(--navy);color:#fff}
+body.dark .btn{background:var(--gold);color:#1a1206}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.gold{background:linear-gradient(140deg,var(--gold2),var(--gold));color:#fff}
+.btn:hover{filter:brightness(1.07)}
+
 /* markers */
-.pin{background:#fff;border-radius:22px;padding:7px 12px;font-weight:700;font-size:13px;box-shadow:0 3px 12px rgba(0,0,0,.25);white-space:nowrap;border:1px solid rgba(0,0,0,.06);transition:.2s;display:inline-flex;align-items:center;gap:6px;transform:translate(-50%,-50%)}
-.pin i{width:8px;height:8px;border-radius:50%;background:var(--gold)}
-.pin.active{background:var(--navy);color:#fff;transform:translate(-50%,-50%) scale(1.15)}
-.leaflet-div-icon{background:none;border:none}
-.mapcard{position:absolute;z-index:900;left:24px;bottom:24px;width:300px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.25)}
-.mapcard .ph{height:120px;background-size:cover;background-position:center}
-.mapcard .bd{padding:12px 14px}
-.mapcard b{font-size:15px}.mapcard p{font-size:12px;color:var(--mute);margin-top:3px}
-.mapcard .fly{margin-top:8px;font-size:11px;color:var(--gold);font-weight:700;letter-spacing:.5px}
-.maptools{position:absolute;z-index:900;top:18px;left:50%;transform:translateX(-50%);background:#fff;border-radius:24px;padding:8px 16px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);display:flex;gap:8px;align-items:center}
-.mapwrap{flex:1;position:relative}
-/* agent */
-.agent-btn{position:fixed;right:26px;bottom:26px;z-index:2000;width:74px;height:74px;border-radius:50%;background:var(--navy);box-shadow:0 10px 30px rgba(15,27,45,.45);border:3px solid var(--gold);overflow:hidden}
-.agent-btn .dot{position:absolute;right:6px;top:6px;width:13px;height:13px;border-radius:50%;background:#22c55e;border:2px solid #fff}
-.chat{position:fixed;right:26px;bottom:112px;z-index:2000;width:370px;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.28);overflow:hidden;display:none}
-.chat.open{display:block}
-.chat .top{background:linear-gradient(135deg,var(--navy),#23395a);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px}
-.chat .top .face{width:46px;height:46px;border-radius:50%;background:#1b2b44;border:2px solid var(--gold);overflow:hidden}
-.chat .top b{font-size:15px}.chat .top small{display:block;font-size:11px;color:#b9c4d6}
-.msgs{padding:14px;display:flex;flex-direction:column;gap:10px;background:#fafaf8;max-height:330px;overflow:auto}
-.m{max-width:84%;padding:10px 12px;border-radius:14px;font-size:13px;line-height:1.45}
-.m.u{align-self:flex-end;background:var(--navy);color:#fff;border-bottom-right-radius:4px}
-.m.a{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
-.act{align-self:flex-start;font-size:11.5px;font-weight:600;color:#1a7f4b;background:#e8f7ee;padding:6px 10px;border-radius:10px}
-.sugg{display:flex;gap:6px;padding:8px 14px;flex-wrap:wrap;border-top:1px solid var(--line)}
-.sugg span{font-size:11.5px;border:1px solid var(--line);border-radius:14px;padding:5px 10px;color:#333}
+.pin{position:relative;background:var(--card);color:var(--ink);border-radius:24px;padding:7px 13px 7px 7px;font-weight:700;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.28);white-space:nowrap;border:1.5px solid rgba(0,0,0,.05);display:flex;align-items:center;gap:7px;cursor:pointer;transition:transform .25s,background .25s}
+.pin:after{content:'';position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:var(--card)}
+.pin .ic{width:22px;height:22px;border-radius:50%;background:linear-gradient(140deg,var(--gold2),var(--gold));display:grid;place-items:center;color:#fff;font-size:11px}
+.pin:hover{transform:scale(1.06)}
+.pin.active{background:var(--navy);color:#fff;transform:scale(1.14);z-index:9}
+.pin.active:after{border-top-color:var(--navy)}
+body.dark .pin.active{background:var(--gold);color:#1a1206}body.dark .pin.active:after{border-top-color:var(--gold)}
+.pin.active .ic{background:#fff;color:var(--navy)}
+.pulse{position:absolute;left:50%;bottom:-16px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:rgba(185,138,75,.5);animation:pulse 1.8s infinite;display:none}
+.pin.active .pulse{display:block}
+@keyframes pulse{0%{transform:scale(.5);opacity:1}100%{transform:scale(3);opacity:0}}
+.maplibregl-ctrl-group{border-radius:14px!important;box-shadow:var(--shadow)!important;overflow:hidden}
+.maplibregl-ctrl-top-right{top:10px;right:6px}
+
+/* ---------- agent ---------- */
+.agent{position:fixed;right:26px;bottom:26px;z-index:80;display:flex;align-items:flex-end;gap:12px}
+.agent-bubble{background:var(--card);color:var(--ink);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:13px;font-weight:500;max-width:220px;animation:float 3s ease-in-out infinite}
+.agent-bubble b{color:var(--gold)}
+@keyframes float{50%{transform:translateY(-4px)}}
+.agent-btn{width:78px;height:78px;border-radius:50%;background:var(--navy);border:3px solid var(--gold);box-shadow:0 12px 34px rgba(14,26,44,.5);padding:0;overflow:hidden;position:relative;flex-shrink:0;transition:transform .2s}
+.agent-btn:hover{transform:scale(1.05)}
+.agent-btn .on{position:absolute;right:5px;top:5px;width:14px;height:14px;border-radius:50%;background:#22c55e;border:2.5px solid #fff;z-index:2}
+.agent-btn:before{content:'';position:absolute;inset:-3px;border-radius:50%;border:3px solid var(--gold);animation:ring 2.4s infinite}
+@keyframes ring{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.45);opacity:0}}
+.agent.chatting .agent-bubble{display:none}
+.chat{position:fixed;right:26px;bottom:118px;z-index:90;width:392px;max-height:min(640px,calc(100vh - 150px));background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow2);overflow:hidden;display:flex;flex-direction:column;transform:translateY(16px) scale(.98);opacity:0;pointer-events:none;transition:.28s;transform-origin:bottom right}
+.chat.open{transform:none;opacity:1;pointer-events:auto}
+.chat .top{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.chat .face{width:50px;height:50px;border-radius:50%;background:#1b2b44;border:2px solid var(--gold);overflow:hidden;flex-shrink:0}
+.chat .top b{font-size:15px;display:block}.chat .top small{font-size:11.5px;color:#c3cde0;display:flex;align-items:center;gap:6px}
+.chat .top small i{width:7px;height:7px;border-radius:50%;background:#22c55e}
+.chat .x{margin-left:auto;background:rgba(255,255,255,.12);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px}
+.caps{display:flex;gap:6px;padding:8px 14px;background:#132238;overflow-x:auto;scrollbar-width:none}
+.caps span{font-size:10.5px;font-weight:700;letter-spacing:.3px;color:var(--gold2);background:rgba(216,178,122,.12);padding:4px 8px;border-radius:8px;white-space:nowrap}
+.msgs{padding:16px 14px;display:flex;flex-direction:column;gap:10px;background:var(--bg);overflow:auto;flex:1;min-height:180px}
+.m{max-width:86%;padding:10px 13px;border-radius:16px;font-size:13.3px;line-height:1.5;animation:pop .25s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}}
+.m.u{align-self:flex-end;background:var(--navy);color:#fff;border-bottom-right-radius:5px}
+body.dark .m.u{background:var(--gold);color:#1a1206}
+.m.a{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:5px}
+.m.a a{color:var(--gold);font-weight:700}
+.act{align-self:flex-start;font-size:12px;font-weight:700;color:var(--ok);background:var(--oksoft);padding:6px 11px;border-radius:10px;display:flex;align-items:center;gap:6px;animation:pop .25s ease-out}
+.act:before{content:'';width:14px;height:14px;border-radius:50%;background:var(--ok) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/9px no-repeat}
+.typing{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;gap:4px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--mute);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{50%{opacity:.25}}
+.sugg{display:flex;gap:6px;padding:10px 14px 4px;overflow-x:auto;scrollbar-width:none;border-top:1px solid var(--line)}
+.sugg button{font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:6px 11px;white-space:nowrap;color:var(--ink2)}
+.sugg button:hover{border-color:var(--gold);color:var(--gold)}
 .inp{display:flex;gap:8px;padding:10px 14px 14px}
-.inp div{flex:1;border:1px solid var(--line);border-radius:22px;padding:10px 14px;font-size:13px;color:var(--mute)}
-.inp button{width:40px;height:40px;border-radius:50%;border:none;background:var(--gold);color:#fff;font-size:16px}
-/* profile */
-.profile{display:none;height:calc(100vh - 72px);overflow:auto;background:var(--soft)}
-.p-view .profile{display:block}.p-view main{display:none}
-.pwrap{max-width:1100px;margin:0 auto;padding:32px 24px 120px;display:grid;grid-template-columns:330px 1fr;gap:24px}
-.box{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px}
+.inp input{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:24px;padding:11px 16px;font-size:13.5px;outline:none}
+.inp input:focus{border-color:var(--gold)}
+.inp button{width:42px;height:42px;border-radius:50%;border:none;background:linear-gradient(140deg,var(--gold2),var(--gold));color:#fff;display:grid;place-items:center;flex-shrink:0}
+.inp button.mic{background:var(--panel);color:var(--ink);border:1px solid var(--line)}
+.inp button.mic.rec{background:var(--red);color:#fff;animation:blink 1s infinite}
+.inp svg{width:18px;height:18px}
+
+/* ---------- profile ---------- */
+#profile{overflow:auto;background:var(--panel);display:none}
+#profile.show{display:block}
+.pwrap{max-width:1180px;margin:0 auto;padding:34px 28px 140px}
+.phead{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;gap:16px;flex-wrap:wrap}
+.pgrid{display:grid;grid-template-columns:360px 1fr;gap:24px;align-items:start}
+.col{display:flex;flex-direction:column;gap:24px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px}
+.box h4{font-size:16px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.box .bsub{font-size:12.5px;color:var(--mute);margin-bottom:12px}
+.mcard{position:relative;border-radius:22px;padding:22px;height:218px;color:#fff;overflow:hidden;background:radial-gradient(120% 140% at 100% 0%,#2b4468 0%,#0e1a2c 55%,#0a121f 100%);box-shadow:0 20px 50px rgba(14,26,44,.45)}
+.mcard:before{content:'';position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;border:30px solid rgba(216,178,122,.10)}
+.mcard:after{content:'';position:absolute;right:30px;bottom:-90px;width:200px;height:200px;border-radius:50%;border:24px solid rgba(216,178,122,.07)}
+.mcard .brand{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;display:flex;align-items:center;gap:8px}
+.mcard .lvl{font-size:10.5px;letter-spacing:3px;color:var(--gold2);font-weight:700;margin-top:2px}
+.mcard .chip2{position:absolute;right:22px;top:24px;width:44px;height:34px;border-radius:7px;background:linear-gradient(135deg,#f1d6a4,#b98a4b);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.mcard .num{position:absolute;left:22px;bottom:52px;font-size:16px;letter-spacing:3px;font-weight:600;color:#e9e4da}
+.mcard .who{position:absolute;left:22px;right:22px;bottom:20px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:1.4px;color:#b9c3d6;text-transform:uppercase}
+.mcard .who b{display:block;color:#fff;font-size:13px;letter-spacing:.6px;margin-top:2px}
 .pcard{text-align:center}
-.pcard .big{width:112px;height:112px;border-radius:50%;margin:0 auto 12px;background:url(https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop) center/cover;border:4px solid var(--gold)}
-.pcard h3{font-family:'Playfair Display',serif;font-size:24px}
-.tier{display:inline-block;margin-top:8px;background:linear-gradient(135deg,#d9b27a,var(--gold));color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:12px;letter-spacing:.8px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
-.stats b{display:block;font-size:20px}.stats small{font-size:11px;color:var(--mute)}
-.box h4{font-size:16px;margin-bottom:14px}
-.set{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--line);font-size:14px}
-.set:last-child{border:none}.set small{display:block;color:var(--mute);font-size:12px;margin-top:2px}
-.tg{width:44px;height:26px;border-radius:13px;background:#d6d6dc;position:relative;flex-shrink:0}
-.tg:after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;box-shadow:0 1px 3px rgba(0,0,0,.3)}
-.tg.on{background:var(--gold)}.tg.on:after{left:21px}
-.sel{border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-size:13px;font-weight:500}
-.field{margin-bottom:12px}.field label{font-size:12px;color:var(--mute);font-weight:600}.field div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:5px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.saved{display:flex;gap:10px;align-items:center;padding:8px 0}
-.saved .t{width:52px;height:52px;border-radius:10px;background-size:cover}
-.saved b{font-size:13px}.saved small{display:block;color:var(--mute);font-size:12px}
-.btn{display:block;width:100%;margin-top:16px;padding:12px;border-radius:12px;border:none;background:var(--navy);color:#fff;font-weight:600;font-size:14px}
-.side{display:flex;flex-direction:column;gap:24px}
-/* mobile */
-.mob-toggle{display:none}
-@media (max-width:900px){
- header{height:62px;padding:0 16px}.search,.nav a{display:none}.logo{font-size:20px}
- main{flex-direction:column;height:calc(100vh - 62px)}
- .mapwrap{flex:none;height:42vh}
- aside{width:100%;border:none;border-radius:22px 22px 0 0;margin-top:-18px;position:relative;z-index:950;padding:10px 16px 120px;box-shadow:0 -6px 20px rgba(0,0,0,.1)}
- aside:before{content:'';display:block;width:42px;height:5px;border-radius:3px;background:#ccc;margin:0 auto 12px}
- .card .img{width:118px;height:118px}.desc{display:none}
- .mapcard,.maptools{display:none}
- .agent-btn{right:16px;bottom:16px;width:62px;height:62px}
- .chat{right:10px;left:10px;width:auto;bottom:90px}
- .pwrap{grid-template-columns:1fr;padding:18px 16px 120px}.grid2{grid-template-columns:1fr}
- .profile{height:calc(100vh - 62px)}
- h2{font-size:22px}
+.pcard .big{width:108px;height:108px;border-radius:50%;margin:0 auto 12px;background:#ccc url(https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=320&h=320&fit=crop) center/cover;border:4px solid var(--gold);position:relative}
+.pcard .big span{position:absolute;right:0;bottom:4px;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;border:3px solid var(--card);display:grid;place-items:center;font-size:12px}
+.pcard h3{font-family:'Playfair Display',serif;font-size:25px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+.stats b{display:block;font-size:22px}.stats small{font-size:11.5px;color:var(--mute);font-weight:600}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+.field label{font-size:11.5px;color:var(--mute);font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+.field input,.field select{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:11px 13px;font-size:14px;margin-top:6px;outline:none}
+.field input:focus{border-color:var(--gold)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.set{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14px;font-weight:600}
+.set:last-child{border:none;padding-bottom:0}
+.set small{display:block;color:var(--mute);font-size:12px;font-weight:500;margin-top:2px}
+.set select{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:7px 10px;font-size:13px;font-weight:600}
+.tg{width:48px;height:28px;border-radius:14px;background:#cfd2da;position:relative;flex-shrink:0;border:none;transition:.2s}
+body.dark .tg{background:#2c3a52}
+.tg:after{content:'';position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:3px;left:3px;box-shadow:0 1px 4px rgba(0,0,0,.3);transition:.2s}
+.tg.on,body.dark .tg.on{background:var(--gold)}.tg.on:after{left:23px}
+.li{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.li:last-child{border:none}
+.li .t{width:56px;height:56px;border-radius:12px;background-size:cover;background-position:center;flex-shrink:0}
+.li b{font-size:14px}.li small{display:block;color:var(--mute);font-size:12px;margin-top:2px}
+.li .r{margin-left:auto;display:flex;gap:6px;align-items:center}
+.st{font-size:11px;font-weight:800;padding:4px 9px;border-radius:8px;background:var(--oksoft);color:var(--ok);letter-spacing:.3px}
+.st.p{background:var(--goldsoft);color:#8a6532}
+.muted{color:var(--mute);font-size:13px}
+
+/* toast */
+.toast{position:fixed;left:50%;top:88px;transform:translate(-50%,-20px);background:var(--navy);color:#fff;padding:11px 18px;border-radius:14px;font-size:13.5px;font-weight:600;box-shadow:var(--shadow2);opacity:0;transition:.3s;z-index:200;pointer-events:none;display:flex;gap:8px;align-items:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast i{color:var(--gold2);font-style:normal}
+
+/* mobile nav */
+.bnav{display:none}
+
+@media (max-width:1100px){aside.list{width:440px}.search .seg:nth-of-type(3),.search .sep:nth-of-type(2){display:none}.card .img{width:140px}}
+@media (max-width:860px){
+  :root{--hdr:60px}
+  header{padding:0 16px}
+  .search,.nav .tab,.me span{display:none}
+  .logo{font-size:21px}.logo .mark{width:34px;height:34px}
+  .view{height:calc(100vh - var(--hdr) - 66px)}
+  #explore{flex-direction:column}
+  .mapwrap{flex:none;height:44%}
+  aside.list{width:100%;flex:1;border:none;border-radius:24px 24px 0 0;margin-top:-22px;position:relative;z-index:6;padding:10px 16px 110px;box-shadow:0 -8px 24px rgba(0,0,0,.12)}
+  aside.list:before{content:'';display:block;width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 14px}
+  h1.title{font-size:23px}.lhead .pill{display:none}
+  .hint{display:none}
+  .card{gap:12px;padding:10px}.card .img{width:112px;height:124px}.desc{display:none}
+  .card h3{font-size:15.5px}.cfoot{flex-direction:column;align-items:flex-start}
+  .mapcard,.mbar .pill.cnt{display:none}
+  .mbar{top:12px;left:12px}
+  .agent{right:14px;bottom:80px}.agent-btn{width:62px;height:62px}.agent-bubble{display:none}
+  .chat{left:8px;right:8px;width:auto;bottom:78px;max-height:calc(100vh - 150px)}
+  .pwrap{padding:18px 16px 120px}.pgrid,.g2,.form{grid-template-columns:1fr}
+  .phead h1{font-size:24px}
+  .bnav{display:flex;position:fixed;left:0;right:0;bottom:0;height:66px;background:var(--card);border-top:1px solid var(--line);z-index:70;justify-content:space-around;align-items:center;padding-bottom:env(safe-area-inset-bottom)}
+  .bnav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:var(--mute)}
+  .bnav button svg{width:22px;height:22px}
+  .bnav button.active{color:var(--gold)}
+  .toast{top:72px}
 }
 </style>
 </head>
 <body>
+
 <header>
-  <div class="logo"><div class="mark">◆</div>Privé</div>
-  <div class="search"><span>Miami Beach</span><div class="sep"></div><span class="muted">Private clubs</span><div class="sep"></div><span class="muted">Any membership</span><div class="go">⌕</div></div>
-  <div class="nav"><a href="#" class="active" id="nExplore">Explore</a><a href="#">Saved</a><a href="#">Tours</a><div class="me">☰<div class="av"></div></div></div>
+  <div class="logo" onclick="go('explore')">
+    <div class="mark"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z" fill="#d8b27a"/></svg></div>
+    <div>Privé<small>MIAMI CLUBS</small></div>
+  </div>
+  <div class="search">
+    <div class="seg"><b>Where</b><span>Miami Beach</span></div><div class="sep"></div>
+    <div class="seg"><b>Search</b><input id="q" placeholder="Club, area or amenity"></div><div class="sep"></div>
+    <div class="seg"><b>Membership</b><span>Invitation only</span></div>
+    <button class="go" aria-label="Search" onclick="renderList()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+  </div>
+  <nav class="nav">
+    <button class="tab active" data-v="explore" onclick="go('explore')">Explore</button>
+    <button class="tab" onclick="go('explore');setFilter('Saved')">Saved</button>
+    <button class="tab" data-v="profile" onclick="go('profile')">Profile</button>
+    <button class="iconbtn" title="Toggle dark mode" onclick="setDark(!S.settings.dark)" id="themeBtn">🌙</button>
+    <div class="me" onclick="go('profile')" style="cursor:pointer"><span style="font-size:13px;font-weight:700" id="hdrName">Alexander</span><div class="av"></div></div>
+  </nav>
 </header>
 
-<main>
+<!-- EXPLORE -->
+<section class="view show" id="explore">
   <div class="mapwrap">
     <div id="map"></div>
-    <div class="maptools">🗺 Drag to explore · 4 clubs in view</div>
+    <div class="mbar">
+      <div class="pill cnt"><span class="live"></span><span id="inview">4 clubs in view</span></div>
+      <button class="pill" onclick="fitAll()">⤢ Show all clubs</button>
+      <button class="pill" onclick="toggle3D()" id="b3d">🏙 3D</button>
+    </div>
     <div class="mapcard" id="mapcard"></div>
   </div>
-  <aside>
-    <h2>Featured Private Clubs</h2>
-    <div class="sub">Miami Beach · Surfside · Fisher Island — hover a club to fly there</div>
-    <div class="chips"><div class="chip on">All</div><div class="chip">🏖 Beach</div><div class="chip">🍽 Dining</div><div class="chip">💆 Spa</div><div class="chip">⛵ Marina</div></div>
+  <aside class="list" id="listPane">
+    <div class="lhead">
+      <div><div class="eyebrow">Featured · Miami</div><h1 class="title">Private Members' Clubs</h1><div class="sub" id="count">4 exclusive clubs · Miami Beach, Surfside & Fisher Island</div></div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="hint">✨ <span><b>Hover</b> any club and the map flies you there. Or ask <b>James</b>, your AI concierge.</span></div>
     <div id="list"></div>
   </aside>
-</main>
+</section>
 
-<section class="profile">
+<!-- PROFILE -->
+<section class="view" id="profile">
   <div class="pwrap">
-    <div class="side">
-      <div class="box pcard">
-        <div class="big"></div>
-        <h3>Alexander Reed</h3>
-        <div class="sub">alex.reed@email.com · Miami, FL</div>
-        <div class="tier">◆ PLATINUM MEMBER</div>
-        <div class="stats"><div><b>3</b><small>Saved</small></div><div><b>2</b><small>Tours</small></div><div><b>14</b><small>Visits</small></div></div>
-      </div>
-      <div class="box"><h4>Saved Clubs</h4><div id="saved"></div></div>
+    <div class="phead">
+      <div><div class="eyebrow">Account</div><h1 class="title">Profile &amp; Settings</h1><div class="sub">Manage your membership, preferences and AI concierge.</div></div>
+      <button class="btn ghost" onclick="go('explore')">← Back to map</button>
     </div>
-    <div class="side">
-      <div class="box"><h4>Personal Information</h4>
-        <div class="grid2"><div class="field"><label>Full name</label><div>Alexander Reed</div></div><div class="field"><label>Email</label><div>alex.reed@email.com</div></div>
-        <div class="field"><label>Phone</label><div>+1 (305) 555-0142</div></div><div class="field"><label>Home city</label><div>Miami Beach, FL</div></div></div>
-      </div>
-      <div class="grid2">
-        <div class="box"><h4>Preferences</h4>
-          <div class="set"><div>Dark mode<small>Easier on the eyes at night</small></div><div class="tg"></div></div>
-          <div class="set"><div>Map style<small>Base map appearance</small></div><div class="sel">Voyager ▾</div></div>
-          <div class="set"><div>Language</div><div class="sel">English ▾</div></div>
-          <div class="set"><div>Distance units</div><div class="sel">Miles ▾</div></div>
+    <div class="pgrid">
+      <div class="col">
+        <div class="mcard">
+          <div class="chip2"></div>
+          <div class="brand">★ Privé</div><div class="lvl" id="tierLbl">PLATINUM MEMBER</div>
+          <div class="num">•••• •••• •••• 2026</div>
+          <div class="who"><div>Member<b id="cardName">Alexander Reed</b></div><div style="text-align:right">Since<b>2024</b></div></div>
         </div>
-        <div class="box"><h4>AI Concierge & Alerts</h4>
-          <div class="set"><div>AI Concierge<small>Let James act on your behalf</small></div><div class="tg on"></div></div>
-          <div class="set"><div>Voice replies<small>Spoken responses</small></div><div class="tg on"></div></div>
-          <div class="set"><div>Tour reminders<small>Push & email</small></div><div class="tg on"></div></div>
-          <div class="set"><div>Two-factor auth<small>Extra account security</small></div><div class="tg on"></div></div>
+        <div class="box pcard">
+          <div class="big"><span>✎</span></div>
+          <h3 id="pName">Alexander Reed</h3>
+          <div class="sub" id="pSub">alex.reed@email.com · Miami Beach, FL</div>
+          <div class="stats"><div><b id="stSaved">0</b><small>Saved</small></div><div><b id="stTours">0</b><small>Tours</small></div><div><b>14</b><small>Visits</small></div></div>
         </div>
+        <div class="box"><h4>❤️ Saved clubs</h4><div class="bsub">Your shortlist, synced with the map.</div><div id="savedList"></div></div>
       </div>
-      <div class="box"><h4>Upcoming Tours</h4>
-        <div class="set"><div><b>The Surf Club</b><small>Sat, Oct 3 · 11:00 AM · Booked by AI Concierge</small></div><div class="tag">Confirmed</div></div>
-        <div class="set"><div><b>Fisher Island Club</b><small>Thu, Oct 8 · 2:30 PM · Ferry pass included</small></div><div class="tag">Pending</div></div>
-        <button class="btn">Save changes</button>
+      <div class="col">
+        <div class="box"><h4>Personal information</h4><div class="bsub">Used by James when booking tours on your behalf.</div>
+          <div class="form">
+            <div class="field"><label>Full name</label><input id="fName"></div>
+            <div class="field"><label>Email</label><input id="fEmail" type="email"></div>
+            <div class="field"><label>Phone</label><input id="fPhone"></div>
+            <div class="field"><label>Home city</label><input id="fCity"></div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn" onclick="saveProfile()">Save changes</button></div>
+        </div>
+        <div class="g2">
+          <div class="box"><h4>🎨 Preferences</h4>
+            <div class="set"><div>Dark mode<small>Midnight navy & gold theme</small></div><button class="tg" data-k="dark"></button></div>
+            <div class="set"><div>Map style<small>Base map appearance</small></div><select id="sMap"><option value="liberty">Classic 3D</option><option value="positron">Minimal</option><option value="bright">Bright</option></select></div>
+            <div class="set"><div>Language</div><select id="sLang"><option>English</option><option>Español</option><option>Português</option><option>Français</option></select></div>
+            <div class="set"><div>Distance units</div><select id="sUnits"><option>Miles</option><option>Kilometers</option></select></div>
+          </div>
+          <div class="box"><h4>🤵 AI concierge & alerts</h4>
+            <div class="set"><div>AI concierge<small>Let James act on your behalf</small></div><button class="tg" data-k="concierge"></button></div>
+            <div class="set"><div>Voice replies<small>James speaks his answers</small></div><button class="tg" data-k="voice"></button></div>
+            <div class="set"><div>Tour reminders<small>Push & email, 24h before</small></div><button class="tg" data-k="reminders"></button></div>
+            <div class="set"><div>Two-factor sign-in<small>Extra account security</small></div><button class="tg" data-k="twofa"></button></div>
+          </div>
+        </div>
+        <div class="box"><h4>🗓 Upcoming tours</h4><div class="bsub">Private tours booked by you or by James.</div><div id="tourList"></div></div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="chat" id="chat">
-  <div class="top"><div class="face" id="face2"></div><div><b>James · AI Concierge</b><small>● Online — I can move the map, book tours & more</small></div></div>
-  <div class="msgs">
-    <div class="m a">Good evening, Alexander. I'm James, your private concierge. How may I assist you today?</div>
-    <div class="m u">Take me to The Surf Club and book a tour for Saturday</div>
-    <div class="act">⚡ Action: Flying map to The Surf Club</div>
-    <div class="act">⚡ Action: Tour booked — Sat, Oct 3 · 11:00 AM</div>
-    <div class="m a">Done. The Surf Club in Surfside is now centered on your map, and your private tour is confirmed for Saturday at 11:00 AM. Shall I add it to your calendar?</div>
-  </div>
-  <div class="sugg"><span>🗺 Show all clubs</span><span>❤️ Save Fisher Island</span><span>👤 Open profile</span><span>🌙 Dark mode</span></div>
-  <div class="inp"><div>Ask James anything…</div><button>🎤</button><button>➤</button></div>
+<!-- AGENT -->
+<div class="chat" id="chat" role="dialog" aria-label="AI concierge">
+  <div class="top"><div class="face" id="face2"></div><div><b>James · AI Concierge</b><small><i></i>Online · acts on your requests</small></div><button class="x" onclick="toggleChat(false)" aria-label="Close">✕</button></div>
+  <div class="caps"><span>✈ MOVE MAP</span><span>🗓 BOOK TOURS</span><span>❤ SAVE CLUBS</span><span>🌙 THEME</span><span>👤 PROFILE</span><span>🧭 DIRECTIONS</span></div>
+  <div class="msgs" id="msgs"></div>
+  <div class="sugg" id="sugg"></div>
+  <form class="inp" onsubmit="event.preventDefault();send()">
+    <button type="button" class="mic" id="mic" aria-label="Voice input" onclick="listen()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></button>
+    <input id="ask" placeholder="Ask James: “Take me to Soho House”" autocomplete="off">
+    <button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </form>
 </div>
-<div class="agent-btn" id="agent"><span class="dot"></span></div>
+<div class="agent" id="agent">
+  <div class="agent-bubble" id="agentBubble">Good evening. I'm <b>James</b>, your concierge. Tell me where to take you.</div>
+  <button class="agent-btn" id="agentBtn" onclick="toggleChat()" aria-label="Open AI concierge"><span class="on"></span></button>
+</div>
 
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<nav class="bnav">
+  <button class="active" data-v="explore" onclick="go('explore')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></svg>Explore</button>
+  <button onclick="go('explore');setFilter('Saved')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-8-5-8-11a4.5 4.5 0 018-3 4.5 4.5 0 018 3c0 6-8 11-8 11z"/></svg>Saved</button>
+  <button onclick="toggleChat(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H9l-5 4z"/></svg>Concierge</button>
+  <button data-v="profile" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Profile</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script>
+/* ============ DATA (real clubs, geocoded) ============ */
 const U='https://images.unsplash.com/photo-';
-const clubs=[
- {n:'The Bath Club',a:'5937 Collins Ave, Miami Beach, FL 33140',ll:[25.8436,-80.1199],img:U+'1566073771259-6a8506099945?w=700',b:'Est. 1926',d:'Historic oceanfront beach club with cabanas, fine dining and a private members\' pool.',t:['Beach','Dining','Pool']},
- {n:'The Surf Club',a:'9011 Collins Ave, Surfside, FL 33154',ll:[25.8779,-80.1206],img:U+'1571896349842-33c89424de2d?w=700',b:'Est. 1930',d:'Legendary 1930s social club, now home to Four Seasons and Le Sirenuse Champagne Bar.',t:['Beach','Spa','Dining']},
- {n:'Fisher Island Club',a:'1 Fisher Island Dr, Miami Beach, FL 33109',ll:[25.7610,-80.1420],img:U+'1582719508461-905c673771fd?w=700',b:'Island',d:'Former Vanderbilt estate on a private island reachable only by ferry — marina, golf and spa.',t:['Marina','Golf','Spa']},
- {n:'Soho Beach House',a:'4385 Collins Ave, Miami Beach, FL 33140',ll:[25.8158,-80.1222],img:U+'1540541338287-41700207dee6?w=700',b:'Members',d:'Creative members\' club with Cecconi\'s, Cowshed spa and a private stretch of beach.',t:['Beach','Spa','Social']}];
-const P=new URLSearchParams(location.search), view=P.get('view')||'map', hov=+(P.get('hover')??1), chat=P.get('chat')==='1';
-if(view==='profile'){document.body.classList.add('p-view');document.getElementById('nExplore').classList.remove('active')}
-const map=L.map('map',{zoomControl:false,attributionControl:true}).setView([25.815,-80.13],12);
-L.control.zoom({position:'topright'}).addTo(map);
-L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles © Esri',maxZoom:19}).addTo(map);
-const list=document.getElementById('list'), marks=[];
-clubs.forEach((c,i)=>{
- const m=L.marker(c.ll,{icon:L.divIcon({html:`<div class="pin" id="p${i}"><i></i>${c.n.replace('The ','')}</div>`,iconSize:[0,0]})}).addTo(map);marks.push(m);
- const el=document.createElement('div');el.className='card';el.id='c'+i;
- el.innerHTML=`<div class="img" style="background-image:url(${c.img})"><span class="badge">${c.b}</span><span class="heart ${i!=3?'on':''}">♥</span></div>
- <div><div class="row"><h3>${c.n}</h3></div><div class="addr">📍 ${c.a}</div><div class="desc">${c.d}</div><div class="tags">${c.t.map(x=>`<span class="tag">${x}</span>`).join('')}</div></div>`;
- el.onmouseenter=()=>focus(i);el.onclick=()=>focus(i);list.appendChild(el);
+const CLUBS=[
+ {id:'bath',n:'The Bath Club',area:'Miami Beach · Mid-Beach',a:'5937 Collins Ave, Miami Beach, FL 33140',ll:[-80.12108,25.84138],
+  img:U+'1566073771259-6a8506099945?w=800&q=80',badge:'Est. 1926',tags:['Beach','Dining','Pool'],
+  d:'Storied oceanfront beach club founded in 1926, with private cabanas, a members\' pool and oceanfront dining.',keys:['bath']},
+ {id:'surf',n:'The Surf Club',area:'Surfside',a:'9011 Collins Ave, Surfside, FL 33154',ll:[-80.12117,25.87732],
+  img:U+'1571896349842-33c89424de2d?w=800&q=80',badge:'Est. 1930',tags:['Beach','Spa','Dining'],
+  d:'Legendary 1930 social club that hosted Hollywood royalty, today home to the Four Seasons Hotel at The Surf Club.',keys:['surf']},
+ {id:'fisher',n:'Fisher Island Club',area:'Fisher Island',a:'1 Fisher Island Dr, Miami Beach, FL 33109',ll:[-80.13887,25.76341],
+  img:U+'1582719508461-905c673771fd?w=800&q=80',badge:'Private island',tags:['Marina','Golf','Spa'],
+  d:'The former Vanderbilt estate on a private island reached only by ferry or yacht, with a marina, golf and spa.',keys:['fisher','island','vanderbilt']},
+ {id:'soho',n:'Soho Beach House',area:'Miami Beach · Mid-Beach',a:'4385 Collins Ave, Miami Beach, FL 33140',ll:[-80.12190,25.81589],
+  img:U+'1540541338287-41700207dee6?w=800&q=80',badge:'Members only',tags:['Beach','Spa','Dining'],
+  d:'Soho House\'s oceanfront club in the restored 1940s Sovereign Hotel, with Cecconi\'s, a Cowshed spa and a private beach.',keys:['soho','house']}
+];
+const FILTERS=['All','Beach','Dining','Spa','Marina','Golf','Saved'];
+
+/* ============ STATE ============ */
+const DEF={fav:['bath','surf','fisher'],tours:[{club:'surf',when:'Sat, Oct 3 · 11:00 AM',status:'Confirmed',by:'James'},{club:'fisher',when:'Thu, Oct 8 · 2:30 PM',status:'Pending',by:'You'}],
+  settings:{dark:false,voice:false,concierge:true,reminders:true,twofa:true,map:'liberty',lang:'English',units:'Miles'},
+  profile:{name:'Alexander Reed',email:'alex.reed@email.com',phone:'+1 (305) 555-0142',city:'Miami Beach, FL'}};
+let S=JSON.parse(JSON.stringify(DEF));
+try{const s=JSON.parse(localStorage.getItem('prive'));if(s)S=Object.assign(S,s)}catch(e){}
+const P=new URLSearchParams(location.search);
+if(P.has('fresh'))S=JSON.parse(JSON.stringify(DEF));
+if(P.get('theme')==='dark')S.settings.dark=true;
+function save(){try{localStorage.setItem('prive',JSON.stringify(S))}catch(e){}}
+let filter='All',active=-1,is3D=true;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ============ MAP ============ */
+const styleUrl=()=>'https://tiles.openfreemap.org/styles/'+(S.settings.dark?'dark':S.settings.map);
+const map=new maplibregl.Map({container:'map',style:styleUrl(),center:[-80.128,25.82],zoom:11.4,pitch:0,attributionControl:{compact:true},preserveDrawingBuffer:true});
+map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),'top-right');
+const markers=CLUBS.map((c,i)=>{
+  const el=document.createElement('div');
+  el.innerHTML=`<div class="pin" id="pin${i}"><span class="ic">★</span>${c.n.replace(/^The /,'')}<span class="pulse"></span></div>`;
+  el.firstChild.onclick=()=>{focusClub(i);document.getElementById('card'+i)?.scrollIntoView({behavior:'smooth',block:'center'})};
+  return new maplibregl.Marker({element:el,anchor:'bottom'}).setLngLat(c.ll).addTo(map);
 });
-function focus(i){
- document.querySelectorAll('.card').forEach(e=>e.classList.remove('hover'));document.querySelectorAll('.pin').forEach(e=>e.classList.remove('active'));
- document.getElementById('c'+i).classList.add('hover');const p=document.getElementById('p'+i);p&&p.classList.add('active');
- const c=clubs[i];map.flyTo(c.ll,15,{duration:P.get('static')?0:1.2});
- document.getElementById('mapcard').innerHTML=`<div class="ph" style="background-image:url(${c.img})"></div><div class="bd"><b>${c.n}</b><p>${c.a}</p><div class="fly">✈ FLYING YOU HERE · HOVER SYNC</div></div>`;
+function inView(){const b=map.getBounds();const n=CLUBS.filter(c=>b.contains(c.ll)).length;$('#inview').textContent=n+(n==1?' club':' clubs')+' in view'}
+map.on('moveend',inView);
+function bounds(){const b=new maplibregl.LngLatBounds();CLUBS.forEach(c=>b.extend(c.ll));return b}
+function fitAll(d=1400){active=-1;markActive();$('#mapcard').classList.remove('show');map.fitBounds(bounds(),{padding:{top:90,bottom:60,left:60,right:60},pitch:0,bearing:0,duration:d})}
+map.on('load',()=>{if(!P.has('hover'))fitAll(0)});
+function focusClub(i,opt={}){
+  if(i<0||i>=CLUBS.length)return;
+  const c=CLUBS[i];active=i;markActive();
+  map.flyTo({center:c.ll,zoom:opt.zoom||15.9,pitch:is3D?60:0,bearing:is3D?[-25,20,-35,15][i]:0,duration:opt.dur??1800,essential:true,curve:1.5});
+  $('#mapcard').innerHTML=`<div class="ph" style="background-image:url(${c.img})"><span>✈ Now viewing</span></div><div class="bd"><b>${c.n}</b><p>${c.a}</p>
+   <div class="btns"><button class="btn" onclick="bookTour(${i})">Book private tour</button><button class="btn ghost" onclick="directions(${i})">Directions</button></div></div>`;
+  $('#mapcard').classList.add('show');
 }
-if(hov>=0) setTimeout(()=>focus(hov),50);
-document.getElementById('saved').innerHTML=clubs.slice(0,3).map(c=>`<div class="saved"><div class="t" style="background-image:url(${c.img})"></div><div><b>${c.n}</b><small>${c.a.split(',').slice(1,2)}</small></div></div>`).join('');
-// Concierge avatar: man in suit & tie
-const face=`<svg viewBox="0 0 100 100" width="100%" height="100%"><rect width="100" height="100" fill="#1b2b44"/>
-<path d="M12 100 C14 78 30 70 50 68 C70 70 86 78 88 100Z" fill="#111a2a"/>
-<path d="M40 68 L50 90 L60 68 L55 66 L50 70 L45 66Z" fill="#fff"/>
-<path d="M47 71 L53 71 L55 76 L52 94 L48 94 L45 76Z" fill="#b3261e"/><path d="M47 71 L53 71 L52 75 L48 75Z" fill="#8f1c16"/>
-<path d="M36 68 L50 92 L42 100 L28 74Z" fill="#1e2c44"/><path d="M64 68 L50 92 L58 100 L72 74Z" fill="#1e2c44"/>
-<rect x="43" y="56" width="14" height="14" rx="4" fill="#d9a67a"/>
-<ellipse cx="50" cy="42" rx="17" ry="20" fill="#e8b98f"/>
-<path d="M32 40 C30 22 44 16 52 18 C64 18 72 26 68 42 C66 32 60 28 50 29 C42 29 36 32 32 40Z" fill="#2b1d14"/>
-<circle cx="43" cy="44" r="2" fill="#222"/><circle cx="57" cy="44" r="2" fill="#222"/>
-<path d="M44 53 Q50 57 56 53" stroke="#9a5b3c" stroke-width="2" fill="none" stroke-linecap="round"/>
-<ellipse cx="33" cy="45" rx="2.5" ry="4" fill="#e0ad83"/><ellipse cx="67" cy="45" rx="2.5" ry="4" fill="#e0ad83"/></svg>`;
-document.getElementById('agent').insertAdjacentHTML('beforeend',face);document.getElementById('face2').innerHTML=face;
-if(chat)document.getElementById('chat').classList.add('open');
-document.getElementById('agent').onclick=()=>document.getElementById('chat').classList.toggle('open');
+function markActive(){document.querySelectorAll('.pin').forEach((p,j)=>p.classList.toggle('active',j===active));document.querySelectorAll('.card').forEach(el=>el.classList.toggle('hover',+el.dataset.i===active))}
+function toggle3D(){is3D=!is3D;$('#b3d').textContent=is3D?'🏙 3D':'🗺 2D';map.easeTo({pitch:is3D?60:0,bearing:is3D?-20:0,duration:900})}
+
+/* ============ LIST ============ */
+const heartSvg='<svg viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.5 4.5 0 018-3 4.5 4.5 0 018 3c0 6-8 11-8 11z"/></svg>';
+function renderChips(){$('#chips').innerHTML=FILTERS.map(f=>`<button class="chip ${f===filter?'on':''}" onclick="setFilter('${f}')">${{All:'✦ All',Beach:'🏖 Beach',Dining:'🍽 Dining',Spa:'💆 Spa',Marina:'⛵ Marina',Golf:'⛳ Golf',Saved:'❤ Saved'}[f]}</button>`).join('')}
+function setFilter(f){filter=f;renderChips();renderList()}
+function visibleClubs(){const q=($('#q').value||'').toLowerCase().trim();
+  return CLUBS.map((c,i)=>({c,i})).filter(({c})=>(filter==='All'||(filter==='Saved'?S.fav.includes(c.id):c.tags.includes(filter)))&&(!q||(c.n+c.a+c.area+c.tags.join(' ')).toLowerCase().includes(q)))}
+let hoverT;
+function renderList(){
+  const v=visibleClubs();
+  $('#count').textContent=`${v.length} exclusive club${v.length==1?'':'s'} · Miami Beach, Surfside & Fisher Island`;
+  $('#list').innerHTML=v.length?v.map(({c,i})=>`<article class="card ${i===active?'hover':''}" id="card${i}" data-i="${i}">
+   <div class="img" style="background-image:url(${c.img})"><span class="badge">${c.badge}</span><button class="heart ${S.fav.includes(c.id)?'on':''}" onclick="event.stopPropagation();toggleFav(${i})" aria-label="Save">${heartSvg}</button><div class="dots"><i></i><i></i><i></i><i></i></div></div>
+   <div class="cbody"><div class="loc">${c.area}</div><h3>${c.n}</h3><div class="addr">📍 ${c.a}</div><div class="desc">${c.d}</div>
+   <div class="cfoot"><div class="tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div><button class="mini" onclick="event.stopPropagation();bookTour(${i})">Book tour →</button></div></div></article>`).join('')
+   :`<div class="empty">No clubs match. <a href="#" onclick="$('#q').value='';setFilter('All');return false">Clear filters</a></div>`;
+  document.querySelectorAll('.card').forEach(el=>{const i=+el.dataset.i;
+    el.onmouseenter=()=>{clearTimeout(hoverT);hoverT=setTimeout(()=>{if(active!==i)focusClub(i)},90)};
+    el.onclick=()=>focusClub(i)});
+  markers.forEach((m,i)=>m.getElement().style.display=v.some(x=>x.i===i)?'':'none');
+}
+$('#q').addEventListener('input',renderList);
+
+/* ============ ACTIONS ============ */
+function toggleFav(i,force){const id=CLUBS[i].id,has=S.fav.includes(id),want=force??!has;
+  if(want&&!has)S.fav.push(id);if(!want&&has)S.fav=S.fav.filter(x=>x!==id);save();renderList();renderProfile();
+  toast(want?`❤ Saved ${CLUBS[i].n}`:`Removed ${CLUBS[i].n}`);return want}
+function nextDay(dow){const d=new Date();const add=((dow-d.getDay()+7)%7)||7;d.setDate(d.getDate()+add);return d}
+function bookTour(i,when){const c=CLUBS[i];
+  when=when||fmt(nextDay(6),'11:00 AM');
+  S.tours=S.tours.filter(t=>t.club!==c.id);S.tours.unshift({club:c.id,when,status:'Confirmed',by:chatOpen?'James':'You'});save();renderProfile();
+  toast(`🗓 Tour booked · ${c.n} · ${when}`);return when}
+function fmt(d,time){return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' · '+time}
+function directions(i){const c=CLUBS[i];const url='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(c.a);window.open(url,'_blank','noopener');return url}
+function setDark(on){S.settings.dark=on;document.body.classList.toggle('dark',on);$('#themeBtn').textContent=on?'☀️':'🌙';save();map.setStyle(styleUrl());renderToggles()}
+function go(v){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('show',x.id===v));
+  document.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
+  if(v==='explore')setTimeout(()=>map.resize(),50);if(v==='profile')renderProfile()}
+let toastT;function toast(t){const el=$('#toast');el.innerHTML='<i>◆</i>'+t;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2600)}
+
+/* ============ PROFILE ============ */
+function renderToggles(){document.querySelectorAll('.tg').forEach(t=>t.classList.toggle('on',!!S.settings[t.dataset.k]))}
+document.querySelectorAll('.tg').forEach(t=>t.onclick=()=>{const k=t.dataset.k;if(k==='dark')return setDark(!S.settings.dark);S.settings[k]=!S.settings[k];save();renderToggles();
+  if(k==='concierge'){$('#agent').style.display=S.settings.concierge?'':'none';if(!S.settings.concierge)toggleChat(false)}
+  toast(`${t.parentElement.firstChild.textContent.trim()} ${S.settings[k]?'on':'off'}`)});
+$('#sMap').onchange=e=>{S.settings.map=e.target.value;save();if(!S.settings.dark)map.setStyle(styleUrl());toast('Map style updated')};
+$('#sLang').onchange=e=>{S.settings.lang=e.target.value;save();toast('Language: '+e.target.value)};
+$('#sUnits').onchange=e=>{S.settings.units=e.target.value;save();toast('Units: '+e.target.value)};
+function renderProfile(){const p=S.profile;
+  $('#pName').textContent=p.name;$('#cardName').textContent=p.name;$('#hdrName').textContent=p.name.split(' ')[0];
+  $('#pSub').textContent=p.email+' · '+p.city;
+  ['Name','Email','Phone','City'].forEach(k=>{const el=$('#f'+k);if(document.activeElement!==el)el.value=p[k.toLowerCase()]});
+  $('#sMap').value=S.settings.map;$('#sLang').value=S.settings.lang;$('#sUnits').value=S.settings.units;
+  $('#stSaved').textContent=S.fav.length;$('#stTours').textContent=S.tours.length;
+  const byId=id=>CLUBS.findIndex(c=>c.id===id);
+  $('#savedList').innerHTML=S.fav.length?S.fav.map(id=>{const i=byId(id),c=CLUBS[i];return `<div class="li"><div class="t" style="background-image:url(${c.img})"></div><div><b>${c.n}</b><small>${c.area}</small></div><div class="r"><button class="mini" onclick="go('explore');focusClub(${i})">View</button></div></div>`}).join(''):'<div class="muted">No saved clubs yet. Tap ♥ on any club.</div>';
+  $('#tourList').innerHTML=S.tours.length?S.tours.map((t,k)=>{const c=CLUBS[byId(t.club)];return `<div class="li"><div class="t" style="background-image:url(${c.img})"></div><div><b>${c.n}</b><small>${t.when} · Booked by ${t.by==='James'?'🤵 AI Concierge':'you'}</small></div><div class="r"><span class="st ${t.status==='Pending'?'p':''}">${t.status}</span><button class="mini" onclick="cancelTour(${k})">Cancel</button></div></div>`}).join(''):'<div class="muted">No tours booked. Ask James: “Book a tour at The Surf Club on Saturday”.</div>';
+  renderToggles()}
+function cancelTour(k){const t=S.tours.splice(k,1)[0];save();renderProfile();toast('Tour cancelled')}
+function saveProfile(){S.profile={name:$('#fName').value.trim()||'Member',email:$('#fEmail').value.trim(),phone:$('#fPhone').value.trim(),city:$('#fCity').value.trim()};save();renderProfile();toast('Profile saved')}
+
+/* ============ AI CONCIERGE ============ */
+const FACE=`<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+<defs><radialGradient id="bgF" cx="50%" cy="30%" r="80%"><stop offset="0" stop-color="#2a4266"/><stop offset="1" stop-color="#0e1a2c"/></radialGradient>
+<linearGradient id="suit" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#1d2a40"/><stop offset="1" stop-color="#0c1422"/></linearGradient>
+<linearGradient id="tie" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d8b27a"/><stop offset="1" stop-color="#a67836"/></linearGradient></defs>
+<rect width="120" height="120" fill="url(#bgF)"/>
+<path d="M10 120 C12 94 30 84 60 81 C90 84 108 94 110 120Z" fill="url(#suit)"/>
+<path d="M47 81 L60 104 L73 81 L66 78 L60 84 L54 78Z" fill="#f4f1ea"/>
+<path d="M56 85 L64 85 L66 91 L62 116 L58 116 L54 91Z" fill="url(#tie)"/><path d="M56 84 L64 84 L63 90 L57 90Z" fill="#8a6230"/>
+<path d="M60 116 L41 81 L31 88 L46 108Z" fill="#23324c"/><path d="M60 116 L79 81 L89 88 L74 108Z" fill="#23324c"/>
+<path d="M80 98 l8 -2 l1 5 l-8 2z" fill="#f4f1ea"/>
+<rect x="51" y="66" width="18" height="17" rx="6" fill="#d7a57c"/>
+<ellipse cx="60" cy="50" rx="21" ry="24" fill="#ebbd95"/>
+<path d="M38 50 C35 27 50 20 62 21 C77 21 86 31 82 50 C80 40 76 34 70 33 C62 38 48 37 42 36 C40 40 39 45 38 50Z" fill="#2b1d14"/>
+<path d="M44 34 C52 30 64 27 74 31" stroke="#46301f" stroke-width="2" fill="none"/>
+<ellipse cx="38.5" cy="53" rx="3.2" ry="5" fill="#e2af86"/><ellipse cx="81.5" cy="53" rx="3.2" ry="5" fill="#e2af86"/>
+<path d="M46 44 q5 -3 10 0" stroke="#2b1d14" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M64 44 q5 -3 10 0" stroke="#2b1d14" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+<ellipse cx="51" cy="51" rx="2.6" ry="3" fill="#1d1510"/><ellipse cx="69" cy="51" rx="2.6" ry="3" fill="#1d1510"/>
+<circle cx="52" cy="50" r=".9" fill="#fff"/><circle cx="70" cy="50" r=".9" fill="#fff"/>
+<path d="M60 53 q-2 6 1 7" stroke="#c98d67" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<path d="M51 63 Q60 70 69 63" stroke="#9a5b3c" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+<circle cx="45" cy="60" r="4" fill="#f0a489" opacity=".35"/><circle cx="75" cy="60" r="4" fill="#f0a489" opacity=".35"/></svg>`;
+$('#agentBtn').insertAdjacentHTML('beforeend',FACE);$('#face2').innerHTML=FACE;
+let chatOpen=false;
+function toggleChat(v){chatOpen=v??!chatOpen;$('#chat').classList.toggle('open',chatOpen);$('#agent').classList.toggle('chatting',chatOpen);if(chatOpen){if(!$('#msgs').children.length)greet();setTimeout(()=>$('#ask').focus(),200)}}
+function addMsg(who,html){const m=document.createElement('div');m.className='m '+who;m.innerHTML=html;$('#msgs').appendChild(m);$('#msgs').scrollTop=1e6;return m}
+function addAct(t){const m=document.createElement('div');m.className='act';m.textContent=t;$('#msgs').appendChild(m);$('#msgs').scrollTop=1e6}
+function setSugg(list){$('#sugg').innerHTML=list.map(s=>`<button type="button" onclick="send('${s.replace(/'/g,"\\'")}')">${s}</button>`).join('')}
+function greet(){const h=new Date().getHours();addMsg('a',`Good ${h<12?'morning':h<18?'afternoon':'evening'}, ${esc(S.profile.name.split(' ')[0])}. I'm <b>James</b>, your private concierge. I can move the map, book tours, save clubs and manage your settings. Where shall we begin?`);
+  setSugg(['Take me to The Surf Club','Give me a tour of all clubs','Book Soho House Friday 7pm','Dark mode','Open my profile'])}
+function speak(t){if(!S.settings.voice||!window.speechSynthesis)return;const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,''));u.rate=1.02;speechSynthesis.cancel();speechSynthesis.speak(u)}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function reply(html,acts=[],sugg){
+  const t=document.createElement('div');t.className='typing';t.innerHTML='<i></i><i></i><i></i>';$('#msgs').appendChild(t);$('#msgs').scrollTop=1e6;
+  await wait(550);t.remove();
+  for(const a of acts){if(a.run)await a.run();addAct(a.t);await wait(260)}
+  addMsg('a',html);speak(html);if(sugg)setSugg(sugg)}
+function findClub(t){return CLUBS.findIndex(c=>c.keys.some(k=>t.includes(k)))}
+function parseWhen(t){const days=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];let d=null;
+  if(/tomorrow/.test(t)){d=new Date();d.setDate(d.getDate()+1)}else if(/today|tonight/.test(t))d=new Date();
+  else{const k=days.findIndex(x=>t.includes(x)||t.includes(x.slice(0,3)+' '));if(k>=0)d=nextDay(k)}
+  const m=t.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)/);let time='11:00 AM';
+  if(m)time=`${m[1]}:${m[2]||'00'} ${m[3].toUpperCase()}`;else if(/tonight|evening|dinner/.test(t))time='7:00 PM';
+  return fmt(d||nextDay(6),time)}
+let touring=false;
+async function send(text){
+  const input=$('#ask');text=(text??input.value).trim();if(!text)return;input.value='';
+  if(!chatOpen)toggleChat(true);
+  addMsg('u',esc(text));
+  const t=text.toLowerCase();let i=findClub(t);const ci=i>=0?i:active;const c=CLUBS[ci];
+  const S2=['Show all clubs','Book a tour here','Save this club','Directions'];
+  if(/\b(help|what can you do|commands)\b/.test(t))
+    return reply(`Here's what I can do for you:<br>• <b>“Take me to Fisher Island”</b>: fly the map<br>• <b>“Book Soho House Friday 7pm”</b>: book a tour<br>• <b>“Save The Bath Club”</b>: add to favorites<br>• <b>“Show only spa clubs”</b>: filter<br>• <b>“Tour all clubs”</b>, <b>“zoom in”</b>, <b>“dark mode”</b>, <b>“open profile”</b>, <b>“change my name to …”</b>`,[],['Tour all clubs','Show only marina clubs','Dark mode']);
+  if(/dark|night mode/.test(t))return reply('Switched to our midnight theme. Rather elegant, if I may say.',[{t:'Theme set to Dark',run:()=>setDark(true)}],['Light mode','Take me to Soho House']);
+  if(/light mode|day mode|light theme/.test(t))return reply('Back to daylight.',[{t:'Theme set to Light',run:()=>setDark(false)}]);
+  if(/profile|account|settings|my tours|my bookings/.test(t))return reply('Here is your profile. Your tours, saved clubs and preferences are all in one place.',[{t:'Opened Profile & Settings',run:()=>go('profile')}],['Back to the map','Turn on voice replies']);
+  if(/voice/.test(t)){const on=!/off|disable|stop/.test(t);return reply(on?'Very well, I will speak my replies aloud from now on.':'Understood, I\'ll keep quiet and type only.',[{t:'Voice replies '+(on?'on':'off'),run:()=>{S.settings.voice=on;save();renderToggles()}}])}
+  const nm=text.match(/(?:my name is|call me|change my name to|rename me to)\s+(.+)/i);
+  if(nm){const name=nm[1].replace(/[.!]$/,'').trim();return reply(`A pleasure, ${esc(name.split(' ')[0])}. I've updated your profile.`,[{t:'Profile name → '+name,run:()=>{S.profile.name=name;save();renderProfile()}}])}
+  if(/zoom in/.test(t))return reply('Closer look.',[{t:'Zoomed in',run:()=>map.zoomIn({duration:700})}]);
+  if(/zoom out/.test(t))return reply('Pulling back.',[{t:'Zoomed out',run:()=>map.zoomOut({duration:700})}]);
+  if(/\b(3d|tilt|rotate|birds?.eye)\b/.test(t))return reply('3D view, with buildings extruded so you can see the skyline.',[{t:'Camera tilted 60° · 3D on',run:()=>{is3D=true;$('#b3d').textContent='🏙 3D';map.easeTo({pitch:60,bearing:map.getBearing()-40,duration:1500})}}]);
+  if(/\b2d\b|flat/.test(t))return reply('Flat map view.',[{t:'3D off',run:()=>{is3D=false;map.easeTo({pitch:0,bearing:0})}}]);
+  if(/tour of|tour all|all clubs tour|show me around|grand tour|give me a tour/.test(t)){
+    if(touring)return reply('Already touring. Sit back and enjoy.');
+    return reply('With pleasure. Sit back while I show you each club in turn.',[{t:'Starting guided tour · 4 stops',run:async()=>{touring=true;go('explore');
+      (async()=>{for(let k=0;k<CLUBS.length;k++){focusClub(k);addAct(`Stop ${k+1}/4 · ${CLUBS[k].n}`);await wait(3400)}touring=false;fitAll();addMsg('a','That concludes our tour. Shall I book a private visit at any of them?');setSugg(CLUBS.map(c=>'Book '+c.n.replace('The ','')))})()}}]);}
+  if(/nearest|closest|near me/.test(t)){const me=[-80.1300,25.7907];let best=0,bd=1e9;CLUBS.forEach((c,k)=>{const d=Math.hypot(c.ll[0]-me[0],c.ll[1]-me[1]);if(d<bd){bd=d;best=k}});
+    const mi=(bd*69).toFixed(1);return reply(`From South Beach, the closest is <b>${CLUBS[best].n}</b>, about ${S.settings.units==='Miles'?mi+' mi':(mi*1.609).toFixed(1)+' km'} away.`,[{t:'Located you · South Beach'},{t:'Flying to '+CLUBS[best].n,run:()=>{go('explore');focusClub(best)}}],S2)}
+  const fm=t.match(/\b(beach|spa|marina|golf|dining|saved|all)\b/);
+  if(fm&&/filter|only|show (me )?(the )?\w+ clubs|clubs with|which clubs/.test(t)){const f=fm[1][0].toUpperCase()+fm[1].slice(1);
+    return reply(`Filtered to <b>${f}</b>: ${f==='All'?CLUBS.length:CLUBS.filter(x=>f==='Saved'?S.fav.includes(x.id):x.tags.includes(f)).length} club(s).`,[{t:'Filter → '+f,run:()=>{go('explore');setFilter(f)}}],['Show all clubs'])}
+  if(/show all|overview|all clubs|reset|zoom to fit|every club/.test(t))return reply('Here are all four clubs, from Surfside down to Fisher Island.',[{t:'Map fitted to all clubs',run:()=>{go('explore');setFilter('All');fitAll()}}],['Take me to Fisher Island','Tour all clubs']);
+  if(/\b(book|reserve|schedule|visit|appointment)\b/.test(t)){
+    if(ci<0)return reply('Of course. Which club would you like to visit?',[],CLUBS.map(c=>'Book '+c.n.replace('The ','')));
+    const when=parseWhen(t);
+    return reply(`Done. Your private tour of <b>${c.n}</b> is confirmed for <b>${when}</b>. I've added it to your profile and will remind you 24 hours before.`,
+      [{t:'Flying to '+c.n,run:()=>{go('explore');focusClub(ci)}},{t:'Tour booked · '+when,run:()=>bookTour(ci,when)}],['Show my tours','Directions','Save this club'])}
+  if(/\b(unsave|remove|unfavou?rite)\b/.test(t)&&ci>=0)return reply(`Removed <b>${c.n}</b> from your saved clubs.`,[{t:'Unsaved '+c.n,run:()=>toggleFav(ci,false)}]);
+  if(/\b(save|favou?rite|like|heart|shortlist)\b/.test(t)){if(ci<0)return reply('Which club shall I save?',[],CLUBS.map(c=>'Save '+c.n.replace('The ','')));
+    return reply(`<b>${c.n}</b> is now in your saved clubs ❤`,[{t:'Saved '+c.n,run:()=>toggleFav(ci,true)}],['Show saved clubs','Open my profile'])}
+  if(/direction|navigate|route|get there|drive/.test(t)){if(ci<0)return reply('Directions to which club?',[],CLUBS.map(c=>'Directions to '+c.n.replace('The ','')));
+    const url='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(c.a);
+    return reply(`Here's your route to <b>${c.n}</b>: <a href="${url}" target="_blank" rel="noopener">Open in Google Maps →</a>`,[{t:'Route prepared · '+c.a}])}
+  if(/back|map|explore|home/.test(t)&&i<0)return reply('Back to the map.',[{t:'Opened Explore',run:()=>go('explore')}]);
+  if(i>=0&&/tell|about|info|what is|history|describe/.test(t))return reply(`<b>${c.n}</b>, ${c.area}. ${c.d}`,[{t:'Flying to '+c.n,run:()=>{go('explore');focusClub(i)}}],['Book a tour here','Save this club','Directions']);
+  if(i>=0)return reply(`Here we are: <b>${c.n}</b>, ${c.a}. ${c.d}`,[{t:'Flying map to '+c.n,run:()=>{go('explore');focusClub(i)}}],['Book a tour here','Save this club','Tell me more','Show all clubs']);
+  if(/^(hi|hello|hey|good (morning|evening|afternoon))/.test(t))return reply(`Hello, ${esc(S.profile.name.split(' ')[0])}. How may I be of service?`,[],['Take me to The Surf Club','Tour all clubs','Help']);
+  if(/thank/.test(t))return reply('My pleasure. I am always at your service.');
+  return reply(`I'm not sure I caught that. Try <b>“Take me to Soho House”</b>, <b>“Book Fisher Island Saturday 2pm”</b> or <b>“Dark mode”</b>.`,[],['Help','Take me to The Bath Club','Show all clubs'])}
+function listen(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R)return toast('Voice input not supported in this browser');
+  const r=new R();r.lang='en-US';$('#mic').classList.add('rec');r.onresult=e=>send(e.results[0][0].transcript);r.onend=()=>$('#mic').classList.remove('rec');r.start()}
+
+/* ============ INIT ============ */
+document.body.classList.toggle('dark',S.settings.dark);$('#themeBtn').textContent=S.settings.dark?'☀️':'🌙';
+if(!S.settings.concierge)$('#agent').style.display='none';
+renderChips();renderList();renderProfile();
+if(P.get('view')==='profile')go('profile');
+if(P.has('hover')){const h=+P.get('hover');map.once('load',()=>focusClub(h,{dur:0}))}
+window.demo={send,focusClub,fitAll,toggleChat,go,setDark,bookTour,toggleFav};
 </script>
 </body>
 </html>
